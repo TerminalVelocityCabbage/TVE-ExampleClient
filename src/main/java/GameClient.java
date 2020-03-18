@@ -6,6 +6,7 @@ import engine.events.HandleEvent;
 import engine.events.client.ClientConnectionEvent;
 import engine.events.client.ClientStartEvent;
 import engine.server.PacketTypes;
+import org.fusesource.jansi.AnsiConsole;
 
 import java.util.Scanner;
 
@@ -14,17 +15,20 @@ public class GameClient extends ClientBase {
 	public static final String ADDRESS = "localhost";
 	public static final int PORT = 49056;
 
-	public GameClient(String id) {
-		super(id);
+	public GameClient() {
 		addEventHandler(this);
 		init();
 		start();
 	}
 
 	public static void main(String[] args) {
-		Scanner scanner = new Scanner(System.in);
-		System.out.println("Enter a username: ");
-		new GameClient(scanner.nextLine().replace(" ", "-"));
+		new GameClient();
+	}
+
+	@HandleEvent(ClientStartEvent.PRE_INIT)
+	public void onPreInit(ClientStartEvent event) {
+		//Enable Console colors
+		AnsiConsole.systemInstall();
 	}
 
 	@HandleEvent(ClientStartEvent.START)
@@ -52,6 +56,9 @@ public class GameClient extends ClientBase {
 					event.getClient().readString(System.out::println);
 			}
 		});
+
+		System.out.println("Enter a username: ");
+		setId(scanner.nextLine());
 
 		//Send a username packet to the server with the id
 		Packet.builder().putByte(PacketTypes.CLIENT_VALIDATION).putString(getID()).queueAndFlush(event.getClient());
