@@ -23,6 +23,7 @@ public class GameClient extends ClientBase {
 
 	public static void main(String[] args) {
 		Scanner scanner = new Scanner(System.in);
+		System.out.println("Enter a username: ");
 		new GameClient(scanner.nextLine().replace(" ", "-"));
 	}
 
