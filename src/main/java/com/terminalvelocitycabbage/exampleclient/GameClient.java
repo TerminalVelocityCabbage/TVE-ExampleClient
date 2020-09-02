@@ -1,3 +1,5 @@
+package com.terminalvelocitycabbage.exampleclient;
+
 import com.github.simplenet.packet.Packet;
 import engine.client.ClientBase;
 import engine.client.PingClient;
