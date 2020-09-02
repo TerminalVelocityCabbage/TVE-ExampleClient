@@ -1,13 +1,13 @@
 package com.terminalvelocitycabbage.exampleclient;
 
 import com.github.simplenet.packet.Packet;
-import engine.client.ClientBase;
-import engine.client.PingClient;
-import engine.debug.Log;
-import engine.events.HandleEvent;
-import engine.events.client.ClientConnectionEvent;
-import engine.events.client.ClientStartEvent;
-import engine.server.PacketTypes;
+import com.terminalvelocitycabbage.engine.client.ClientBase;
+import com.terminalvelocitycabbage.engine.client.PingClient;
+import com.terminalvelocitycabbage.engine.debug.Log;
+import com.terminalvelocitycabbage.engine.events.HandleEvent;
+import com.terminalvelocitycabbage.engine.events.client.ClientConnectionEvent;
+import com.terminalvelocitycabbage.engine.events.client.ClientStartEvent;
+import com.terminalvelocitycabbage.engine.server.PacketTypes;
 import org.fusesource.jansi.AnsiConsole;
 
 import java.util.Scanner;
