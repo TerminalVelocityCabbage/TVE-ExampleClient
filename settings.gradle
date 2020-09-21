@@ -1,2 +1,3 @@
 include 'terminal_velocity_engine'
+include 'terminal_velocity_renderer'
 rootProject.name = 'TVTC'

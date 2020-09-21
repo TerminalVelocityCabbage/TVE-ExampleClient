@@ -53,6 +53,7 @@ dependencies {
 	implementation 'com.github.jhg023:SimpleNet:1.6.4'
 
 	compile project('terminal_velocity_engine')
+	compile project('terminal_velocity_renderer')
 
 	compile group: 'org.fusesource.jansi', name: 'jansi', version: '1.8'
 
