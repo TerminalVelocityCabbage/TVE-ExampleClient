@@ -6,7 +6,7 @@ import com.terminalvelocitycabbage.terminalvelocityrenderer.InputHandler;
 public class GameClient extends ClientBase {
 
 	public static GameClient instance;
-	public static ClientRenderer clientRenderer;
+	public static GameClientRenderer clientRenderer;
 	public static InputHandler inputHandler;
 
 	public static final String ADDRESS = "localhost";
@@ -14,9 +14,9 @@ public class GameClient extends ClientBase {
 
 	public GameClient() {
 		instance = this;
-		clientRenderer = new ClientRenderer();
+		clientRenderer = new GameClientRenderer();
 		inputHandler = new GameInputHandler();
-		addEventHandler(new EventHandler());
+		addEventHandler(new GameEventHandler());
 		init();
 		start();
 	}
@@ -29,7 +29,7 @@ public class GameClient extends ClientBase {
 		return instance;
 	}
 
-	public static ClientRenderer getClientRenderer() {
+	public static GameClientRenderer getClientRenderer() {
 		return clientRenderer;
 	}
 

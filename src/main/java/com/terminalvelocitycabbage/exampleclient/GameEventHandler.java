@@ -14,7 +14,7 @@ import java.util.Scanner;
 import static com.terminalvelocitycabbage.exampleclient.GameClient.PORT;
 import static com.terminalvelocitycabbage.exampleclient.GameClient.ADDRESS;
 
-public class EventHandler {
+public class GameEventHandler {
 
 	@HandleEvent(ClientStartEvent.PRE_INIT)
 	public void onPreInit(ClientStartEvent event) {
