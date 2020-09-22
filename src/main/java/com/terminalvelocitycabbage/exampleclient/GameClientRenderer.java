@@ -29,20 +29,19 @@ public class GameClientRenderer extends Renderer {
 		int shaderProgram = glCreateProgram();
 
 		//Create Shaders
-		ShaderHandler.createShader(GL_VERTEX_SHADER, shaderProgram, ASSETS_ROOT_RESOURCE_MANAGER, new Identifier(GameClient.ID, "shaders/tri.vert"));
-		ShaderHandler.createShader(GL_FRAGMENT_SHADER, shaderProgram, ASSETS_ROOT_RESOURCE_MANAGER, new Identifier(GameClient.ID, "shaders/tri.frag"));
+		ShaderHandler.queueShader(GL_VERTEX_SHADER, shaderProgram, ASSETS_ROOT_RESOURCE_MANAGER, new Identifier(GameClient.ID, "shaders/tri.vert"));
+		ShaderHandler.queueShader(GL_FRAGMENT_SHADER, shaderProgram, ASSETS_ROOT_RESOURCE_MANAGER, new Identifier(GameClient.ID, "shaders/tri.frag"));
 
-		//link shaders
-		glLinkProgram(shaderProgram);
+		ShaderHandler.setupShaders(shaderProgram);
 
-		//Setup and configure vertex data
-		var triangle = new Triangle(new Vector3f(-0.5f, -0.5f, 0.0f), new Vector3f(0.5f, -0.5f, 0.0f), new Vector3f(0.0f, 0.5f, 0.0f));
-		int vbo = glGenBuffers();
+		//Bind VAO
 		int vao = glGenVertexArrays();
-		//Bind the VAO
 		glBindVertexArray(vao);
-		//Bind the VBO
+		//Bind VBO
+		int vbo = glGenBuffers();
 		glBindBuffer(GL_ARRAY_BUFFER, vbo);
+
+		var triangle = new Triangle(new Vector3f(-0.5f, -0.5f, 0.0f), new Vector3f(0.5f, -0.5f, 0.0f), new Vector3f(0.0f, 0.5f, 0.0f));
 		glBufferData(GL_ARRAY_BUFFER, triangle.getVertices(), GL_STATIC_DRAW);
 
 		glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0);
