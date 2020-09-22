@@ -1,14 +1,18 @@
 package com.terminalvelocitycabbage.exampleclient;
 
+import com.terminalvelocitycabbage.engine.resources.Identifier;
+import com.terminalvelocitycabbage.engine.resources.Resource;
 import com.terminalvelocitycabbage.terminalvelocityrenderer.Renderer;
 import org.joml.Vector3f;
 import org.lwjgl.opengl.GL;
 
+import java.util.Optional;
+
+import static com.terminalvelocitycabbage.exampleclient.GameResourceHandler.ASSETS_ROOT_RESOURCE_MANAGER;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.*;
-import static org.lwjgl.system.MemoryUtil.NULL;
 
 public class GameClientRenderer extends Renderer {
 
@@ -20,33 +24,21 @@ public class GameClientRenderer extends Renderer {
 
 		//Background Color stuff
 		double frame = 0.0;
-		float valueR = 0.0f;
-		float valueG = 0.0f;
-		float valueB = 0.0f;
+		float valueR, valueG, valueB;
 
 		//The long awaited triangle shader stuff
 		//Vertex shader
 		//TODO make a resource loader
-		String vertexShaderSource =
-				"#version 330 core\n" +
-						"layout (location = 0) in vec3 aPos;\n" +
-						"void main()\n" +
-						"{\n" +
-						"   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n" +
-						"}\0";
+		Optional<Resource> vertexShaderResource = ASSETS_ROOT_RESOURCE_MANAGER.getResource(new Identifier(GameClient.ID, "shaders/tri.vert"));
+		String vertexShaderSource = vertexShaderResource.flatMap(Resource::asString).get();
 		int vertexShader = glCreateShader(GL_VERTEX_SHADER);
 		glShaderSource(vertexShader, vertexShaderSource);
 		glCompileShader(vertexShader);
 
 		//Fragment shader
 		//TODO make a resource loader
-		String fragmentShaderSource =
-				"#version 330 core\n" +
-						"out vec4 FragColor;\n" +
-						"void main()\n" +
-						"{\n" +
-						"   FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n" +
-						"}\n\0";
+		Optional<Resource> fragmentShaderResource = ASSETS_ROOT_RESOURCE_MANAGER.getResource(new Identifier(GameClient.ID, "shaders/tri.frag"));
+		String fragmentShaderSource = fragmentShaderResource.flatMap(Resource::asString).get();
 		int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
 		glShaderSource(fragmentShader, fragmentShaderSource);
 		glCompileShader(fragmentShader);

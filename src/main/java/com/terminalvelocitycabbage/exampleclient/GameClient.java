@@ -5,6 +5,8 @@ import com.terminalvelocitycabbage.terminalvelocityrenderer.InputHandler;
 
 public class GameClient extends ClientBase {
 
+	public static final String ID = "testclient";
+
 	public static GameClient instance;
 	public static GameClientRenderer clientRenderer;
 	public static InputHandler inputHandler;
