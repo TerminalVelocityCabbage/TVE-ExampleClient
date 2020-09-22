@@ -1,12 +1,10 @@
 package com.terminalvelocitycabbage.exampleclient;
 
+import com.terminalvelocitycabbage.engine.renderutils.ShaderHandler;
 import com.terminalvelocitycabbage.engine.resources.Identifier;
-import com.terminalvelocitycabbage.engine.resources.Resource;
 import com.terminalvelocitycabbage.terminalvelocityrenderer.Renderer;
 import org.joml.Vector3f;
 import org.lwjgl.opengl.GL;
-
-import java.util.Optional;
 
 import static com.terminalvelocitycabbage.exampleclient.GameResourceHandler.ASSETS_ROOT_RESOURCE_MANAGER;
 import static org.lwjgl.glfw.GLFW.*;
@@ -27,31 +25,15 @@ public class GameClientRenderer extends Renderer {
 		float valueR, valueG, valueB;
 
 		//The long awaited triangle shader stuff
-		//Vertex shader
-		//TODO make a resource loader
-		Optional<Resource> vertexShaderResource = ASSETS_ROOT_RESOURCE_MANAGER.getResource(new Identifier(GameClient.ID, "shaders/tri.vert"));
-		String vertexShaderSource = vertexShaderResource.flatMap(Resource::asString).get();
-		int vertexShader = glCreateShader(GL_VERTEX_SHADER);
-		glShaderSource(vertexShader, vertexShaderSource);
-		glCompileShader(vertexShader);
+		//Create the shader program
+		int shaderProgram = glCreateProgram();
 
-		//Fragment shader
-		//TODO make a resource loader
-		Optional<Resource> fragmentShaderResource = ASSETS_ROOT_RESOURCE_MANAGER.getResource(new Identifier(GameClient.ID, "shaders/tri.frag"));
-		String fragmentShaderSource = fragmentShaderResource.flatMap(Resource::asString).get();
-		int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-		glShaderSource(fragmentShader, fragmentShaderSource);
-		glCompileShader(fragmentShader);
+		//Create Shaders
+		ShaderHandler.createShader(GL_VERTEX_SHADER, shaderProgram, ASSETS_ROOT_RESOURCE_MANAGER, new Identifier(GameClient.ID, "shaders/tri.vert"));
+		ShaderHandler.createShader(GL_FRAGMENT_SHADER, shaderProgram, ASSETS_ROOT_RESOURCE_MANAGER, new Identifier(GameClient.ID, "shaders/tri.frag"));
 
 		//link shaders
-		int shaderProgram = glCreateProgram();
-		glAttachShader(shaderProgram, vertexShader);
-		glAttachShader(shaderProgram, fragmentShader);
 		glLinkProgram(shaderProgram);
-
-		//Delete shaders since we dont need them anymore
-		glDeleteShader(vertexShader);
-		glDeleteShader(fragmentShader);
 
 		//Setup and configure vertex data
 		var triangle = new Triangle(new Vector3f(-0.5f, -0.5f, 0.0f), new Vector3f(0.5f, -0.5f, 0.0f), new Vector3f(0.0f, 0.5f, 0.0f));
