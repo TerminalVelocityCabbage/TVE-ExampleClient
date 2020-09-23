@@ -21,7 +21,6 @@ public class GameClientRenderer extends Renderer {
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
 		//Background Color stuff
-		double frame = 0.0;
 		float valueR, valueG, valueB;
 
 		//The long awaited triangle shader stuff
@@ -41,11 +40,17 @@ public class GameClientRenderer extends Renderer {
 		int vbo = glGenBuffers();
 		glBindBuffer(GL_ARRAY_BUFFER, vbo);
 
-		var triangle = new Triangle(new Vector3f(-0.5f, -0.5f, 0.0f), new Vector3f(0.5f, -0.5f, 0.0f), new Vector3f(0.0f, 0.5f, 0.0f));
+		//var triangle = new Primitives.Triangle(new Vector3f(-0.5f, -0.5f, 0.0f), new Vector3f(0.5f, -0.5f, 0.0f), new Vector3f(0.0f, 0.5f, 0.0f));
+		var triangle = new Primitives.ColoredTriangle(
+				new Vector3f(-0.5f, -0.5f, 0.0f), new Vector3f(0.5f, -0.5f, 0.0f), new Vector3f(0.0f, 0.5f, 0.0f),
+				new Vector3f(1.0f, 0.0f, 0.0f), new Vector3f(0.0f, 1.0f, 0.0f), new Vector3f(0.0f, 0.0f, 1.0f));
 		glBufferData(GL_ARRAY_BUFFER, triangle.getVertices(), GL_STATIC_DRAW);
 
-		glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, false, Float.BYTES * 6, 0);
 		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(1, 3, GL_FLOAT, false, Float.BYTES * 6, Float.BYTES * 3);
+		glEnableVertexAttribArray(1);
+
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		glBindVertexArray(0);
 
@@ -54,22 +59,23 @@ public class GameClientRenderer extends Renderer {
 
 		// Run the rendering loop until the user has attempted to close
 		// the window or has pressed the ESCAPE key.
-		while ( !glfwWindowShouldClose(Renderer.getWindow()) ) {
+		while (!glfwWindowShouldClose(Renderer.getWindow())) {
 			//Setup the frame for drawing
+			glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-			//Actual Logic
-
-			//Background randomised coloration
-			valueR = (float)((Math.sin(frame/10) + 1)/2);
-			valueG = (float)((Math.cos(frame/20) + 1)/2);
-			valueB = (float)((Math.sin(frame/40) + 1)/2);
-			glClearColor(valueR, valueG, valueB, 1.0f);
-			if (frame == Float.MAX_VALUE) frame = 1.0;
-			else frame++;
-
-			//Triangle
+			//Init shader
 			glUseProgram(shaderProgram);
+
+			//Actual Logic
+			double time = glfwGetTime();
+
+			//Setup triangle
+			float greenValue = ((float)Math.sin(time) / 2.0f) + 0.5f;
+			int vertexColorLocation = glGetUniformLocation(shaderProgram, "ourColor");
+			glUniform4f(vertexColorLocation, 0.0f, greenValue, 0.0f, 1.0f);
+
+			//Render the triangle
 			glBindVertexArray(vao);
 			glDrawArrays(GL_TRIANGLES, 0, 3);
 
