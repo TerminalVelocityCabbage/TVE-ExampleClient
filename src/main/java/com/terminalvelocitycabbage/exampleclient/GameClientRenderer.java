@@ -20,15 +20,14 @@ public class GameClientRenderer extends Renderer {
 		GL.createCapabilities();
 
 		//The long awaited triangle shader stuff
-		//Create the shader program
-		int shaderProgram = glCreateProgram();
-
 		//Create Shaders
-		ShaderHandler.queueShader(GL_VERTEX_SHADER, shaderProgram, ASSETS_ROOT_RESOURCE_MANAGER, new Identifier(GameClient.ID, "shaders/tri.vert"));
-		ShaderHandler.queueShader(GL_FRAGMENT_SHADER, shaderProgram, ASSETS_ROOT_RESOURCE_MANAGER, new Identifier(GameClient.ID, "shaders/tri.frag"));
+		ShaderHandler defaultShaderHandler = new ShaderHandler(glCreateProgram());
+
+		defaultShaderHandler.queueShader(GL_VERTEX_SHADER, ASSETS_ROOT_RESOURCE_MANAGER, new Identifier(GameClient.ID, "shaders/tri.vert"));
+		defaultShaderHandler.queueShader(GL_FRAGMENT_SHADER, ASSETS_ROOT_RESOURCE_MANAGER, new Identifier(GameClient.ID, "shaders/tri.frag"));
 
 		//Cleanup shaders and bind the program
-		ShaderHandler.setupShaders(shaderProgram);
+		defaultShaderHandler.setupShaders();
 
 		//Bind VAO
 		int vao = glGenVertexArrays();
@@ -58,7 +57,7 @@ public class GameClientRenderer extends Renderer {
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 			//Init shader
-			glUseProgram(shaderProgram);
+			defaultShaderHandler.use();
 
 			//Actual Logic
 			double time = glfwGetTime();
@@ -80,6 +79,6 @@ public class GameClientRenderer extends Renderer {
 		//Clean up stuff (technically optional but good to know)
 		glDeleteVertexArrays(vao);
 		glDeleteBuffers(vbo);
-		glDeleteProgram(shaderProgram);
+		defaultShaderHandler.delete();
 	}
 }
