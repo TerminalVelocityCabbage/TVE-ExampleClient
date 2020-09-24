@@ -14,6 +14,10 @@ import static org.lwjgl.opengl.GL30.*;
 
 public class GameClientRenderer extends Renderer {
 
+	public GameClientRenderer(int width, int height, String title) {
+		super(width, height, title);
+	}
+
 	@Override
 	public void loop() {
 		// creates the GLCapabilities instance and makes the OpenGL bindings available for use.
@@ -49,9 +53,8 @@ public class GameClientRenderer extends Renderer {
 		//For wireframe mode
 		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-		// Run the rendering loop until the user has attempted to close
-		// the window or has pressed the ESCAPE key.
-		while (!glfwWindowShouldClose(Renderer.getWindow())) {
+		// Run the rendering loop until the user has attempted to close the window
+		while (!glfwWindowShouldClose(getWindow())) {
 			//Setup the frame for drawing
 			glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -60,19 +63,14 @@ public class GameClientRenderer extends Renderer {
 			defaultShaderHandler.use();
 
 			//Actual Logic
-			double time = glfwGetTime();
-
-			//Setup triangle
-			//float greenValue = ((float)Math.sin(time) / 2.0f) + 0.5f;
-			//int vertexColorLocation = glGetUniformLocation(shaderProgram, "ourColor");
-			//glUniform4f(vertexColorLocation, 0.0f, greenValue, 0.0f, 1.0f);
+			//TODO add something real
 
 			//Render the triangle
 			glBindVertexArray(vao);
 			glDrawArrays(GL_TRIANGLES, 0, 3);
 
 			//Send the frame
-			glfwSwapBuffers(Renderer.getWindow());
+			glfwSwapBuffers(getWindow());
 			glfwPollEvents();
 		}
 
