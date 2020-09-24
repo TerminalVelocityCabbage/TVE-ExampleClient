@@ -18,10 +18,6 @@ public class GameClientRenderer extends Renderer {
 	public void loop() {
 		// creates the GLCapabilities instance and makes the OpenGL bindings available for use.
 		GL.createCapabilities();
-		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-
-		//Background Color stuff
-		float valueR, valueG, valueB;
 
 		//The long awaited triangle shader stuff
 		//Create the shader program
@@ -31,6 +27,7 @@ public class GameClientRenderer extends Renderer {
 		ShaderHandler.queueShader(GL_VERTEX_SHADER, shaderProgram, ASSETS_ROOT_RESOURCE_MANAGER, new Identifier(GameClient.ID, "shaders/tri.vert"));
 		ShaderHandler.queueShader(GL_FRAGMENT_SHADER, shaderProgram, ASSETS_ROOT_RESOURCE_MANAGER, new Identifier(GameClient.ID, "shaders/tri.frag"));
 
+		//Cleanup shaders and bind the program
 		ShaderHandler.setupShaders(shaderProgram);
 
 		//Bind VAO
@@ -40,8 +37,7 @@ public class GameClientRenderer extends Renderer {
 		int vbo = glGenBuffers();
 		glBindBuffer(GL_ARRAY_BUFFER, vbo);
 
-		//var triangle = new Primitives.Triangle(new Vector3f(-0.5f, -0.5f, 0.0f), new Vector3f(0.5f, -0.5f, 0.0f), new Vector3f(0.0f, 0.5f, 0.0f));
-		var triangle = new Primitives.ColoredTriangle(
+		var triangle = new Primitives.Triangle(
 				new Vector3f(-0.5f, -0.5f, 0.0f), new Vector3f(0.5f, -0.5f, 0.0f), new Vector3f(0.0f, 0.5f, 0.0f),
 				new Vector3f(1.0f, 0.0f, 0.0f), new Vector3f(0.0f, 1.0f, 0.0f), new Vector3f(0.0f, 0.0f, 1.0f));
 		glBufferData(GL_ARRAY_BUFFER, triangle.getVertices(), GL_STATIC_DRAW);
@@ -50,9 +46,6 @@ public class GameClientRenderer extends Renderer {
 		glEnableVertexAttribArray(0);
 		glVertexAttribPointer(1, 3, GL_FLOAT, false, Float.BYTES * 6, Float.BYTES * 3);
 		glEnableVertexAttribArray(1);
-
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
-		glBindVertexArray(0);
 
 		//For wireframe mode
 		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -71,9 +64,9 @@ public class GameClientRenderer extends Renderer {
 			double time = glfwGetTime();
 
 			//Setup triangle
-			float greenValue = ((float)Math.sin(time) / 2.0f) + 0.5f;
-			int vertexColorLocation = glGetUniformLocation(shaderProgram, "ourColor");
-			glUniform4f(vertexColorLocation, 0.0f, greenValue, 0.0f, 1.0f);
+			//float greenValue = ((float)Math.sin(time) / 2.0f) + 0.5f;
+			//int vertexColorLocation = glGetUniformLocation(shaderProgram, "ourColor");
+			//glUniform4f(vertexColorLocation, 0.0f, greenValue, 0.0f, 1.0f);
 
 			//Render the triangle
 			glBindVertexArray(vao);
