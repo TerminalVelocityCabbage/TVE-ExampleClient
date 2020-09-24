@@ -1,7 +1,7 @@
 package com.terminalvelocitycabbage.exampleclient;
 
-import com.terminalvelocitycabbage.engine.renderutils.ShaderHandler;
 import com.terminalvelocitycabbage.engine.resources.Identifier;
+import com.terminalvelocitycabbage.engine.shader.ShaderHandler;
 import com.terminalvelocitycabbage.terminalvelocityrenderer.Renderer;
 import org.joml.Vector3f;
 import org.lwjgl.opengl.GL;
