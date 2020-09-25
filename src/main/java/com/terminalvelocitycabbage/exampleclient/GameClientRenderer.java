@@ -2,7 +2,10 @@ package com.terminalvelocitycabbage.exampleclient;
 
 import com.terminalvelocitycabbage.engine.resources.Identifier;
 import com.terminalvelocitycabbage.engine.shader.ShaderHandler;
+import com.terminalvelocitycabbage.exampleclient.shapes.Rectangle;
 import com.terminalvelocitycabbage.terminalvelocityrenderer.Renderer;
+import org.joml.Vector3f;
+import org.joml.Vector4i;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL;
 
@@ -36,78 +39,52 @@ public class GameClientRenderer extends Renderer {
 		//Cleanup shaders and bind the program
 		defaultShaderHandler.setupShaders();
 
-		float[] rectVertices = new float[] {
-				-0.8f, 	0.8f,	//0: top left
-				0.8f, 	0.8f,	//1: top right
-				-0.8f, 	-0.8f,	//2: btm left
-				0.8f, 	-0.8f,	//3: btm right
-		};
-		float[] colors = new float[] {
-				1, 0, 0, 1,
-				0, 1, 0, 1,
-				0, 0, 1, 1,
-				1, 1, 1, 1
-		};
-		short[] indices = new short[] {
-				0, 1, 2,	//left tri
-				1, 2, 3		//right tri
-		};
+		Rectangle rectangle = new Rectangle(
+				new Vector3f(-0.8f, 	0.8f, 	0.0f),	//0: top left
+				new Vector3f(0.8f, 	0.8f, 	0.0f),	//1: top right
+				new Vector3f(-0.8f, 	-0.8f, 	0.0f),	//2: bottom left
+				new Vector3f(0.8f, 	-0.8f, 	0.0f),	//3: bottom right
+				new Vector4i(255, 0,   0,   255),		//0: top left
+				new Vector4i(0,   255, 0,   255),		//1: top right
+				new Vector4i(0,   0,   255, 255),		//2: bottom left
+				new Vector4i(255, 255, 255, 255)	//3: bottom right
+		);
 
 		int vaoID = glGenVertexArrays();
 		glBindVertexArray(vaoID);
 
 		//Create vertices buffer I guess
-		FloatBuffer verticesBuffer = BufferUtils.createFloatBuffer(rectVertices.length);
-		verticesBuffer.put(rectVertices).flip();
+		FloatBuffer verticesBuffer = BufferUtils.createFloatBuffer(rectangle.getVertices().length);
+		verticesBuffer.put(rectangle.getVertices()).flip();
 
 		int vboVertID = glGenBuffers();
 		glBindBuffer(GL_ARRAY_BUFFER, vboVertID);
 		glBufferData(GL_ARRAY_BUFFER, verticesBuffer, GL_STATIC_DRAW);
 
-		glVertexAttribPointer(0, 2, GL_FLOAT, false, 0, 0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0);
+		glEnableVertexAttribArray(0);
 
 		//Create Color buffer I guess
-		FloatBuffer colorsBuffer = BufferUtils.createFloatBuffer(colors.length);
-		colorsBuffer.put(colors).flip();
+		FloatBuffer colorsBuffer = BufferUtils.createFloatBuffer(rectangle.getColors().length);
+		colorsBuffer.put(rectangle.getColors()).flip();
 
 		int vboColID = glGenBuffers();
 		glBindBuffer(GL_ARRAY_BUFFER, vboColID);
 		glBufferData(GL_ARRAY_BUFFER, colorsBuffer, GL_STATIC_DRAW);
 
 		glVertexAttribPointer(1, 4, GL_FLOAT, false, 0, 0);
+		glEnableVertexAttribArray(1);
 
-		ShortBuffer indicesBuffer = BufferUtils.createShortBuffer(indices.length);
-		indicesBuffer.put(indices).flip();
+		ShortBuffer indicesBuffer = BufferUtils.createShortBuffer(rectangle.getIndexes().length);
+		indicesBuffer.put(rectangle.getIndexes()).flip();
 
 		//Create element buffer I guess
 		int eboID = glGenBuffers();
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, eboID);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices, GL_STATIC_DRAW);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, rectangle.getIndexes(), GL_STATIC_DRAW);
 
-		//Enable attribute locations
-		glEnableVertexAttribArray(0);
-		glEnableVertexAttribArray(1);
-
+		//Reset to default VAO
 		glBindVertexArray(0);
-
-		/*
-		//Bind VAO
-		int vao = glGenVertexArrays();
-		glBindVertexArray(vao);
-		//Bind VBO
-		int vbo = glGenBuffers();
-		glBindBuffer(GL_ARRAY_BUFFER, vbo);
-
-		var triangle = new Primitives.Triangle(
-				new Vector3f(-0.5f, -0.5f, 0.0f), new Vector3f(0.5f, -0.5f, 0.0f), new Vector3f(0.0f, 0.5f, 0.0f),
-				new Vector3f(1.0f, 0.0f, 0.0f), new Vector3f(0.0f, 1.0f, 0.0f), new Vector3f(0.0f, 0.0f, 1.0f));
-		glBufferData(GL_ARRAY_BUFFER, triangle.getVertices(), GL_STATIC_DRAW);
-
-		glVertexAttribPointer(0, 3, GL_FLOAT, false, Float.BYTES * 6, 0);
-		glEnableVertexAttribArray(0);
-		glVertexAttribPointer(1, 3, GL_FLOAT, false, Float.BYTES * 6, Float.BYTES * 3);
-		glEnableVertexAttribArray(1);
-		 */
 
 		//For wireframe mode
 		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -123,11 +100,10 @@ public class GameClientRenderer extends Renderer {
 
 			//Actual Logic
 			//TODO add something real
-			glBindVertexArray(vaoID);
 
 			//Render the triangle
+			glBindVertexArray(vaoID);
 			glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, 0);
-
 			glBindVertexArray(0);
 
 			//Send the frame
