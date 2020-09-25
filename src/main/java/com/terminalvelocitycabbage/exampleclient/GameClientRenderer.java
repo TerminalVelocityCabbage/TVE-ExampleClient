@@ -40,9 +40,9 @@ public class GameClientRenderer extends Renderer {
 				new Vector3f(0.8f, 	0.8f, 	0.0f),	//1: top right
 				new Vector3f(-0.8f, 	-0.8f, 	0.0f),	//2: bottom left
 				new Vector3f(0.8f, 	-0.8f, 	0.0f),	//3: bottom right
-				new Vector4i(255, 0,   0,   255),		//0: top left
-				new Vector4i(0,   255, 0,   255),		//1: top right
-				new Vector4i(0,   0,   255, 255),		//2: bottom left
+				new Vector4i(255, 0,   0,   255),	//0: top left
+				new Vector4i(0,   255, 0,   255),	//1: top right
+				new Vector4i(0,   0,   255, 255),	//2: bottom left
 				new Vector4i(255, 255, 255, 255)	//3: bottom right
 		);
 
