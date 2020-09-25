@@ -107,7 +107,7 @@ public class Rectangle {
         Optional<BufferedImage> image = resource.flatMap(Resource::getImage);
         if (image.isPresent()) {
             BufferedImage bufferedImage = image.get();
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, bufferedImage.getWidth(), bufferedImage.getHeight(), 0, GL_RGB, GL_UNSIGNED_BYTE, resource.flatMap(Resource::getBytes).orElseThrow());
+            //glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, bufferedImage.getWidth(), bufferedImage.getHeight(), 0, GL_RGB, GL_UNSIGNED_BYTE, resource.flatMap(Resource::getBytes).orElseThrow());
             glGenerateMipmap(GL_TEXTURE_2D);
         } else {
             Log.error("Could not bind texture: ");
