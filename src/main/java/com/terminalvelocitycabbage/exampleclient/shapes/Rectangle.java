@@ -12,16 +12,15 @@ import org.joml.Vector4f;
 import org.joml.Vector4i;
 import org.lwjgl.BufferUtils;
 
-import java.nio.ByteBuffer;
-import java.nio.FloatBuffer;
-import java.nio.ShortBuffer;
+import java.awt.image.BufferedImage;
 import java.util.Optional;
 
 import static org.lwjgl.opengl.GL11.GL_FLOAT;
 import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
 import static org.lwjgl.opengl.GL20.glVertexAttribPointer;
-import static org.lwjgl.opengl.GL30.*;
+import static org.lwjgl.opengl.GL30.glBindVertexArray;
+import static org.lwjgl.opengl.GL30.glGenerateMipmap;
 
 public class Rectangle {
 
@@ -74,30 +73,18 @@ public class Rectangle {
 
     public void bind() {
         //Create vertices buffer I guess
-        FloatBuffer verticesBuffer = BufferUtils.createFloatBuffer(vertices.length);
-        verticesBuffer.put(vertices).flip();
-
         int vboVertID = glGenBuffers();
         glBindBuffer(GL_ARRAY_BUFFER, vboVertID);
-        glBufferData(GL_ARRAY_BUFFER, verticesBuffer, GL_STATIC_DRAW);
-
+        glBufferData(GL_ARRAY_BUFFER, BufferUtils.createFloatBuffer(vertices.length).put(vertices).flip(), GL_STATIC_DRAW);
         glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0);
         glEnableVertexAttribArray(0);
 
         //Create Color buffer I guess
-        FloatBuffer colorsBuffer = BufferUtils.createFloatBuffer(colors.length);
-        colorsBuffer.put(colors).flip();
-
         int vboColID = glGenBuffers();
         glBindBuffer(GL_ARRAY_BUFFER, vboColID);
-        glBufferData(GL_ARRAY_BUFFER, colorsBuffer, GL_STATIC_DRAW);
-
+        glBufferData(GL_ARRAY_BUFFER, BufferUtils.createFloatBuffer(colors.length).put(colors).flip(), GL_STATIC_DRAW);
         glVertexAttribPointer(1, 4, GL_FLOAT, false, 0, 0);
         glEnableVertexAttribArray(1);
-
-        //Create indices buffer
-        ShortBuffer indicesBuffer = BufferUtils.createShortBuffer(indexes.length);
-        indicesBuffer.put(indexes).flip();
 
         //Create element buffer I guess
         int eboID = glGenBuffers();
@@ -105,11 +92,10 @@ public class Rectangle {
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexes, GL_STATIC_DRAW);
 
         //Create texture stuff
-        glVertexAttribPointer(2, 2, GL_FLOAT, false, 0, 0);
-        glEnableVertexAttribArray(2);
-
         int texture = glGenTextures();
         glBindTexture(GL_TEXTURE_2D, texture);
+        glVertexAttribPointer(2, 2, GL_FLOAT, false, 0, 0);
+        glEnableVertexAttribArray(2);
         //Configure wrapping parameters
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
@@ -118,9 +104,10 @@ public class Rectangle {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         //Load image, create texture, and generate mipmaps
         Optional<Resource> resource = GameResourceHandler.ASSETS_ROOT_RESOURCE_MANAGER.getResource(new Identifier(GameClient.ID, "textures/kyle.png"));
-        Optional<ByteBuffer> image = resource.flatMap(Resource::getBytes);
+        Optional<BufferedImage> image = resource.flatMap(Resource::getImage);
         if (image.isPresent()) {
-            //glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 99, 99, 0, GL_RGBA, GL_UNSIGNED_BYTE, image.get());
+            BufferedImage bufferedImage = image.get();
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, bufferedImage.getWidth(), bufferedImage.getHeight(), 0, GL_RGB, GL_UNSIGNED_BYTE, resource.flatMap(Resource::getBytes).orElseThrow());
             glGenerateMipmap(GL_TEXTURE_2D);
         } else {
             Log.error("Could not bind texture: ");
