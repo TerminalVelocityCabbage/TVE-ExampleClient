@@ -4,6 +4,7 @@ import com.terminalvelocitycabbage.engine.resources.Identifier;
 import com.terminalvelocitycabbage.engine.shader.ShaderHandler;
 import com.terminalvelocitycabbage.exampleclient.shapes.Rectangle;
 import com.terminalvelocitycabbage.terminalvelocityrenderer.Renderer;
+import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.joml.Vector4i;
 import org.lwjgl.opengl.GL;
@@ -43,7 +44,11 @@ public class GameClientRenderer extends Renderer {
 				new Vector4i(255, 0,   0,   255),	//0: top left
 				new Vector4i(0,   255, 0,   255),	//1: top right
 				new Vector4i(0,   0,   255, 255),	//2: bottom left
-				new Vector4i(255, 255, 255, 255)	//3: bottom right
+				new Vector4i(255, 255, 255, 255),	//3: bottom right
+				new Vector2f(1.0f, 1.0f),				//0: top right
+				new Vector2f(1.0f, 0.0f),				//1: top left
+				new Vector2f(0.0f, 0.0f),				//2: bottom left
+				new Vector2f(0.0f, 1.0f)					//3: bottom right
 		);
 
 		int vaoID = glGenVertexArrays();
