@@ -36,17 +36,17 @@ public class GameClientRenderer extends Renderer {
 		//The long awaited triangle shader stuff
 
 		// We'll define our quad using 4 vertices of the custom TexturedVertex class
-		TexturedVertex v0 = new TexturedVertex().setXYZ(-0.5f, 0.5f, 0).setRGB(1, 0, 0).setUv(0, 0);
-		TexturedVertex v1 = new TexturedVertex().setXYZ(-0.5f, -0.5f, 0).setRGB(0, 1, 0).setUv(0, 1);
-		TexturedVertex v2 = new TexturedVertex().setXYZ(0.5f, -0.5f, 0).setRGB(0, 0, 1).setUv(1, 1);
-		TexturedVertex v3 = new TexturedVertex().setXYZ(0.5f, 0.5f, 0).setRGB(1, 1, 1).setUv(1, 0);
+		TexturedVertex v0 = new TexturedVertex().setXYZ(-0.5f, 0.5f, 0).setRGB(255, 0, 0).setUv(0, 0);
+		TexturedVertex v1 = new TexturedVertex().setXYZ(-0.5f, -0.5f, 0).setRGB(0, 255, 0).setUv(0, 1);
+		TexturedVertex v2 = new TexturedVertex().setXYZ(0.5f, -0.5f, 0).setRGB(0, 0, 255).setUv(1, 1);
+		TexturedVertex v3 = new TexturedVertex().setXYZ(0.5f, 0.5f, 0).setRGB(255, 255, 255).setUv(1, 0);
 
 		TexturedVertex[] vertices = new TexturedVertex[] {v0, v1, v2, v3};
 		// Put each 'Vertex' in one FloatBuffer
 		FloatBuffer verticesBuffer = BufferUtils.createFloatBuffer(vertices.length * TexturedVertex.ELEMENT_COUNT);
-		for (int i = 0; i < vertices.length; i++) {
+		for (TexturedVertex vertex : vertices) {
 			// Add position, color and texture floats to the buffer
-			verticesBuffer.put(vertices[i].getElements());
+			verticesBuffer.put(vertex.getElements());
 		}
 		verticesBuffer.flip();
 		// OpenGL expects to draw vertices in counter clockwise order by default
@@ -68,24 +68,17 @@ public class GameClientRenderer extends Renderer {
 		glBindBuffer(GL_ARRAY_BUFFER, vboId);
 		glBufferData(GL_ARRAY_BUFFER, verticesBuffer, GL_STATIC_DRAW);
 
-		// Put the position coordinates in attribute list 0
+		//Define where info is on the vertex info
 		glVertexAttribPointer(0, POSITION_ELEMENT_COUNT, GL11.GL_FLOAT, false, STRIDE, POSITION_OFFSET);
-		// Put the color components in attribute list 1
 		glVertexAttribPointer(1, COLOR_ELEMENT_COUNT, GL11.GL_FLOAT, false, STRIDE, COLOR_OFFSET);
-		// Put the texture coordinates in attribute list 2
 		glVertexAttribPointer(2, TEXTURE_ELEMENT_COUNT, GL11.GL_FLOAT, false, STRIDE, TEXTURE_OFFSET);
 
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-		// Deselect (bind to 0) the VAO
-		glBindVertexArray(0);
 
 		// Create a new VBO for the indices and select it (bind) - INDICES
 		int eboId = glGenBuffers();
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, eboId);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indicesBuffer, GL_STATIC_DRAW);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-
 
 		//Create Shaders
 		ShaderHandler defaultShaderHandler = new ShaderHandler();
@@ -117,7 +110,7 @@ public class GameClientRenderer extends Renderer {
 
 			// Bind the texture
 			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_2D, 0);
+			glBindTexture(GL_TEXTURE_2D, kyleID);
 
 			// Bind to the VAO that has all the information about the vertices
 			glBindVertexArray(vaoId);
@@ -136,9 +129,6 @@ public class GameClientRenderer extends Renderer {
 			glDisableVertexAttribArray(0);
 			glDisableVertexAttribArray(1);
 			glDisableVertexAttribArray(2);
-			glBindVertexArray(0);
-
-			glUseProgram(0);
 
 			//Send the frame
 			glfwSwapBuffers(getWindow());
