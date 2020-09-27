@@ -30,32 +30,35 @@ public class TexturedVertex {
 	//The total number of bytes this vertex requires
 	public static final int STRIDE = POSITION_BYTES + COLOR_BYTES + TEXTURE_BYTES;
 
-	public void setXYZW(float x, float y, float z, float w) {
+	public TexturedVertex setXYZW(float x, float y, float z, float w) {
 		this.xyzw = new float[] {x, y, z, w};
+		return this;
 	}
 
-	public void setXYZ(float x, float y, float z) {
-		setXYZW(x, y, z, 1.0f);
+	public TexturedVertex setXYZ(float x, float y, float z) {
+		return setXYZW(x, y, z, 1.0f);
 	}
 
-	public void setRGBA(float r, float g, float b, float a) {
+	public TexturedVertex setRGBA(float r, float g, float b, float a) {
 		rgba = new float[] {r, g, b, a};
+		return this;
 	}
 
-	public void setRGBA(int r, int g, int b, float a) {
-		setRGBA((float)r/255, (float)g/255, (float)b/255, a);
+	public TexturedVertex setRGBA(int r, int g, int b, float a) {
+		return setRGBA((float)r/255, (float)g/255, (float)b/255, a);
 	}
 
-	public void setRGB(int r, int g, int b) {
-		setRGBA((float)r/255, (float)g/255, (float)b/255, 1.0f);
+	public TexturedVertex setRGB(int r, int g, int b) {
+		return setRGBA((float)r/255, (float)g/255, (float)b/255, 1.0f);
 	}
 
-	public void setRGB(float r, float g, float b) {
-		setRGBA(r, g, b, 1.0f);
+	public TexturedVertex setRGB(float r, float g, float b) {
+		return setRGBA(r, g, b, 1.0f);
 	}
 
-	public void setUv(float u, float v) {
+	public TexturedVertex setUv(float u, float v) {
 		uv = new float[] {u, v};
+		return this;
 	}
 
 	public float[] getElements() {
