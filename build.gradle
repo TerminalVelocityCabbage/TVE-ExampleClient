@@ -21,6 +21,21 @@ buildscript {
 	}
 }
 
+switch (org.gradle.internal.os.OperatingSystem.current()) {
+	case org.gradle.internal.os.OperatingSystem.LINUX:
+		def osArch = System.getProperty("os.arch")
+		project.ext.lwjglNatives = osArch.startsWith("arm") || osArch.startsWith("aarch64")
+				? "natives-linux-${osArch.contains("64") || osArch.startsWith("armv8") ? "arm64" : "arm32"}"
+				: "natives-linux"
+		break
+	case org.gradle.internal.os.OperatingSystem.MAC_OS:
+		project.ext.lwjglNatives = "natives-macos"
+		break
+	case org.gradle.internal.os.OperatingSystem.WINDOWS:
+		project.ext.lwjglNatives = System.getProperty("os.arch").contains("64") ? "natives-windows" : "natives-windows-x86"
+		break
+}
+
 repositories {
 	mavenCentral()
 	jcenter()
@@ -28,7 +43,6 @@ repositories {
 
 project.ext.lwjglVersion = "3.2.3"
 project.ext.jomlVersion = "1.9.22"
-project.ext.lwjglNatives = "natives-windows"
 
 dependencies {
 	implementation platform("org.lwjgl:lwjgl-bom:$lwjglVersion")

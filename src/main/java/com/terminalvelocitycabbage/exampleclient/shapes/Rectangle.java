@@ -1,6 +1,5 @@
 package com.terminalvelocitycabbage.exampleclient.shapes;
 
-import com.terminalvelocitycabbage.engine.debug.Log;
 import com.terminalvelocitycabbage.engine.resources.Identifier;
 import com.terminalvelocitycabbage.engine.resources.Resource;
 import com.terminalvelocitycabbage.engine.util.Color;
@@ -12,7 +11,6 @@ import org.joml.Vector4f;
 import org.joml.Vector4i;
 import org.lwjgl.BufferUtils;
 
-import java.awt.image.BufferedImage;
 import java.util.Optional;
 
 import static org.lwjgl.opengl.GL11.GL_FLOAT;
@@ -20,7 +18,6 @@ import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
 import static org.lwjgl.opengl.GL20.glVertexAttribPointer;
 import static org.lwjgl.opengl.GL30.glBindVertexArray;
-import static org.lwjgl.opengl.GL30.glGenerateMipmap;
 
 public class Rectangle {
 
@@ -104,6 +101,7 @@ public class Rectangle {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         //Load image, create texture, and generate mipmaps
         Optional<Resource> resource = GameResourceHandler.ASSETS_ROOT_RESOURCE_MANAGER.getResource(new Identifier(GameClient.ID, "textures/kyle.png"));
+        /*
         Optional<BufferedImage> image = resource.flatMap(Resource::getImage);
         if (image.isPresent()) {
             BufferedImage bufferedImage = image.get();
@@ -112,6 +110,8 @@ public class Rectangle {
         } else {
             Log.error("Could not bind texture: ");
         }
+
+         */
     }
 
     public void draw(int vao) {
