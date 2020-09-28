@@ -39,6 +39,10 @@ public class TexturedVertex {
 		return setXYZW(x, y, z, 1.0f);
 	}
 
+	public TexturedVertex addXYZW(float x, float y, float z, float w) {
+		return setXYZW(xyzw[0] + x, xyzw[1] + y, xyzw[2] + z, xyzw[3] + z);
+	}
+
 	public TexturedVertex setRGBA(float r, float g, float b, float a) {
 		rgba = new float[] {r, g, b, a};
 		return this;
@@ -59,6 +63,18 @@ public class TexturedVertex {
 	public TexturedVertex setUv(float u, float v) {
 		uv = new float[] {u, v};
 		return this;
+	}
+
+	public float[] getXYZW() {
+		return xyzw;
+	}
+
+	public float[] getRGBA() {
+		return rgba;
+	}
+
+	public float[] getUV() {
+		return uv;
 	}
 
 	public float[] getElements() {

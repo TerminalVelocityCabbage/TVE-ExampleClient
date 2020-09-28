@@ -8,6 +8,7 @@ import com.terminalvelocitycabbage.terminalvelocityrenderer.Renderer;
 import org.lwjgl.opengl.GL;
 
 import static com.terminalvelocitycabbage.exampleclient.GameResourceHandler.ASSETS_ROOT_RESOURCE_MANAGER;
+import static com.terminalvelocitycabbage.exampleclient.shapes.TexturedRectangle.*;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL20.*;
 
@@ -50,7 +51,26 @@ public class GameClientRenderer extends Renderer {
 			//Init shader
 			defaultShaderHandler.use();
 
-			//Draw the rectangle
+			//Randomize rectangle positions
+			// Define offset
+			float offsetX = (float) (Math.cos(Math.PI * glfwGetTime()) * 0.1);
+			float offsetY = (float) (Math.sin(Math.PI * glfwGetTime()) * 0.1);
+			//Add the offsets to each vertex
+			rectangle.getVertex(TOP_LEFT).addXYZW(offsetX, offsetY, 0f, 0f);
+			rectangle.getVertex(TOP_RIGHT).addXYZW(-offsetX, -offsetY, 0f, 0f);
+			rectangle.getVertex(BOTTOM_LEFT).addXYZW(offsetX, offsetY, 0f, 0f);
+			rectangle.getVertex(BOTTOM_RIGHT).addXYZW(-offsetX, -offsetY, 0f, 0f);
+
+			//Push the changes to openGL
+			rectangle.update();
+
+			//Reset the positions so it doesnt run away BUT dont push them to openGL, just the rectangle object
+			rectangle.getVertex(TOP_LEFT).addXYZW(-offsetX, -offsetY, 0f, 0f);
+			rectangle.getVertex(TOP_RIGHT).addXYZW(offsetX, offsetY, 0f, 0f);
+			rectangle.getVertex(BOTTOM_LEFT).addXYZW(-offsetX, -offsetY, 0f, 0f);
+			rectangle.getVertex(BOTTOM_RIGHT).addXYZW(offsetX, offsetY, 0f, 0f);
+
+			//Draw whatever changes were pushed
 			rectangle.draw();
 
 			//Send the frame

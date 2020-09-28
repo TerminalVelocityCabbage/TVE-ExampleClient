@@ -15,7 +15,13 @@ import static org.lwjgl.opengl.GL30.*;
 
 public class TexturedRectangle extends ShapeTextured {
 
+	public static final int TOP_LEFT = 0;
+	public static final int BOTTOM_LEFT = 1;
+	public static final int BOTTOM_RIGHT = 2;
+	public static final int TOP_RIGHT = 3;
+
 	TexturedVertex[] vertices = new TexturedVertex[4];
+	public static final int RECTANGLE_SIZE = 4;
 	public static final byte[] RECTANGLE_INDEX_ORDER = { 0, 1, 2, 2, 3, 0 };
 	public static final int INDEX_LENGTH = RECTANGLE_INDEX_ORDER.length;
 
@@ -26,10 +32,10 @@ public class TexturedRectangle extends ShapeTextured {
 	private int textureID;
 
 	public TexturedRectangle(TexturedVertex topLeft, TexturedVertex bottomLeft, TexturedVertex bottomRight, TexturedVertex topRight, Identifier textureID) {
-		vertices[0] = topLeft;
-		vertices[1] = bottomLeft;
-		vertices[2] = bottomRight;
-		vertices[3] = topRight;
+		vertices[TOP_LEFT] = topLeft;
+		vertices[BOTTOM_LEFT] = bottomLeft;
+		vertices[BOTTOM_RIGHT] = bottomRight;
+		vertices[TOP_RIGHT] = topRight;
 	}
 
 	public void bind() {
@@ -87,7 +93,26 @@ public class TexturedRectangle extends ShapeTextured {
 		glDeleteTextures(textureID);
 	}
 
-	private FloatBuffer getCombinedVertices() {
+	public void update() {
+		// Put the new data in a ByteBuffer (in the view of a FloatBuffer)
+		FloatBuffer vertexFloatBuffer = getCombinedVertices();
+		for (int i = 0; i < RECTANGLE_SIZE; i++) {
+			vertexFloatBuffer.rewind();
+			vertexFloatBuffer.put(vertices[i].getElements());
+			vertexFloatBuffer.flip();
+			glBufferSubData(GL_ARRAY_BUFFER, i * STRIDE, vertexFloatBuffer);
+		}
+	}
+
+	public TexturedVertex[] getVertices() {
+		return vertices;
+	}
+
+	public TexturedVertex getVertex(int index) {
+		return vertices[index];
+	}
+
+	public FloatBuffer getCombinedVertices() {
 		FloatBuffer verticesBuffer = BufferUtils.createFloatBuffer(vertices.length * TexturedVertex.ELEMENT_COUNT);
 		for (TexturedVertex vertex : vertices) {
 			verticesBuffer.put(vertex.getElements());
