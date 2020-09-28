@@ -1,7 +1,7 @@
 package com.terminalvelocitycabbage.exampleclient;
 
-import com.terminalvelocitycabbage.engine.resources.Identifier;
-import com.terminalvelocitycabbage.engine.shader.ShaderHandler;
+import com.terminalvelocitycabbage.engine.client.resources.Identifier;
+import com.terminalvelocitycabbage.engine.client.shader.ShaderHandler;
 import com.terminalvelocitycabbage.exampleclient.shapes.TexturedRectangle;
 import com.terminalvelocitycabbage.exampleclient.shapes.TexturedVertex;
 import com.terminalvelocitycabbage.engine.client.renderer.Renderer;

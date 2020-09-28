@@ -1,7 +1,7 @@
 package com.terminalvelocitycabbage.exampleclient;
 
-import com.terminalvelocitycabbage.engine.resources.ClassLoaderResourceManager;
-import com.terminalvelocitycabbage.engine.resources.ResourceManager;
+import com.terminalvelocitycabbage.engine.client.resources.ClassLoaderResourceManager;
+import com.terminalvelocitycabbage.engine.client.resources.ResourceManager;
 
 public class GameResourceHandler {
 

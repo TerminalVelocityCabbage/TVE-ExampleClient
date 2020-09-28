@@ -1,8 +1,8 @@
 package com.terminalvelocitycabbage.exampleclient.shapes;
 
-import com.terminalvelocitycabbage.engine.resources.Identifier;
-import com.terminalvelocitycabbage.engine.resources.Resource;
-import com.terminalvelocitycabbage.engine.util.PNGDecoder;
+import com.terminalvelocitycabbage.engine.client.resources.Identifier;
+import com.terminalvelocitycabbage.engine.client.resources.Resource;
+import com.terminalvelocitycabbage.engine.client.util.PNGDecoder;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,7 +14,7 @@ import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 import static org.lwjgl.opengl.GL30.glGenerateMipmap;
 
-public class ShapeTextured {
+public abstract class ShapeTextured {
 
 	protected static int loadPNGTexture(Identifier identifier, int textureUnit) {
 		ByteBuffer buf = null;

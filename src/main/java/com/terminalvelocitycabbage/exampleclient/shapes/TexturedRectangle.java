@@ -1,6 +1,6 @@
 package com.terminalvelocitycabbage.exampleclient.shapes;
 
-import com.terminalvelocitycabbage.engine.resources.Identifier;
+import com.terminalvelocitycabbage.engine.client.resources.Identifier;
 import com.terminalvelocitycabbage.exampleclient.GameClient;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
