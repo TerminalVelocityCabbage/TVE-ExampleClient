@@ -4,7 +4,7 @@ import com.terminalvelocitycabbage.engine.resources.Identifier;
 import com.terminalvelocitycabbage.engine.shader.ShaderHandler;
 import com.terminalvelocitycabbage.exampleclient.shapes.TexturedRectangle;
 import com.terminalvelocitycabbage.exampleclient.shapes.TexturedVertex;
-import com.terminalvelocitycabbage.terminalvelocityrenderer.Renderer;
+import com.terminalvelocitycabbage.engine.client.renderer.Renderer;
 import org.lwjgl.opengl.GL;
 
 import static com.terminalvelocitycabbage.exampleclient.GameResourceHandler.ASSETS_ROOT_RESOURCE_MANAGER;

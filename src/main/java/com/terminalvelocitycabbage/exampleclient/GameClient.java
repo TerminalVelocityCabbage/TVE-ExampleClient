@@ -1,7 +1,7 @@
 package com.terminalvelocitycabbage.exampleclient;
 
 import com.terminalvelocitycabbage.engine.client.ClientBase;
-import com.terminalvelocitycabbage.terminalvelocityrenderer.InputHandler;
+import com.terminalvelocitycabbage.engine.client.input.InputHandler;
 
 public class GameClient extends ClientBase {
 
