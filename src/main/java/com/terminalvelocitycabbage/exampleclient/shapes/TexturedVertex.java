@@ -40,7 +40,7 @@ public class TexturedVertex {
 	}
 
 	public TexturedVertex addXYZW(float x, float y, float z, float w) {
-		return setXYZW(xyzw[0] + x, xyzw[1] + y, xyzw[2] + z, xyzw[3] + z);
+		return setXYZW(xyzw[0] + x, xyzw[1] + y, xyzw[2] + z, xyzw[3] + w);
 	}
 
 	public TexturedVertex setRGBA(float r, float g, float b, float a) {

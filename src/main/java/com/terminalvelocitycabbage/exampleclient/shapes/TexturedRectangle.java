@@ -1,7 +1,6 @@
 package com.terminalvelocitycabbage.exampleclient.shapes;
 
 import com.terminalvelocitycabbage.engine.client.resources.Identifier;
-import com.terminalvelocitycabbage.exampleclient.GameClient;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 
@@ -29,13 +28,15 @@ public class TexturedRectangle extends ShapeTextured {
 	private int vboID;
 	private int eboID;
 
+	private Identifier texture;
 	private int textureID;
 
-	public TexturedRectangle(TexturedVertex topLeft, TexturedVertex bottomLeft, TexturedVertex bottomRight, TexturedVertex topRight, Identifier textureID) {
+	public TexturedRectangle(TexturedVertex topLeft, TexturedVertex bottomLeft, TexturedVertex bottomRight, TexturedVertex topRight, Identifier texture) {
 		vertices[TOP_LEFT] = topLeft;
 		vertices[BOTTOM_LEFT] = bottomLeft;
 		vertices[BOTTOM_RIGHT] = bottomRight;
 		vertices[TOP_RIGHT] = topRight;
+		this.texture = texture;
 	}
 
 	public void bind() {
@@ -59,7 +60,7 @@ public class TexturedRectangle extends ShapeTextured {
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, getIndicesBuffer(), GL_STATIC_DRAW);
 
 		//Load texture
-		textureID = loadPNGTexture(new Identifier(GameClient.ID, "textures/kyle.png"), GL_TEXTURE0);
+		textureID = loadPNGTexture(texture, GL_TEXTURE0);
 	}
 
 	public void draw() {

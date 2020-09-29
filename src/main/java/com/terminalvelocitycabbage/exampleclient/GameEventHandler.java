@@ -55,7 +55,7 @@ public class GameEventHandler {
 		Packet.builder().putByte(PacketTypes.CLIENT_VALIDATION).putString(GameClient.getInstance().getID()).queueAndFlush(event.getClient());
 
 		//Accept user-input for the chat server.
-		while (!GameClient.getInstance().disconnected()) {
+		while (!GameClient.getInstance().shouldDisconnect()) {
 			var message = scanner.nextLine();
 			Packet.builder().putByte(PacketTypes.CHAT).putString(message).queueAndFlush(event.getClient());
 		}
@@ -63,7 +63,7 @@ public class GameEventHandler {
 
 	@HandleEvent({ClientConnectionEvent.POST_DISCONNECT})
 	public void onDisconnect(ClientConnectionEvent event) {
-		if (!GameClient.getInstance().disconnected()) {
+		if (!GameClient.getInstance().shouldDisconnect()) {
 			try {
 				Log.warn("Lost connection to the server.");
 				GameClient.getInstance().reconnect(ADDRESS, PORT, 10, 3);

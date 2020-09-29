@@ -3,6 +3,7 @@ package com.terminalvelocitycabbage.exampleclient.shapes;
 import com.terminalvelocitycabbage.engine.client.resources.Identifier;
 import com.terminalvelocitycabbage.engine.client.resources.Resource;
 import com.terminalvelocitycabbage.engine.client.util.PNGDecoder;
+import com.terminalvelocitycabbage.engine.debug.Log;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,10 +24,13 @@ public abstract class ShapeTextured {
 
 		try {
 			// Open the PNG file as an InputStream
-			InputStream in = null;
+			InputStream in;
 			Optional<Resource> file = ASSETS_ROOT_RESOURCE_MANAGER.getResource(identifier);
 			if (file.isPresent()) {
 				in = file.get().openStream();
+			} else {
+				Log.error("Count not find resource " + identifier.toString());
+				return -1;
 			}
 			// Link the PNG decoder to this stream
 			PNGDecoder decoder = new PNGDecoder(in);
@@ -39,7 +43,6 @@ public abstract class ShapeTextured {
 			buf = ByteBuffer.allocateDirect(Float.BYTES * decoder.getWidth() * decoder.getHeight());
 			decoder.decode(buf, decoder.getWidth() * Float.BYTES, PNGDecoder.Format.RGBA);
 			buf.flip();
-
 			in.close();
 		} catch (IOException e) {
 			e.printStackTrace();

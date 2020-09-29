@@ -7,9 +7,9 @@ public class GameClient extends ClientBase {
 
 	public static final String ID = "testclient";
 
-	public static GameClient instance;
-	public static GameClientRenderer clientRenderer;
-	public static InputHandler inputHandler;
+	private static GameClient instance;
+	private static GameClientRenderer clientRenderer;
+	private static InputHandler inputHandler;
 
 	public static final String ADDRESS = "localhost";
 	public static final int PORT = 49056;
