@@ -10,13 +10,13 @@ import com.terminalvelocitycabbage.exampleclient.shapes.TexturedVertex;
 
 import static com.terminalvelocitycabbage.exampleclient.GameResourceHandler.ASSETS_ROOT_RESOURCE_MANAGER;
 import static com.terminalvelocitycabbage.exampleclient.shapes.TexturedRectangle.*;
-import static org.lwjgl.glfw.GLFW.*;
+import static org.lwjgl.glfw.GLFW.glfwWindowShouldClose;
 import static org.lwjgl.opengl.GL20.*;
 
 public class GameClientRenderer extends RendererBase {
 
 	public GameClientRenderer(int width, int height, String title) {
-		super(width, height, title);
+		super(width, height, title, new GameInputHandler());
 	}
 
 	@Override

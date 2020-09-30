@@ -1,7 +1,6 @@
 package com.terminalvelocitycabbage.exampleclient;
 
 import com.terminalvelocitycabbage.engine.client.ClientBase;
-import com.terminalvelocitycabbage.engine.client.input.InputHandler;
 
 public class GameClient extends ClientBase {
 
@@ -9,7 +8,6 @@ public class GameClient extends ClientBase {
 
 	private static GameClient instance;
 	private static GameClientRenderer clientRenderer;
-	private static InputHandler inputHandler;
 
 	public static final String ADDRESS = "localhost";
 	public static final int PORT = 49056;
@@ -17,7 +15,6 @@ public class GameClient extends ClientBase {
 	public GameClient() {
 		instance = this;
 		clientRenderer = new GameClientRenderer(800, 600, "TerminalVelocityEngine Test Game!");
-		inputHandler = new GameInputHandler();
 		addEventHandler(new GameEventHandler());
 		init();
 		start();
@@ -38,7 +35,7 @@ public class GameClient extends ClientBase {
 	@Override
 	public void init() {
 		//super.init();
-		clientRenderer.init(inputHandler);
+		clientRenderer.init();
 	}
 
 	@Override
