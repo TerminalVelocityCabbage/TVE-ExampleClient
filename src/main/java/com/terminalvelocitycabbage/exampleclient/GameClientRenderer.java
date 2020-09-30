@@ -37,7 +37,7 @@ public class GameClientRenderer extends Renderer {
 		ShaderHandler defaultShaderHandler = new ShaderHandler();
 		defaultShaderHandler.queueShader(GL_VERTEX_SHADER, ASSETS_ROOT_RESOURCE_MANAGER, new Identifier(GameClient.ID, "shaders/tri.vert"));
 		defaultShaderHandler.queueShader(GL_FRAGMENT_SHADER, ASSETS_ROOT_RESOURCE_MANAGER, new Identifier(GameClient.ID, "shaders/tri.frag"));
-		defaultShaderHandler.setupShaders();
+		defaultShaderHandler.bindAll();
 
 		//For wireframe mode
 		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
