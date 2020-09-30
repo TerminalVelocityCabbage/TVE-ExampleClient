@@ -1,14 +1,15 @@
 #version 330 core
-layout (location = 0) in vec4 aPos;
-layout (location = 1) in vec4 aColor;
-layout (location = 2) in vec2 aTexCoord;
+layout (location = 0) in vec4 inPosition;
+layout (location = 1) in vec4 inColor;
+layout (location = 2) in vec2 inTextureCoord;
 
-out vec4 ourColor;
-out vec2 TexCoord;
+out vec4 vertColor;
+out vec2 vertTextureCoord;
 
-void main()
-{
-   gl_Position = aPos;
-   ourColor = aColor;
-   TexCoord = aTexCoord;
+uniform mat4 projectionMatrix;
+
+void main() {
+   gl_Position = inPosition * projectionMatrix;
+   vertColor = inColor;
+   vertTextureCoord = inTextureCoord;
 }
