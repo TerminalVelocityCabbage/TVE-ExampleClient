@@ -3,7 +3,7 @@ package com.terminalvelocitycabbage.exampleclient;
 import com.terminalvelocitycabbage.engine.client.renderer.Camera;
 import com.terminalvelocitycabbage.engine.client.renderer.RendererBase;
 import com.terminalvelocitycabbage.engine.client.resources.Identifier;
-import com.terminalvelocitycabbage.engine.client.shader.ShaderHandler;
+import com.terminalvelocitycabbage.engine.client.shader.ShaderProgram;
 import com.terminalvelocitycabbage.exampleclient.shapes.TexturedRectangle;
 import com.terminalvelocitycabbage.exampleclient.shapes.TexturedVertex;
 
@@ -33,7 +33,7 @@ public class GameClientRenderer extends RendererBase {
 		rectangle.bind();
 
 		//Create Shaders
-		ShaderHandler defaultShaderHandler = new ShaderHandler();
+		ShaderProgram defaultShaderHandler = new ShaderProgram();
 		defaultShaderHandler.queueShader(GL_VERTEX_SHADER, ASSETS_ROOT_RESOURCE_MANAGER, new Identifier(GameClient.ID, "shaders/tri.vert"));
 		defaultShaderHandler.queueShader(GL_FRAGMENT_SHADER, ASSETS_ROOT_RESOURCE_MANAGER, new Identifier(GameClient.ID, "shaders/tri.frag"));
 		defaultShaderHandler.bindAll();
