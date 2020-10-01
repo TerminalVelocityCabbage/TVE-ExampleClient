@@ -4,7 +4,6 @@ import com.terminalvelocitycabbage.engine.client.renderer.Camera;
 import com.terminalvelocitycabbage.engine.client.renderer.RendererBase;
 import com.terminalvelocitycabbage.engine.client.resources.Identifier;
 import com.terminalvelocitycabbage.engine.client.shader.ShaderHandler;
-import com.terminalvelocitycabbage.engine.debug.Log;
 import com.terminalvelocitycabbage.exampleclient.shapes.TexturedRectangle;
 import com.terminalvelocitycabbage.exampleclient.shapes.TexturedVertex;
 
@@ -39,6 +38,9 @@ public class GameClientRenderer extends RendererBase {
 		defaultShaderHandler.queueShader(GL_FRAGMENT_SHADER, ASSETS_ROOT_RESOURCE_MANAGER, new Identifier(GameClient.ID, "shaders/tri.frag"));
 		defaultShaderHandler.bindAll();
 
+		//Init shader
+		defaultShaderHandler.use();
+
 		//Create uniform for projectionMatrix
 		defaultShaderHandler.createUniform("projectionMatrix");
 		defaultShaderHandler.setUniformMat4f("projectionMatrix", camera.getProjectionMatrix());
@@ -52,17 +54,12 @@ public class GameClientRenderer extends RendererBase {
 			glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-			//Init shader
-			defaultShaderHandler.use();
-
 			//Make rectangle go further away every frame
 			//Add the offsets to each vertex
 			rectangle.getVertex(TOP_LEFT).addXYZW(0f, 0f, -0.005f, 0f);
 			rectangle.getVertex(TOP_RIGHT).addXYZW(0f, 0f, -0.005f, 0f);
 			rectangle.getVertex(BOTTOM_LEFT).addXYZW(0f, 0f, -0.005f, 0f);
 			rectangle.getVertex(BOTTOM_RIGHT).addXYZW(0f, 0f, -0.005f, 0f);
-
-			Log.info("" + rectangle.getVertex(0).getXYZW()[2]);
 
 			//Push the changes to openGL
 			rectangle.update();
