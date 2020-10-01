@@ -9,7 +9,7 @@ out vec2 vertTextureCoord;
 uniform mat4 projectionMatrix;
 
 void main() {
-   gl_Position = inPosition * projectionMatrix;
+   gl_Position = projectionMatrix * inPosition;
    vertColor = inColor;
    vertTextureCoord = inTextureCoord;
 }
