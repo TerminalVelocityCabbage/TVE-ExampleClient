@@ -69,5 +69,4 @@ dependencies {
 	compile project('terminal_velocity_engine')
 
 	compile group: 'org.fusesource.jansi', name: 'jansi', version: '1.8'
-
 }
