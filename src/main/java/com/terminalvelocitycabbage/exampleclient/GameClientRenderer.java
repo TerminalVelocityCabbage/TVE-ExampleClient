@@ -53,7 +53,14 @@ public class GameClientRenderer extends RendererBase {
 
 		//Create uniform for projectionMatrix
 		defaultShaderHandler.createUniform("projectionMatrix");
+		//This will in the future have to be changed on command with in game fox sliders and things like that
+		//but for now since we dont have the implemented we can leave it like this
 		defaultShaderHandler.setUniformMat4f("projectionMatrix", camera.getProjectionMatrix());
+
+		//Create uniform for worldMatrix
+		//The worldMatrix is what tells Opengl that something is rotated or scaled from it's local state
+		defaultShaderHandler.createUniform("worldMatrix");
+		//The uniform has to be updated every frame so it will be done later
 
 		//For wireframe mode
 		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -68,9 +75,15 @@ public class GameClientRenderer extends RendererBase {
 			//Add the offsets to each vertex
 			gameObjects.get(0).move(0f, 0f, -0.005f);
 
+			//Rotate the object in a circle about the z axis
+			gameObjects.get(0).rotate(1f, 1f, 1f);
+
 			//Draw whatever changes were pushed
 			//render all Game Objects
 			for (GameObject gameObject : gameObjects) {
+				//Update the worldMatrix for the object with the new translations
+				defaultShaderHandler.setUniformMat4f("worldMatrix", gameObject.getWorldMatrix());
+				//Render the current object
 				gameObject.render();
 			}
 
