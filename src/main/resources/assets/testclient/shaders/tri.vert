@@ -7,10 +7,10 @@ out vec4 vertColor;
 out vec2 vertTextureCoord;
 
 uniform mat4 projectionMatrix;
-uniform mat4 worldMatrix;
+uniform mat4 modelViewMatrix;
 
 void main() {
-   gl_Position = projectionMatrix * worldMatrix * inPosition;
+   gl_Position = projectionMatrix * modelViewMatrix * inPosition;
    vertColor = inColor;
    vertTextureCoord = inTextureCoord;
 }

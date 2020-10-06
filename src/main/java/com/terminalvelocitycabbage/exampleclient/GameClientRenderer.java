@@ -7,6 +7,7 @@ import com.terminalvelocitycabbage.engine.client.renderer.shapes.TexturedVertex;
 import com.terminalvelocitycabbage.engine.client.resources.Identifier;
 import com.terminalvelocitycabbage.engine.client.shader.ShaderProgram;
 import com.terminalvelocitycabbage.engine.entity.GameObject;
+import org.joml.Matrix4f;
 
 import java.util.ArrayList;
 
@@ -57,10 +58,14 @@ public class GameClientRenderer extends RendererBase {
 		//but for now since we dont have the implemented we can leave it like this
 		defaultShaderHandler.setUniformMat4f("projectionMatrix", camera.getProjectionMatrix());
 
-		//Create uniform for worldMatrix
+		//Create uniform for modelViewMatrix
 		//The worldMatrix is what tells Opengl that something is rotated or scaled from it's local state
-		defaultShaderHandler.createUniform("worldMatrix");
+		//This includes the camera positions (it is the world Matrix and the view Matrix combined
+		defaultShaderHandler.createUniform("modelViewMatrix");
 		//The uniform has to be updated every frame so it will be done later
+
+		//Init viewMatrix var
+		Matrix4f viewMatrix;
 
 		//For wireframe mode
 		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -71,18 +76,19 @@ public class GameClientRenderer extends RendererBase {
 			glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-			//Make rectangle go further away every frame
-			//Add the offsets to each vertex
-			gameObjects.get(0).move(0f, 0f, -0.005f);
+			//Update the camera position
+			camera.rotate(0f, 0f, 0.5f);
+			camera.move(0f, 0f, 0.005f);
 
-			//Rotate the object in a circle about the z axis
-			gameObjects.get(0).rotate(1f, 1f, 1f);
+			//Update the view Matrix with the current camera position
+			//This has to happen before game items are updated
+			viewMatrix = camera.getViewMatrix();
 
 			//Draw whatever changes were pushed
 			//render all Game Objects
 			for (GameObject gameObject : gameObjects) {
 				//Update the worldMatrix for the object with the new translations
-				defaultShaderHandler.setUniformMat4f("worldMatrix", gameObject.getWorldMatrix());
+				defaultShaderHandler.setUniformMat4f("modelViewMatrix", gameObject.getModelViewMatrix(viewMatrix));
 				//Render the current object
 				gameObject.render();
 			}
