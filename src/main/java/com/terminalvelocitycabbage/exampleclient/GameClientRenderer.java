@@ -1,6 +1,6 @@
 package com.terminalvelocitycabbage.exampleclient;
 
-import com.terminalvelocitycabbage.engine.client.renderer.RendererBase;
+import com.terminalvelocitycabbage.engine.client.renderer.Renderer;
 import com.terminalvelocitycabbage.engine.client.renderer.components.Camera;
 import com.terminalvelocitycabbage.engine.client.renderer.shapes.TexturedRectangle;
 import com.terminalvelocitycabbage.engine.client.renderer.shapes.TexturedVertex;
@@ -8,6 +8,8 @@ import com.terminalvelocitycabbage.engine.client.resources.Identifier;
 import com.terminalvelocitycabbage.engine.client.shader.ShaderProgram;
 import com.terminalvelocitycabbage.engine.entity.GameObject;
 import org.joml.Matrix4f;
+import org.joml.Vector2f;
+import org.joml.Vector3f;
 
 import java.util.ArrayList;
 
@@ -15,7 +17,7 @@ import static com.terminalvelocitycabbage.exampleclient.GameResourceHandler.ASSE
 import static org.lwjgl.glfw.GLFW.glfwWindowShouldClose;
 import static org.lwjgl.opengl.GL20.*;
 
-public class GameClientRenderer extends RendererBase {
+public class GameClientRenderer extends Renderer {
 
 	private ArrayList<GameObject> gameObjects = new ArrayList<>();
 
@@ -67,6 +69,13 @@ public class GameClientRenderer extends RendererBase {
 		//Init viewMatrix var
 		Matrix4f viewMatrix;
 
+		//Store InputHandler
+		GameInputHandler inputHandler = (GameInputHandler) getWindow().getInputHandler();
+
+		//Store camera increment vectors
+		Vector3f moveVector = inputHandler.getCameraIncrementVector();
+		Vector2f rotationVector = inputHandler.getDisplayVector();
+
 		//For wireframe mode
 		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
@@ -77,8 +86,18 @@ public class GameClientRenderer extends RendererBase {
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 			//Update the camera position
-			camera.rotate(0f, 0f, 0.5f);
-			camera.move(0f, 0f, 0.005f);
+			camera.move(
+					moveVector.x * 0.05f,
+					moveVector.y * 0.05f,
+					moveVector.z * 0.05f
+			);
+			camera.rotate(
+					rotationVector.x * 0.4f,
+					rotationVector.y * 0.4f,
+					0
+			);
+			//This is a temp fix for the camera rotation sliding. I would like for this to happen automatically.
+			inputHandler.resetDisplayVector();
 
 			//Update the view Matrix with the current camera position
 			//This has to happen before game items are updated

@@ -14,7 +14,7 @@ public class GameClient extends ClientBase {
 
 	public GameClient() {
 		instance = this;
-		clientRenderer = new GameClientRenderer(800, 600, "TerminalVelocityEngine Test Game!");
+		clientRenderer = new GameClientRenderer(1900, 1000, "TerminalVelocityEngine Test Game!");
 		addEventHandler(new GameEventHandler());
 		init();
 		start();
