@@ -79,7 +79,7 @@ public class GameClientRenderer extends Renderer {
 		GameInputHandler inputHandler = (GameInputHandler) getWindow().getInputHandler();
 
 		//Store camera increment vectors
-		Vector3f moveVector = inputHandler.getCameraIncrementVector();
+		Vector3f moveVector = inputHandler.getCameraPositionMoveVector();
 		Vector2f rotationVector = inputHandler.getDisplayVector();
 
 		//For wireframe mode
@@ -102,7 +102,7 @@ public class GameClientRenderer extends Renderer {
 			camera.rotate(
 					rotationVector.x * 0.4f,
 					rotationVector.y * 0.4f,
-					0
+					inputHandler.getCameraRollVector() * 1.5f
 			);
 			//This is a temp fix for the camera rotation sliding. I would like for this to happen automatically.
 			inputHandler.resetDisplayVector();

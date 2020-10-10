@@ -18,7 +18,11 @@ public class GameInputHandler extends InputHandler {
 	public static KeyBind UP;
 	public static KeyBind DOWN;
 
-	Vector3f cameraIncrementVector = new Vector3f();
+	public static KeyBind ROT_LEFT;
+	public static KeyBind ROT_RIGHT;
+
+	Vector3f cameraMoveVector = new Vector3f();
+	int cameraRollVector = 0;
 
 	@Override
 	public void init(Window window) {
@@ -30,6 +34,8 @@ public class GameInputHandler extends InputHandler {
 		RIGHT = new KeyBind(GLFW_KEY_D);
 		UP = new KeyBind(GLFW_KEY_SPACE);
 		DOWN = new KeyBind(GLFW_KEY_LEFT_SHIFT);
+		ROT_LEFT = new KeyBind(GLFW_KEY_Q);
+		ROT_RIGHT = new KeyBind(GLFW_KEY_E);
 	}
 
 	@Override
@@ -42,28 +48,40 @@ public class GameInputHandler extends InputHandler {
 		}
 
 		//Process movement inputs
-		cameraIncrementVector.set(0, 0, 0);
+		cameraMoveVector.set(0, 0, 0);
 		if (keyBind.isKeyPressed(FORWARD)) {
-			cameraIncrementVector.z--;
+			cameraMoveVector.z--;
 		}
 		if (keyBind.isKeyPressed(BACKWARDS)) {
-			cameraIncrementVector.z++;
+			cameraMoveVector.z++;
 		}
 		if (keyBind.isKeyPressed(LEFT)) {
-			cameraIncrementVector.x--;
+			cameraMoveVector.x--;
 		}
 		if (keyBind.isKeyPressed(RIGHT)) {
-			cameraIncrementVector.x++;
+			cameraMoveVector.x++;
 		}
 		if (keyBind.isKeyPressed(DOWN)) {
-			cameraIncrementVector.y--;
+			cameraMoveVector.y--;
 		}
 		if (keyBind.isKeyPressed(UP)) {
-			cameraIncrementVector.y++;
+			cameraMoveVector.y++;
+		}
+
+		cameraRollVector = 0;
+		if (keyBind.isKeyPressed(ROT_LEFT)) {
+			cameraRollVector--;
+		}
+		if (keyBind.isKeyPressed(ROT_RIGHT)) {
+			cameraRollVector++;
 		}
 	}
 
-	public Vector3f getCameraIncrementVector() {
-		return cameraIncrementVector;
+	public Vector3f getCameraPositionMoveVector() {
+		return cameraMoveVector;
+	}
+
+	public int getCameraRollVector() {
+		return cameraRollVector;
 	}
 }
