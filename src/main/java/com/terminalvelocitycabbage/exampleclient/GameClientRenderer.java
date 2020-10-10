@@ -27,7 +27,7 @@ public class GameClientRenderer extends Renderer {
 
 	@Override
 	public void loop() {
-		Camera camera = new Camera((float)Math.toRadians(60.0f), 0.01f, 1000.0f, getWindow().width(), getWindow().height());
+		Camera camera = new Camera(60, 0.01f, 1000.0f);
 
 		//Create a rectangle with a texture
 		RectangleModel rectangleModel = new RectangleModel(new TexturedRectangle(
@@ -80,7 +80,7 @@ public class GameClientRenderer extends Renderer {
 		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 		// Run the rendering loop until the user has attempted to close the window
-		while (!glfwWindowShouldClose(getWindowID())) {
+		while (!glfwWindowShouldClose(getWindow().getID())) {
 			//Setup the frame for drawing
 			glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

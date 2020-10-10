@@ -4,7 +4,7 @@ import com.terminalvelocitycabbage.engine.client.renderer.model.Model;
 import com.terminalvelocitycabbage.engine.client.renderer.shapes.TexturedRectangle;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 
 /**
  * An example java model for demonstration purposes.
@@ -14,6 +14,6 @@ import java.util.Arrays;
 public class RectangleModel extends Model {
 
 	public RectangleModel(TexturedRectangle rectangle) {
-		super(new ArrayList<Part>(Arrays.asList(new Model.Part(rectangle, new ArrayList<>()))));
+		super(new ArrayList<>(Collections.singletonList(new Part(rectangle, new ArrayList<>()))));
 	}
 }

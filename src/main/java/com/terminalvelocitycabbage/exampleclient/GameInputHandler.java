@@ -9,20 +9,27 @@ import static org.lwjgl.glfw.GLFW.*;
 
 public class GameInputHandler extends InputHandler {
 
-	public static final KeyBind CLOSE = new KeyBind(getWindow(), GLFW_KEY_ESCAPE, KeyBind.ANY, GLFW_RELEASE, KeyBind.NONE);
+	public static KeyBind CLOSE;
 
-	public static final KeyBind FORWARD = new KeyBind(getWindow(), GLFW_KEY_W);
-	public static final KeyBind BACKWARDS = new KeyBind(getWindow(), GLFW_KEY_S);
-	public static final KeyBind LEFT = new KeyBind(getWindow(), GLFW_KEY_A);
-	public static final KeyBind RIGHT = new KeyBind(getWindow(), GLFW_KEY_D);
-	public static final KeyBind UP = new KeyBind(getWindow(), GLFW_KEY_SPACE);
-	public static final KeyBind DOWN = new KeyBind(getWindow(), GLFW_KEY_LEFT_SHIFT);
+	public static KeyBind FORWARD;
+	public static KeyBind BACKWARDS;
+	public static KeyBind LEFT;
+	public static KeyBind RIGHT;
+	public static KeyBind UP;
+	public static KeyBind DOWN;
 
 	Vector3f cameraIncrementVector = new Vector3f();
 
 	@Override
 	public void init(Window window) {
 		super.init(window);
+		CLOSE = new KeyBind(GLFW_KEY_ESCAPE, KeyBind.ANY, GLFW_RELEASE, KeyBind.NONE);
+		FORWARD = new KeyBind(GLFW_KEY_W);
+		BACKWARDS = new KeyBind(GLFW_KEY_S);
+		LEFT = new KeyBind(GLFW_KEY_A);
+		RIGHT = new KeyBind(GLFW_KEY_D);
+		UP = new KeyBind(GLFW_KEY_SPACE);
+		DOWN = new KeyBind(GLFW_KEY_LEFT_SHIFT);
 	}
 
 	@Override

@@ -1,7 +1,7 @@
 package com.terminalvelocitycabbage.exampleclient;
 
 import com.github.simplenet.packet.Packet;
-import com.terminalvelocitycabbage.engine.client.PingClient;
+import com.terminalvelocitycabbage.engine.client.networking.PingClient;
 import com.terminalvelocitycabbage.engine.debug.Log;
 import com.terminalvelocitycabbage.engine.events.HandleEvent;
 import com.terminalvelocitycabbage.engine.events.client.ClientConnectionEvent;
