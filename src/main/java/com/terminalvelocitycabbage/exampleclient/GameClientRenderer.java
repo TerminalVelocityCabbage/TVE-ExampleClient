@@ -2,8 +2,8 @@ package com.terminalvelocitycabbage.exampleclient;
 
 import com.terminalvelocitycabbage.engine.client.renderer.Renderer;
 import com.terminalvelocitycabbage.engine.client.renderer.components.Camera;
+import com.terminalvelocitycabbage.engine.client.renderer.model.TexturedVertex;
 import com.terminalvelocitycabbage.engine.client.renderer.shapes.TexturedRectangle;
-import com.terminalvelocitycabbage.engine.client.renderer.shapes.TexturedVertex;
 import com.terminalvelocitycabbage.engine.client.resources.Identifier;
 import com.terminalvelocitycabbage.engine.client.shader.ShaderProgram;
 import com.terminalvelocitycabbage.engine.entity.GameObject;
@@ -39,6 +39,20 @@ public class GameClientRenderer extends Renderer {
 				new Identifier(GameClient.ID, "textures/kyle.png")
 		));
 		gameObjects.add(GameObject.builder().setModel(rectangleModel).build());
+		/*
+		ColoredCuboidModel cuboidModel = new ColoredCuboidModel(new ColoredCuboid(
+				new ColoredVertex().setXYZ(-0.5f, 0.5f, 0f).setRGB(255, 0, 0),
+				new ColoredVertex().setXYZ(-0.5f, -0.5f, 0f).setRGB(0, 255, 0),
+				new ColoredVertex().setXYZ(0.5f, -0.5f, 0f).setRGB(0, 0, 255),
+				new ColoredVertex().setXYZ(0.5f, 0.5f, 0f).setRGB(255, 255, 255),
+				new ColoredVertex().setXYZ(-0.5f, 0.5f, -1f).setRGB(255, 0, 0),
+				new ColoredVertex().setXYZ(-0.5f, -0.5f, -1f).setRGB(0, 255, 0),
+				new ColoredVertex().setXYZ(0.5f, -0.5f, -1f).setRGB(0, 0, 255),
+				new ColoredVertex().setXYZ(0.5f, 0.5f, -1f).setRGB(255, 255, 255)
+		));
+		gameObjects.add(GameObject.builder().setModel(cuboidModel, false).build());
+
+		 */
 
 		//bind all Game Objects
 		for (GameObject gameObject : gameObjects) {
@@ -47,9 +61,12 @@ public class GameClientRenderer extends Renderer {
 
 		//Create Shaders
 		ShaderProgram defaultShaderHandler = new ShaderProgram();
-		defaultShaderHandler.queueShader(GL_VERTEX_SHADER, ASSETS_ROOT_RESOURCE_MANAGER, new Identifier(GameClient.ID, "shaders/tri.vert"));
-		defaultShaderHandler.queueShader(GL_FRAGMENT_SHADER, ASSETS_ROOT_RESOURCE_MANAGER, new Identifier(GameClient.ID, "shaders/tri.frag"));
-		defaultShaderHandler.bindAll();
+		defaultShaderHandler.createShader("defaultVertex", GL_VERTEX_SHADER, ASSETS_ROOT_RESOURCE_MANAGER, new Identifier(GameClient.ID, "shaders/default.vert"));
+		defaultShaderHandler.createShader("texturedFragment", GL_FRAGMENT_SHADER, ASSETS_ROOT_RESOURCE_MANAGER, new Identifier(GameClient.ID, "shaders/textured.frag"));
+		//TODO defaultShaderHandler.createShader("coloredFragment", GL_FRAGMENT_SHADER, ASSETS_ROOT_RESOURCE_MANAGER, new Identifier(GameClient.ID, "shaders/colored.frag"));
+		defaultShaderHandler.enableShader("defaultVertex");
+		defaultShaderHandler.enableShader("texturedFragment");
+		defaultShaderHandler.link();
 
 		//Init shader
 		defaultShaderHandler.use();
@@ -83,6 +100,8 @@ public class GameClientRenderer extends Renderer {
 		while (!glfwWindowShouldClose(getWindow().getID())) {
 			//Setup the frame for drawing
 			glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+			glEnable(GL_DEPTH_TEST);
+			glDepthFunc(GL_LEQUAL);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 			//Update the camera position
@@ -104,13 +123,26 @@ public class GameClientRenderer extends Renderer {
 			viewMatrix = camera.getViewMatrix();
 
 			//Draw whatever changes were pushed
-			//render all Game Objects
+			//render all textured Game Objects
+			//TODO defaultShaderHandler.enableShader("texturedFragment");
 			for (GameObject gameObject : gameObjects) {
 				//Update the worldMatrix for the object with the new translations
 				defaultShaderHandler.setUniformMat4f("modelViewMatrix", gameObject.getModelViewMatrix(viewMatrix));
 				//Render the current object
 				gameObject.render();
 			}
+			/*
+			defaultShaderHandler.disableShader("texturedFragment");
+			defaultShaderHandler.enableShader("coloredFragment");
+			for (GameObject gameObject : gameObjects) {
+				//Update the worldMatrix for the object with the new translations
+				defaultShaderHandler.setUniformMat4f("modelViewMatrix", gameObject.getModelViewMatrix(viewMatrix));
+				//Render the current object
+				gameObject.render();
+			}
+
+			 */
+
 
 			//Send the frame
 			push();
