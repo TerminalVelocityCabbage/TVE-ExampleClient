@@ -4,10 +4,14 @@ import com.terminalvelocitycabbage.engine.client.renderer.Renderer;
 import com.terminalvelocitycabbage.engine.client.renderer.components.Camera;
 import com.terminalvelocitycabbage.engine.client.renderer.model.Vertex;
 import com.terminalvelocitycabbage.engine.client.renderer.shapes.ColoredCuboid;
+import com.terminalvelocitycabbage.engine.client.renderer.shapes.TexturedCuboid;
 import com.terminalvelocitycabbage.engine.client.renderer.shapes.TexturedRectangle;
 import com.terminalvelocitycabbage.engine.client.resources.Identifier;
 import com.terminalvelocitycabbage.engine.client.shader.ShaderProgram;
 import com.terminalvelocitycabbage.engine.entity.GameObject;
+import com.terminalvelocitycabbage.exampleclient.models.ColoredCuboidModel;
+import com.terminalvelocitycabbage.exampleclient.models.RectangleModel;
+import com.terminalvelocitycabbage.exampleclient.models.TexturedCuboidModel;
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
@@ -53,6 +57,43 @@ public class GameClientRenderer extends Renderer {
 				new Vertex().setXYZ(0.5f, 0.5f, -1f).setRGB(255, 255, 255)
 		));
 		gameObjects.add(GameObject.builder().setModel(cuboidModel, false).build());
+
+		TexturedCuboidModel texturedCuboid = new TexturedCuboidModel(new TexturedCuboid(
+				new Vertex().setXYZ(-0.5f, 0.5f, 0.5f).setRGB(255, 0, 0).setUv(0, 0),
+				new Vertex().setXYZ(-0.5f, -0.5f, 0.5f).setRGB(0, 255, 0).setUv(0, 1),
+				new Vertex().setXYZ(0.5f, -0.5f, 0.5f).setRGB(0, 0, 255).setUv(1, 1),
+				new Vertex().setXYZ(0.5f, 0.5f, 0.5f).setRGB(255, 255, 255).setUv(1, 0),
+
+				new Vertex().setXYZ(0.5f, 0.5f, 0.5f).setRGB(255, 255, 255).setUv(0, 0),
+				new Vertex().setXYZ(0.5f, -0.5f, 0.5f).setRGB(0, 0, 255).setUv(0, 1),
+				new Vertex().setXYZ(0.5f, -0.5f, -0.5f).setRGB(255, 0, 0).setUv(1, 1),
+				new Vertex().setXYZ(0.5f, 0.5f, -0.5f).setRGB(0, 255, 0).setUv(1, 0),
+
+				new Vertex().setXYZ(0.5f, 0.5f, -0.5f).setRGB(0, 255, 0).setUv(0, 0),
+				new Vertex().setXYZ(0.5f, -0.5f, -0.5f).setRGB(255, 0, 0).setUv(0, 1),
+				new Vertex().setXYZ(-0.5f, -0.5f, -0.5f).setRGB(255, 255, 255).setUv(1, 1),
+				new Vertex().setXYZ(-0.5f, 0.5f, -0.5f).setRGB(0, 0, 255).setUv(1, 0),
+
+				new Vertex().setXYZ(-0.5f, 0.5f, -0.5f).setRGB(0, 0, 255).setUv(0, 0),
+				new Vertex().setXYZ(-0.5f, -0.5f, -0.5f).setRGB(255, 255, 255).setUv(0, 1),
+				new Vertex().setXYZ(-0.5f, -0.5f, 0.5f).setRGB(0, 255, 0).setUv(1, 1),
+				new Vertex().setXYZ(-0.5f, 0.5f, 0.5f).setRGB(255, 0, 0).setUv(1, 0),
+
+				new Vertex().setXYZ(-0.5f, 0.5f, -0.5f).setRGB(0, 0, 255).setUv(0, 0),
+				new Vertex().setXYZ(-0.5f, 0.5f, 0.5f).setRGB(255, 0, 0).setUv(0, 1),
+				new Vertex().setXYZ(0.5f, 0.5f, 0.5f).setRGB(255, 255, 255).setUv(1, 1),
+				new Vertex().setXYZ(0.5f, 0.5f, -0.5f).setRGB(0, 255, 0).setUv(1, 0),
+
+				new Vertex().setXYZ(0.5f, -0.5f, 0.5f).setRGB(0, 0, 255).setUv(0, 0),
+				new Vertex().setXYZ(0.5f, -0.5f, -0.5f).setRGB(255, 0, 0).setUv(0, 1),
+				new Vertex().setXYZ(-0.5f, -0.5f, -0.5f).setRGB(255, 255, 255).setUv(1, 1),
+				new Vertex().setXYZ(-0.5f, -0.5f, 0.5f).setRGB(0, 255, 0).setUv(1, 0),
+
+				ASSETS_ROOT_RESOURCE_MANAGER,
+				new Identifier(GameClient.ID, "textures/kyle.png")
+		));
+		texturedCuboid.move(0, -2, 0.5f);
+		gameObjects.add(GameObject.builder().setModel(texturedCuboid).build());
 
 		//bind all Game Objects
 		for (GameObject gameObject : gameObjects) {

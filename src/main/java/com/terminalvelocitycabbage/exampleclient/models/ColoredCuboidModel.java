@@ -1,4 +1,4 @@
-package com.terminalvelocitycabbage.exampleclient;
+package com.terminalvelocitycabbage.exampleclient.models;
 
 import com.terminalvelocitycabbage.engine.client.renderer.model.Model;
 import com.terminalvelocitycabbage.engine.client.renderer.shapes.ColoredCuboid;
