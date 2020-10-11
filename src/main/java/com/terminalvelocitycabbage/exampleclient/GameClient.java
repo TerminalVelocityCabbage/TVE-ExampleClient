@@ -1,6 +1,11 @@
 package com.terminalvelocitycabbage.exampleclient;
 
 import com.terminalvelocitycabbage.engine.client.ClientBase;
+import com.terminalvelocitycabbage.engine.client.resources.Identifier;
+import com.terminalvelocitycabbage.engine.debug.Log;
+import com.terminalvelocitycabbage.exampleclient.models.loader.DCMModel;
+
+import static com.terminalvelocitycabbage.exampleclient.GameResourceHandler.ASSETS_ROOT_RESOURCE_MANAGER;
 
 public class GameClient extends ClientBase {
 
@@ -38,7 +43,8 @@ public class GameClient extends ClientBase {
 		clientRenderer.init();
 
 		//TODO figure out why this doesn't work
-		//ModelLoaderDCM.load(ASSETS_ROOT_RESOURCE_MANAGER, new Identifier(ID, "model/testmodel.dcm"));
+		DCMModel model = DCMModel.loadDCMModel(ASSETS_ROOT_RESOURCE_MANAGER, new Identifier(ID, "model/testmodel.dcm"));
+		Log.info(model.toString());
 	}
 
 	@Override
