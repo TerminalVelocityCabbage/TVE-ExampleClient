@@ -36,6 +36,9 @@ public class GameClient extends ClientBase {
 	public void init() {
 		//super.init();
 		clientRenderer.init();
+
+		//TODO figure out why this doesn't work
+		//ModelLoaderDCM.load(ASSETS_ROOT_RESOURCE_MANAGER, new Identifier(ID, "model/testmodel.dcm"));
 	}
 
 	@Override
