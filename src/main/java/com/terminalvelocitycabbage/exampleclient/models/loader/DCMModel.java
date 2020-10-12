@@ -29,8 +29,8 @@ public class DCMModel {
 				DataInputStream data = optData.get();
 				model.version = data.readFloat();
 				model.author = data.readUTF();
-				model.textureWidth = data.readInt();
-				model.textureHeight = data.readInt();
+				model.textureWidth = (int) data.readFloat();
+				model.textureHeight = (int) data.readFloat();
 				model.children = readCubes(data, model);
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -43,15 +43,15 @@ public class DCMModel {
 
 	private static ArrayList<DCMCube> readCubes(DataInputStream data, DCMModel model) throws IOException {
 		ArrayList<DCMCube> cubes = new ArrayList<>();
-		int amount = data.readInt();
+		int amount = (int) data.readFloat();
 		for (int i = 0; i < amount; i++) {
 			cubes.add(new DCMCube(
 					data.readUTF(), //Name
-					new Vector3i(data.readInt(), data.readInt(), data.readInt()), //Dimensions
+					new Vector3i((int) data.readFloat(), (int) data.readFloat(), (int) data.readFloat()), //Dimensions
 					new Vector3f(data.readFloat(), data.readFloat(), data.readFloat()), //Rotation Point
 					new Vector3f(data.readFloat(), data.readFloat(), data.readFloat()), //Offset
 					new Vector3f(data.readFloat(), data.readFloat(), data.readFloat()), //Rotation
-					new Vector2i(data.readInt(), data.readInt()), //Texture Offset
+					new Vector2i((int) data.readFloat(), (int) data.readFloat()), //Texture Offset
 					data.readBoolean(), //Texture Mirrored
 					new Vector3f(data.readFloat(), data.readFloat(), data.readFloat()), //Cube Grow
 					readCubes(data, model), //Children
@@ -59,6 +59,17 @@ public class DCMModel {
 			));
 		}
 		return cubes;
+	}
+
+	@Override
+	public String toString() {
+		return "DCMModel{" +
+				"version=" + version +
+				", author='" + author + '\'' +
+				", textureWidth=" + textureWidth +
+				", textureHeight=" + textureHeight +
+				", children=" + children +
+				'}';
 	}
 
 	private static class DCMCube {
