@@ -1,5 +1,6 @@
 package com.terminalvelocitycabbage.exampleclient.models.loader;
 
+import com.terminalvelocitycabbage.engine.client.renderer.model.Model;
 import com.terminalvelocitycabbage.engine.client.resources.Identifier;
 import com.terminalvelocitycabbage.engine.client.resources.Resource;
 import com.terminalvelocitycabbage.engine.client.resources.ResourceManager;
@@ -25,7 +26,12 @@ public class DCMModel {
 		return children;
 	}
 
-	public static DCMModel loadDCMModel(ResourceManager resourceManager, Identifier identifier) {
+	public Model of(DCMModel dcModel) {
+
+		return null;
+	}
+
+	public static DCMModel load(ResourceManager resourceManager, Identifier identifier) {
 		Optional<DataInputStream> optData = resourceManager.getResource(identifier).flatMap(Resource::asDataStream);
 		DCMModel model = new DCMModel();
 		if (optData.isPresent()) {

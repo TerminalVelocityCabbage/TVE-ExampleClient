@@ -42,7 +42,7 @@ public class GameClient extends ClientBase {
 		//super.init();
 		clientRenderer.init();
 
-		DCMModel model = DCMModel.loadDCMModel(ASSETS_ROOT_RESOURCE_MANAGER, new Identifier(ID, "model/Gerald.dcm"));
+		DCMModel model = DCMModel.load(ASSETS_ROOT_RESOURCE_MANAGER, new Identifier(ID, "model/Gerald.dcm"));
 		Log.info(model.toString());
 	}
 
