@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Optional;
 
-public class DCMModel {
+public class DCModel {
 
 	protected float version;
 	protected String author;
@@ -26,49 +26,22 @@ public class DCMModel {
 		return children;
 	}
 
-	public Model of(DCMModel dcModel) {
-
+	public Model of(DCModel dcModel) {
 		return null;
 	}
 
-	public static DCMModel load(ResourceManager resourceManager, Identifier identifier) {
-		Optional<DataInputStream> optData = resourceManager.getResource(identifier).flatMap(Resource::asDataStream);
-		DCMModel model = new DCMModel();
-		if (optData.isPresent()) {
-			try {
-				DataInputStream data = optData.get();
-				model.version = data.readFloat();
-				model.author = data.readUTF();
-				model.textureWidth = (int) data.readFloat();
-				model.textureHeight = (int) data.readFloat();
-				model.children = readCubes(data, model);
-			} catch (IOException e) {
-				e.printStackTrace();
+	public DCMCube getCube(String name) {
+		DCMCube potentialCube;
+		for (DCMCube cube : children) {
+			if (cube.name.equals(name)) {
+				return cube;
 			}
-		} else {
-			Log.error("No resource found for model " + identifier.toString());
+			potentialCube = cube.getCube(name);
+			if (potentialCube != null && potentialCube.name.equals(name)) {
+				return potentialCube;
+			}
 		}
-		return model;
-	}
-
-	private static ArrayList<DCMCube> readCubes(DataInputStream data, DCMModel model) throws IOException {
-		ArrayList<DCMCube> cubes = new ArrayList<>();
-		int amount = (int) data.readFloat();
-		for (int i = 0; i < amount; i++) {
-			cubes.add(new DCMCube(
-					data.readUTF(), //Name
-					new Vector3i((int) data.readFloat(), (int) data.readFloat(), (int) data.readFloat()), //Dimensions
-					new Vector3f(data.readFloat(), data.readFloat(), data.readFloat()), //Rotation Point
-					new Vector3f(data.readFloat(), data.readFloat(), data.readFloat()), //Offset
-					new Vector3f(data.readFloat(), data.readFloat(), data.readFloat()), //Rotation
-					new Vector2i((int) data.readFloat(), (int) data.readFloat()), //Texture Offset
-					data.readBoolean(), //Texture Mirrored
-					new Vector3f(data.readFloat(), data.readFloat(), data.readFloat()), //Cube Grow
-					readCubes(data, model), //Children
-					model
-			));
-		}
-		return cubes;
+		throw new RuntimeException("Could not get cube by name " + name);
 	}
 
 	private String printCubes(DCMCube cube) {
@@ -98,7 +71,50 @@ public class DCMModel {
 				'}';
 	}
 
-	private static class DCMCube {
+	public static class Loader {
+
+		private static ArrayList<DCMCube> readCubes(DataInputStream data, DCModel model) throws IOException {
+			ArrayList<DCMCube> cubes = new ArrayList<>();
+			int amount = (int) data.readFloat();
+			for (int i = 0; i < amount; i++) {
+				cubes.add(new DCMCube(
+						data.readUTF(),
+						new Vector3i((int) data.readFloat(), (int) data.readFloat(), (int) data.readFloat()), //Dimensions
+						new Vector3f(data.readFloat(), data.readFloat(), data.readFloat()), //Rotation Point
+						new Vector3f(data.readFloat(), data.readFloat(), data.readFloat()), //Offset
+						new Vector3f(data.readFloat(), data.readFloat(), data.readFloat()), //Rotation
+						new Vector2i((int) data.readFloat(), (int) data.readFloat()), //Texture Offset
+						data.readBoolean(), //Texture Mirrored
+						new Vector3f(data.readFloat(), data.readFloat(), data.readFloat()), //Cube Grow
+						readCubes(data, model), //Children
+						model));
+				//Create the array for this child's location
+			}
+			return cubes;
+		}
+
+		public static DCModel load(ResourceManager resourceManager, Identifier identifier) {
+			Optional<DataInputStream> optData = resourceManager.getResource(identifier).flatMap(Resource::asDataStream);
+			DCModel model = new DCModel();
+			if (optData.isPresent()) {
+				try {
+					DataInputStream data = optData.get();
+					model.version = data.readFloat();
+					model.author = data.readUTF();
+					model.textureWidth = (int) data.readFloat();
+					model.textureHeight = (int) data.readFloat();
+					model.children = readCubes(data, model);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			} else {
+				Log.error("No resource found for model " + identifier.toString());
+			}
+			return model;
+		}
+	}
+
+	public static class DCMCube {
 
 		String name;
 		Vector3i dimensions;
@@ -109,11 +125,11 @@ public class DCMModel {
 		boolean textureMirrored;
 		Vector3f scale;
 		ArrayList<DCMCube> children;
-		DCMModel model;
+		DCModel model;
 
 		public DCMCube(String name, Vector3i dimensions, Vector3f rotationPoint, Vector3f offset, Vector3f rotation,
 					   Vector2i textureOffset, boolean textureMirrored, Vector3f scale, ArrayList<DCMCube> children,
-					   DCMModel model) {
+					   DCModel model) {
 			this.name = name;
 			this.dimensions = dimensions;
 			this.rotationPoint = rotationPoint;
@@ -124,6 +140,28 @@ public class DCMModel {
 			this.scale = scale;
 			this.children = children;
 			this.model = model;
+		}
+
+		private DCMCube getCube(String name) {
+			DCMCube potentialCube;
+			for (DCMCube cube : children) {
+				if (cube.name.equals(name)) {
+					return cube;
+				}
+				potentialCube = cube.getCube(name);
+				if (potentialCube != null && potentialCube.name.equals(name)) {
+					return potentialCube;
+				}
+			}
+			return null;
+		}
+
+		public String getName() {
+			return name;
+		}
+
+		public ArrayList<DCMCube> getChildren() {
+			return children;
 		}
 
 		@Override
