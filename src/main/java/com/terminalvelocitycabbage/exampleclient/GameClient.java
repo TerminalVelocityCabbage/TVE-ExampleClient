@@ -42,8 +42,7 @@ public class GameClient extends ClientBase {
 		//super.init();
 		clientRenderer.init();
 
-		//TODO figure out why this doesn't work
-		DCMModel model = DCMModel.loadDCMModel(ASSETS_ROOT_RESOURCE_MANAGER, new Identifier(ID, "model/testmodel.dcm"));
+		DCMModel model = DCMModel.loadDCMModel(ASSETS_ROOT_RESOURCE_MANAGER, new Identifier(ID, "model/Gerald.dcm"));
 		Log.info(model.toString());
 	}
 

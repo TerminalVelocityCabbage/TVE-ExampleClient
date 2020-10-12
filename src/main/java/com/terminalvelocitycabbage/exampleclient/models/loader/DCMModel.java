@@ -21,6 +21,10 @@ public class DCMModel {
 	protected int textureHeight;
 	protected ArrayList<DCMCube> children;
 
+	public ArrayList<DCMCube> getChildren() {
+		return children;
+	}
+
 	public static DCMModel loadDCMModel(ResourceManager resourceManager, Identifier identifier) {
 		Optional<DataInputStream> optData = resourceManager.getResource(identifier).flatMap(Resource::asDataStream);
 		DCMModel model = new DCMModel();
@@ -61,14 +65,30 @@ public class DCMModel {
 		return cubes;
 	}
 
+	private String printCubes(DCMCube cube) {
+		StringBuilder stringBuilder = new StringBuilder();
+		for (DCMCube cubeChild : cube.children) {
+			stringBuilder.append("\t");
+			stringBuilder.append(cubeChild.toString());
+			stringBuilder.append("\n\t").append(printCubes(cubeChild));
+			stringBuilder.append("\n");
+		}
+		return stringBuilder.toString();
+	}
+
 	@Override
 	public String toString() {
+		StringBuilder stringBuilder = new StringBuilder();
+		for (DCMCube cube : children) {
+			stringBuilder.append("\n").append(cube.toString());
+			stringBuilder.append(printCubes(cube));
+		}
 		return "DCMModel{" +
 				"version=" + version +
 				", author='" + author + '\'' +
 				", textureWidth=" + textureWidth +
 				", textureHeight=" + textureHeight +
-				", children=" + children +
+				", children=" + stringBuilder.toString() +
 				'}';
 	}
 
@@ -98,6 +118,20 @@ public class DCMModel {
 			this.scale = scale;
 			this.children = children;
 			this.model = model;
+		}
+
+		@Override
+		public String toString() {
+			return "DCMCube{" +
+					"name='" + name + '\'' +
+					", dimensions=" + dimensions +
+					", rotationPoint=" + rotationPoint +
+					", offset=" + offset +
+					", rotation=" + rotation +
+					", textureOffset=" + textureOffset +
+					", textureMirrored=" + textureMirrored +
+					", scale=" + scale +
+					'}';
 		}
 	}
 }
