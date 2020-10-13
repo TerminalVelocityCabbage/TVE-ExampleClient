@@ -2,6 +2,7 @@ package com.terminalvelocitycabbage.exampleclient.models;
 
 import com.terminalvelocitycabbage.engine.client.renderer.model.Model;
 import com.terminalvelocitycabbage.engine.client.renderer.shapes.TexturedRectangle;
+import org.joml.Vector3f;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -14,6 +15,6 @@ import java.util.Collections;
 public class RectangleModel extends Model {
 
 	public RectangleModel(TexturedRectangle rectangle) {
-		super(new ArrayList<>(Collections.singletonList(new Part(rectangle, new ArrayList<>()))));
+		super(new ArrayList<>(Collections.singletonList(new Part(rectangle, new Vector3f(0, 0, 0), new Vector3f(0, 0, 0), new Vector3f(0, 0, 0), new Vector3f(1, 1, 1), new ArrayList<>()))));
 	}
 }

@@ -58,35 +58,35 @@ public class GameClientRenderer extends Renderer {
 		//gameObjects.add(GameObject.builder().setModel(cuboidModel, false).build());
 
 		TexturedCuboidModel texturedCuboid = new TexturedCuboidModel(new TexturedCuboid(
-				new Vertex().setXYZ(-0.5f, 0.5f, 0.5f).setRGB(255, 0, 0).setUv(0, 0),
-				new Vertex().setXYZ(-0.5f, -0.5f, 0.5f).setRGB(0, 255, 0).setUv(0, 1),
-				new Vertex().setXYZ(0.5f, -0.5f, 0.5f).setRGB(0, 0, 255).setUv(1, 1),
-				new Vertex().setXYZ(0.5f, 0.5f, 0.5f).setRGB(255, 255, 255).setUv(1, 0),
+				new Vertex().setXYZ(0.0f, 1.0f, 1.0f).setRGB(255, 0, 0).setUv(0, 0),
+				new Vertex().setXYZ(0.0f, 0.0f, 1.0f).setRGB(0, 255, 0).setUv(0, 1),
+				new Vertex().setXYZ(1.0f, 0.0f, 1.0f).setRGB(0, 0, 255).setUv(1, 1),
+				new Vertex().setXYZ(1.0f, 1.0f, 1.0f).setRGB(255, 255, 255).setUv(1, 0),
 
-				new Vertex().setXYZ(0.5f, 0.5f, 0.5f).setRGB(255, 255, 255).setUv(0, 0),
-				new Vertex().setXYZ(0.5f, -0.5f, 0.5f).setRGB(0, 0, 255).setUv(0, 1),
-				new Vertex().setXYZ(0.5f, -0.5f, -0.5f).setRGB(255, 0, 0).setUv(1, 1),
-				new Vertex().setXYZ(0.5f, 0.5f, -0.5f).setRGB(0, 255, 0).setUv(1, 0),
+				new Vertex().setXYZ(1.0f, 1.0f, 1.0f).setRGB(255, 255, 255).setUv(0, 0),
+				new Vertex().setXYZ(1.0f, 0.0f, 1.0f).setRGB(0, 0, 255).setUv(0, 1),
+				new Vertex().setXYZ(1.0f, 0.0f, 0.0f).setRGB(255, 0, 0).setUv(1, 1),
+				new Vertex().setXYZ(1.0f, 1.0f, 0.0f).setRGB(0, 255, 0).setUv(1, 0),
 
-				new Vertex().setXYZ(0.5f, 0.5f, -0.5f).setRGB(0, 255, 0).setUv(0, 0),
-				new Vertex().setXYZ(0.5f, -0.5f, -0.5f).setRGB(255, 0, 0).setUv(0, 1),
-				new Vertex().setXYZ(-0.5f, -0.5f, -0.5f).setRGB(255, 255, 255).setUv(1, 1),
-				new Vertex().setXYZ(-0.5f, 0.5f, -0.5f).setRGB(0, 0, 255).setUv(1, 0),
+				new Vertex().setXYZ(1.0f, 1.0f, 0.0f).setRGB(0, 255, 0).setUv(0, 0),
+				new Vertex().setXYZ(1.0f, 0.0f, 0.0f).setRGB(255, 0, 0).setUv(0, 1),
+				new Vertex().setXYZ(0.0f, 0.0f, 0.0f).setRGB(255, 255, 255).setUv(1, 1),
+				new Vertex().setXYZ(0.0f, 1.0f, 0.0f).setRGB(0, 0, 255).setUv(1, 0),
 
-				new Vertex().setXYZ(-0.5f, 0.5f, -0.5f).setRGB(0, 0, 255).setUv(0, 0),
-				new Vertex().setXYZ(-0.5f, -0.5f, -0.5f).setRGB(255, 255, 255).setUv(0, 1),
-				new Vertex().setXYZ(-0.5f, -0.5f, 0.5f).setRGB(0, 255, 0).setUv(1, 1),
-				new Vertex().setXYZ(-0.5f, 0.5f, 0.5f).setRGB(255, 0, 0).setUv(1, 0),
+				new Vertex().setXYZ(0.0f, 1.0f, 0.0f).setRGB(0, 0, 255).setUv(0, 0),
+				new Vertex().setXYZ(0.0f, 0.0f, 0.0f).setRGB(255, 255, 255).setUv(0, 1),
+				new Vertex().setXYZ(0.0f, 0.0f, 1.0f).setRGB(0, 255, 0).setUv(1, 1),
+				new Vertex().setXYZ(0.0f, 1.0f, 1.0f).setRGB(255, 0, 0).setUv(1, 0),
 
-				new Vertex().setXYZ(-0.5f, 0.5f, -0.5f).setRGB(0, 0, 255).setUv(0, 0),
-				new Vertex().setXYZ(-0.5f, 0.5f, 0.5f).setRGB(255, 0, 0).setUv(0, 1),
-				new Vertex().setXYZ(0.5f, 0.5f, 0.5f).setRGB(255, 255, 255).setUv(1, 1),
-				new Vertex().setXYZ(0.5f, 0.5f, -0.5f).setRGB(0, 255, 0).setUv(1, 0),
+				new Vertex().setXYZ(0.0f, 1.0f, 0.0f).setRGB(0, 0, 255).setUv(0, 0),
+				new Vertex().setXYZ(0.0f, 1.0f, 1.0f).setRGB(255, 0, 0).setUv(0, 1),
+				new Vertex().setXYZ(1.0f, 1.0f, 1.0f).setRGB(255, 255, 255).setUv(1, 1),
+				new Vertex().setXYZ(1.0f, 1.0f, 0.0f).setRGB(0, 255, 0).setUv(1, 0),
 
-				new Vertex().setXYZ(0.5f, -0.5f, 0.5f).setRGB(0, 0, 255).setUv(0, 0),
-				new Vertex().setXYZ(0.5f, -0.5f, -0.5f).setRGB(255, 0, 0).setUv(0, 1),
-				new Vertex().setXYZ(-0.5f, -0.5f, -0.5f).setRGB(255, 255, 255).setUv(1, 1),
-				new Vertex().setXYZ(-0.5f, -0.5f, 0.5f).setRGB(0, 255, 0).setUv(1, 0),
+				new Vertex().setXYZ(1.0f, 0.0f, 1.0f).setRGB(0, 0, 255).setUv(0, 0),
+				new Vertex().setXYZ(1.0f, 0.0f, 0.0f).setRGB(255, 0, 0).setUv(0, 1),
+				new Vertex().setXYZ(0.0f, 0.0f, 0.0f).setRGB(255, 255, 255).setUv(1, 1),
+				new Vertex().setXYZ(0.0f, 0.0f, 1.0f).setRGB(0, 255, 0).setUv(1, 0),
 
 				ASSETS_ROOT_RESOURCE_MANAGER,
 				new Identifier(GameClient.ID, "textures/kyle.png")
@@ -156,20 +156,15 @@ public class GameClientRenderer extends Renderer {
 				if (gameObject.isTextured()) {
 					coloredShaderHandler.disable();
 					defaultShaderHandler.enable();
-					defaultShaderHandler.createUniform("projectionMatrix");
-					defaultShaderHandler.createUniform("modelViewMatrix");
-					gameObject.update();
-					defaultShaderHandler.setUniformMat4f("modelViewMatrix", gameObject.getModelViewMatrix(viewMatrix));
-					defaultShaderHandler.setUniformMat4f("projectionMatrix", camera.getProjectionMatrix());
 				} else {
 					defaultShaderHandler.disable();
 					coloredShaderHandler.enable();
-					coloredShaderHandler.createUniform("projectionMatrix");
-					coloredShaderHandler.createUniform("modelViewMatrix");
-					gameObject.update();
-					coloredShaderHandler.setUniformMat4f("modelViewMatrix", gameObject.getModelViewMatrix(viewMatrix));
-					coloredShaderHandler.setUniformMat4f("projectionMatrix", camera.getProjectionMatrix());
 				}
+				defaultShaderHandler.createUniform("projectionMatrix");
+				defaultShaderHandler.createUniform("modelViewMatrix");
+				gameObject.update();
+				defaultShaderHandler.setUniformMat4f("modelViewMatrix", gameObject.getModelViewMatrix(viewMatrix));
+				defaultShaderHandler.setUniformMat4f("projectionMatrix", camera.getProjectionMatrix());
 				gameObject.render();
 			}
 
