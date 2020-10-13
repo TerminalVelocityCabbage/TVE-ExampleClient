@@ -10,6 +10,6 @@ import java.util.Collections;
 public class TexturedCuboidModel extends Model {
 
 	public TexturedCuboidModel(TexturedCuboid cuboid) {
-		super(new ArrayList<>(Collections.singletonList(new Part(cuboid, new Vector3f(1, 0, 0), new Vector3f(0, 0, 0), new Vector3f(0, 0, 0), new Vector3f(1, 1, 1), new ArrayList<>()))));
+		super(new ArrayList<>(Collections.singletonList(new Part(cuboid, new Vector3f(0, 0, 0), new Vector3f(0, 0, 0), new Vector3f(0, 0, 0), new Vector3f(1, 1, 1), new ArrayList<>()))));
 	}
 }
