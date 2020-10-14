@@ -3,24 +3,16 @@ package com.terminalvelocitycabbage.exampleclient;
 import com.terminalvelocitycabbage.engine.client.renderer.Renderer;
 import com.terminalvelocitycabbage.engine.client.renderer.components.Camera;
 import com.terminalvelocitycabbage.engine.client.renderer.model.Model;
-import com.terminalvelocitycabbage.engine.client.renderer.model.Vertex;
-import com.terminalvelocitycabbage.engine.client.renderer.shapes.ColoredCuboid;
-import com.terminalvelocitycabbage.engine.client.renderer.shapes.TexturedCuboid;
-import com.terminalvelocitycabbage.engine.client.renderer.shapes.TexturedRectangle;
 import com.terminalvelocitycabbage.engine.client.resources.Identifier;
 import com.terminalvelocitycabbage.engine.client.shader.ShaderProgram;
 import com.terminalvelocitycabbage.engine.entity.GameObject;
-import com.terminalvelocitycabbage.exampleclient.models.ColoredCuboidModel;
 import com.terminalvelocitycabbage.exampleclient.models.DCModel;
-import com.terminalvelocitycabbage.exampleclient.models.RectangleModel;
-import com.terminalvelocitycabbage.exampleclient.models.TexturedCuboidModel;
 import com.terminalvelocitycabbage.exampleclient.models.loader.DCModelInfo;
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 
 import java.util.ArrayList;
-import java.util.Optional;
 
 import static com.terminalvelocitycabbage.exampleclient.GameResourceHandler.ASSETS_ROOT_RESOURCE_MANAGER;
 import static org.lwjgl.glfw.GLFW.glfwWindowShouldClose;
@@ -36,71 +28,16 @@ public class GameClientRenderer extends Renderer {
 
 	@Override
 	public void loop() {
+		//Create the controllable camera
 		Camera camera = new Camera(60, 0.01f, 1000.0f);
 
-		//Create a rectangle with a texture
-		RectangleModel rectangleModel = new RectangleModel(new TexturedRectangle(
-				new Vertex().setXYZ(-0.5f, 0.5f, 0f).setRGB(255, 0, 0).setUv(0, 0),
-				new Vertex().setXYZ(-0.5f, -0.5f, 0f).setRGB(0, 255, 0).setUv(0, 1),
-				new Vertex().setXYZ(0.5f, -0.5f, 0f).setRGB(0, 0, 255).setUv(1, 1),
-				new Vertex().setXYZ(0.5f, 0.5f, 0f).setRGB(255, 255, 255).setUv(1, 0),
-				ASSETS_ROOT_RESOURCE_MANAGER,
-				new Identifier(GameClient.ID, "textures/kyle.png")
-		));
-		//gameObjects.add(GameObject.builder().setModel(rectangleModel).build());
-
-		ColoredCuboidModel cuboidModel = new ColoredCuboidModel(new ColoredCuboid(
-				new Vertex().setXYZ(-0.5f, 0.5f, 0f).setRGB(255, 0, 0),
-				new Vertex().setXYZ(-0.5f, -0.5f, 0f).setRGB(0, 255, 0),
-				new Vertex().setXYZ(0.5f, -0.5f, 0f).setRGB(0, 0, 255),
-				new Vertex().setXYZ(0.5f, 0.5f, 0f).setRGB(255, 255, 255),
-				new Vertex().setXYZ(-0.5f, 0.5f, -1f).setRGB(255, 0, 0),
-				new Vertex().setXYZ(-0.5f, -0.5f, -1f).setRGB(0, 255, 0),
-				new Vertex().setXYZ(0.5f, -0.5f, -1f).setRGB(0, 0, 255),
-				new Vertex().setXYZ(0.5f, 0.5f, -1f).setRGB(255, 255, 255)
-		));
-		//gameObjects.add(GameObject.builder().setModel(cuboidModel, false).build());
-
-//		TexturedCuboidModel texturedCuboid = new TexturedCuboidModel(new TexturedCuboid(
-//				new Vertex().setXYZ(0.0f, 1.0f, 1.0f).setRGB(255, 0, 0).setUv(0, 0),
-//				new Vertex().setXYZ(0.0f, 0.0f, 1.0f).setRGB(0, 255, 0).setUv(0, 1),
-//				new Vertex().setXYZ(1.0f, 0.0f, 1.0f).setRGB(0, 0, 255).setUv(1, 1),
-//				new Vertex().setXYZ(1.0f, 1.0f, 1.0f).setRGB(255, 255, 255).setUv(1, 0),
-//
-//				new Vertex().setXYZ(1.0f, 1.0f, 1.0f).setRGB(255, 255, 255).setUv(0, 0),
-//				new Vertex().setXYZ(1.0f, 0.0f, 1.0f).setRGB(0, 0, 255).setUv(0, 1),
-//				new Vertex().setXYZ(1.0f, 0.0f, 0.0f).setRGB(255, 0, 0).setUv(1, 1),
-//				new Vertex().setXYZ(1.0f, 1.0f, 0.0f).setRGB(0, 255, 0).setUv(1, 0),
-//
-//				new Vertex().setXYZ(1.0f, 1.0f, 0.0f).setRGB(0, 255, 0).setUv(0, 0),
-//				new Vertex().setXYZ(1.0f, 0.0f, 0.0f).setRGB(255, 0, 0).setUv(0, 1),
-//				new Vertex().setXYZ(0.0f, 0.0f, 0.0f).setRGB(255, 255, 255).setUv(1, 1),
-//				new Vertex().setXYZ(0.0f, 1.0f, 0.0f).setRGB(0, 0, 255).setUv(1, 0),
-//
-//				new Vertex().setXYZ(0.0f, 1.0f, 0.0f).setRGB(0, 0, 255).setUv(0, 0),
-//				new Vertex().setXYZ(0.0f, 0.0f, 0.0f).setRGB(255, 255, 255).setUv(0, 1),
-//				new Vertex().setXYZ(0.0f, 0.0f, 1.0f).setRGB(0, 255, 0).setUv(1, 1),
-//				new Vertex().setXYZ(0.0f, 1.0f, 1.0f).setRGB(255, 0, 0).setUv(1, 0),
-//
-//				new Vertex().setXYZ(0.0f, 1.0f, 0.0f).setRGB(0, 0, 255).setUv(0, 0),
-//				new Vertex().setXYZ(0.0f, 1.0f, 1.0f).setRGB(255, 0, 0).setUv(0, 1),
-//				new Vertex().setXYZ(1.0f, 1.0f, 1.0f).setRGB(255, 255, 255).setUv(1, 1),
-//				new Vertex().setXYZ(1.0f, 1.0f, 0.0f).setRGB(0, 255, 0).setUv(1, 0),
-//
-//				new Vertex().setXYZ(1.0f, 0.0f, 1.0f).setRGB(0, 0, 255).setUv(0, 0),
-//				new Vertex().setXYZ(1.0f, 0.0f, 0.0f).setRGB(255, 0, 0).setUv(0, 1),
-//				new Vertex().setXYZ(0.0f, 0.0f, 0.0f).setRGB(255, 255, 255).setUv(1, 1),
-//				new Vertex().setXYZ(0.0f, 0.0f, 1.0f).setRGB(0, 255, 0).setUv(1, 0),
-//
-//				ASSETS_ROOT_RESOURCE_MANAGER,
-//				new Identifier(GameClient.ID, "textures/kyle.png")
-//		));
-
-		DCModelInfo model = DCModelInfo.Loader.load(ASSETS_ROOT_RESOURCE_MANAGER, new Identifier(GameClient.ID, "model/Gerald.dcm"));
-
-		DCModel m = new DCModel(model);
-		GameObject object = GameObject.builder().setModel(m).build();
-		Model.Part head = m.getPart("head").orElseThrow();
+		//Load a model to a Model object from dcm file
+		DCModel model = new DCModel(DCModelInfo.Loader.load(ASSETS_ROOT_RESOURCE_MANAGER, new Identifier(GameClient.ID, "model/Gerald.dcm")));
+		//Create a game object from the model loaded
+		GameObject object = GameObject.builder().setModel(model).build();
+		//Expose the head model part from the model so it can be animated in the game loop
+		Model.Part head = model.getPart("head").orElseThrow();
+		//Add the game object to the list of active objects
 		gameObjects.add(object);
 
 		//bind all Game Objects
@@ -154,7 +91,9 @@ public class GameClientRenderer extends Renderer {
 					inputHandler.getCameraRollVector() * 1.5f
 			);
 
+			//Animate the head
 			head.rotation.add(0, 1, 0);
+			//Tell the engine that the game object needs to be re-rendered
 			object.setDirty();
 
 			//This is a temp fix for the camera rotation sliding. I would like for this to happen automatically.
