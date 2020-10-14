@@ -177,5 +177,6 @@ public class GameClientRenderer extends Renderer {
 			gameObject.destroy();
 		}
 		defaultShaderHandler.delete();
+		coloredShaderHandler.delete();
 	}
 }
