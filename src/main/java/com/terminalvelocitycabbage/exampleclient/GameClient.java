@@ -3,7 +3,7 @@ package com.terminalvelocitycabbage.exampleclient;
 import com.terminalvelocitycabbage.engine.client.ClientBase;
 import com.terminalvelocitycabbage.engine.client.resources.Identifier;
 import com.terminalvelocitycabbage.engine.debug.Log;
-import com.terminalvelocitycabbage.exampleclient.models.loader.DCModel;
+import com.terminalvelocitycabbage.exampleclient.models.loader.DCModelInfo;
 
 import static com.terminalvelocitycabbage.exampleclient.GameResourceHandler.ASSETS_ROOT_RESOURCE_MANAGER;
 
@@ -42,7 +42,7 @@ public class GameClient extends ClientBase {
 		//super.init();
 		clientRenderer.init();
 
-		DCModel model = DCModel.Loader.load(ASSETS_ROOT_RESOURCE_MANAGER, new Identifier(ID, "model/Gerald.dcm"));
+		DCModelInfo model = DCModelInfo.Loader.load(ASSETS_ROOT_RESOURCE_MANAGER, new Identifier(ID, "model/Gerald.dcm"));
 		Log.warn(model.getCube("forearm_R").getName());
 		Log.info(model.toString());
 	}

@@ -2,6 +2,7 @@ package com.terminalvelocitycabbage.exampleclient;
 
 import com.terminalvelocitycabbage.engine.client.renderer.Renderer;
 import com.terminalvelocitycabbage.engine.client.renderer.components.Camera;
+import com.terminalvelocitycabbage.engine.client.renderer.model.Model;
 import com.terminalvelocitycabbage.engine.client.renderer.model.Vertex;
 import com.terminalvelocitycabbage.engine.client.renderer.shapes.ColoredCuboid;
 import com.terminalvelocitycabbage.engine.client.renderer.shapes.TexturedCuboid;
@@ -10,13 +11,16 @@ import com.terminalvelocitycabbage.engine.client.resources.Identifier;
 import com.terminalvelocitycabbage.engine.client.shader.ShaderProgram;
 import com.terminalvelocitycabbage.engine.entity.GameObject;
 import com.terminalvelocitycabbage.exampleclient.models.ColoredCuboidModel;
+import com.terminalvelocitycabbage.exampleclient.models.DCModel;
 import com.terminalvelocitycabbage.exampleclient.models.RectangleModel;
 import com.terminalvelocitycabbage.exampleclient.models.TexturedCuboidModel;
+import com.terminalvelocitycabbage.exampleclient.models.loader.DCModelInfo;
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
 import static com.terminalvelocitycabbage.exampleclient.GameResourceHandler.ASSETS_ROOT_RESOURCE_MANAGER;
 import static org.lwjgl.glfw.GLFW.glfwWindowShouldClose;
@@ -57,41 +61,47 @@ public class GameClientRenderer extends Renderer {
 		));
 		//gameObjects.add(GameObject.builder().setModel(cuboidModel, false).build());
 
-		TexturedCuboidModel texturedCuboid = new TexturedCuboidModel(new TexturedCuboid(
-				new Vertex().setXYZ(-0.5f, 0.5f, 0.5f).setRGB(255, 0, 0).setUv(0, 0),
-				new Vertex().setXYZ(-0.5f, -0.5f, 0.5f).setRGB(0, 255, 0).setUv(0, 1),
-				new Vertex().setXYZ(0.5f, -0.5f, 0.5f).setRGB(0, 0, 255).setUv(1, 1),
-				new Vertex().setXYZ(0.5f, 0.5f, 0.5f).setRGB(255, 255, 255).setUv(1, 0),
+//		TexturedCuboidModel texturedCuboid = new TexturedCuboidModel(new TexturedCuboid(
+//				new Vertex().setXYZ(0.0f, 1.0f, 1.0f).setRGB(255, 0, 0).setUv(0, 0),
+//				new Vertex().setXYZ(0.0f, 0.0f, 1.0f).setRGB(0, 255, 0).setUv(0, 1),
+//				new Vertex().setXYZ(1.0f, 0.0f, 1.0f).setRGB(0, 0, 255).setUv(1, 1),
+//				new Vertex().setXYZ(1.0f, 1.0f, 1.0f).setRGB(255, 255, 255).setUv(1, 0),
+//
+//				new Vertex().setXYZ(1.0f, 1.0f, 1.0f).setRGB(255, 255, 255).setUv(0, 0),
+//				new Vertex().setXYZ(1.0f, 0.0f, 1.0f).setRGB(0, 0, 255).setUv(0, 1),
+//				new Vertex().setXYZ(1.0f, 0.0f, 0.0f).setRGB(255, 0, 0).setUv(1, 1),
+//				new Vertex().setXYZ(1.0f, 1.0f, 0.0f).setRGB(0, 255, 0).setUv(1, 0),
+//
+//				new Vertex().setXYZ(1.0f, 1.0f, 0.0f).setRGB(0, 255, 0).setUv(0, 0),
+//				new Vertex().setXYZ(1.0f, 0.0f, 0.0f).setRGB(255, 0, 0).setUv(0, 1),
+//				new Vertex().setXYZ(0.0f, 0.0f, 0.0f).setRGB(255, 255, 255).setUv(1, 1),
+//				new Vertex().setXYZ(0.0f, 1.0f, 0.0f).setRGB(0, 0, 255).setUv(1, 0),
+//
+//				new Vertex().setXYZ(0.0f, 1.0f, 0.0f).setRGB(0, 0, 255).setUv(0, 0),
+//				new Vertex().setXYZ(0.0f, 0.0f, 0.0f).setRGB(255, 255, 255).setUv(0, 1),
+//				new Vertex().setXYZ(0.0f, 0.0f, 1.0f).setRGB(0, 255, 0).setUv(1, 1),
+//				new Vertex().setXYZ(0.0f, 1.0f, 1.0f).setRGB(255, 0, 0).setUv(1, 0),
+//
+//				new Vertex().setXYZ(0.0f, 1.0f, 0.0f).setRGB(0, 0, 255).setUv(0, 0),
+//				new Vertex().setXYZ(0.0f, 1.0f, 1.0f).setRGB(255, 0, 0).setUv(0, 1),
+//				new Vertex().setXYZ(1.0f, 1.0f, 1.0f).setRGB(255, 255, 255).setUv(1, 1),
+//				new Vertex().setXYZ(1.0f, 1.0f, 0.0f).setRGB(0, 255, 0).setUv(1, 0),
+//
+//				new Vertex().setXYZ(1.0f, 0.0f, 1.0f).setRGB(0, 0, 255).setUv(0, 0),
+//				new Vertex().setXYZ(1.0f, 0.0f, 0.0f).setRGB(255, 0, 0).setUv(0, 1),
+//				new Vertex().setXYZ(0.0f, 0.0f, 0.0f).setRGB(255, 255, 255).setUv(1, 1),
+//				new Vertex().setXYZ(0.0f, 0.0f, 1.0f).setRGB(0, 255, 0).setUv(1, 0),
+//
+//				ASSETS_ROOT_RESOURCE_MANAGER,
+//				new Identifier(GameClient.ID, "textures/kyle.png")
+//		));
 
-				new Vertex().setXYZ(0.5f, 0.5f, 0.5f).setRGB(255, 255, 255).setUv(0, 0),
-				new Vertex().setXYZ(0.5f, -0.5f, 0.5f).setRGB(0, 0, 255).setUv(0, 1),
-				new Vertex().setXYZ(0.5f, -0.5f, -0.5f).setRGB(255, 0, 0).setUv(1, 1),
-				new Vertex().setXYZ(0.5f, 0.5f, -0.5f).setRGB(0, 255, 0).setUv(1, 0),
+		DCModelInfo model = DCModelInfo.Loader.load(ASSETS_ROOT_RESOURCE_MANAGER, new Identifier(GameClient.ID, "model/Gerald.dcm"));
 
-				new Vertex().setXYZ(0.5f, 0.5f, -0.5f).setRGB(0, 255, 0).setUv(0, 0),
-				new Vertex().setXYZ(0.5f, -0.5f, -0.5f).setRGB(255, 0, 0).setUv(0, 1),
-				new Vertex().setXYZ(-0.5f, -0.5f, -0.5f).setRGB(255, 255, 255).setUv(1, 1),
-				new Vertex().setXYZ(-0.5f, 0.5f, -0.5f).setRGB(0, 0, 255).setUv(1, 0),
-
-				new Vertex().setXYZ(-0.5f, 0.5f, -0.5f).setRGB(0, 0, 255).setUv(0, 0),
-				new Vertex().setXYZ(-0.5f, -0.5f, -0.5f).setRGB(255, 255, 255).setUv(0, 1),
-				new Vertex().setXYZ(-0.5f, -0.5f, 0.5f).setRGB(0, 255, 0).setUv(1, 1),
-				new Vertex().setXYZ(-0.5f, 0.5f, 0.5f).setRGB(255, 0, 0).setUv(1, 0),
-
-				new Vertex().setXYZ(-0.5f, 0.5f, -0.5f).setRGB(0, 0, 255).setUv(0, 0),
-				new Vertex().setXYZ(-0.5f, 0.5f, 0.5f).setRGB(255, 0, 0).setUv(0, 1),
-				new Vertex().setXYZ(0.5f, 0.5f, 0.5f).setRGB(255, 255, 255).setUv(1, 1),
-				new Vertex().setXYZ(0.5f, 0.5f, -0.5f).setRGB(0, 255, 0).setUv(1, 0),
-
-				new Vertex().setXYZ(0.5f, -0.5f, 0.5f).setRGB(0, 0, 255).setUv(0, 0),
-				new Vertex().setXYZ(0.5f, -0.5f, -0.5f).setRGB(255, 0, 0).setUv(0, 1),
-				new Vertex().setXYZ(-0.5f, -0.5f, -0.5f).setRGB(255, 255, 255).setUv(1, 1),
-				new Vertex().setXYZ(-0.5f, -0.5f, 0.5f).setRGB(0, 255, 0).setUv(1, 0),
-
-				ASSETS_ROOT_RESOURCE_MANAGER,
-				new Identifier(GameClient.ID, "textures/kyle.png")
-		));
-		gameObjects.add(GameObject.builder().setModel(texturedCuboid).build());
+		DCModel m = new DCModel(model);
+		GameObject object = GameObject.builder().setModel(m).build();
+		Model.Part head = m.getPart("head").orElseThrow();
+		gameObjects.add(object);
 
 		//bind all Game Objects
 		for (GameObject gameObject : gameObjects) {
@@ -143,6 +153,10 @@ public class GameClientRenderer extends Renderer {
 					rotationVector.y * 0.4f,
 					inputHandler.getCameraRollVector() * 1.5f
 			);
+
+			head.rotation.add(0, 1, 0);
+			object.setDirty();
+
 			//This is a temp fix for the camera rotation sliding. I would like for this to happen automatically.
 			inputHandler.resetDisplayVector();
 
@@ -156,20 +170,15 @@ public class GameClientRenderer extends Renderer {
 				if (gameObject.isTextured()) {
 					coloredShaderHandler.disable();
 					defaultShaderHandler.enable();
-					defaultShaderHandler.createUniform("projectionMatrix");
-					defaultShaderHandler.createUniform("modelViewMatrix");
-					gameObject.update();
-					defaultShaderHandler.setUniformMat4f("modelViewMatrix", gameObject.getModelViewMatrix(viewMatrix));
-					defaultShaderHandler.setUniformMat4f("projectionMatrix", camera.getProjectionMatrix());
 				} else {
 					defaultShaderHandler.disable();
 					coloredShaderHandler.enable();
-					coloredShaderHandler.createUniform("projectionMatrix");
-					coloredShaderHandler.createUniform("modelViewMatrix");
-					gameObject.update();
-					coloredShaderHandler.setUniformMat4f("modelViewMatrix", gameObject.getModelViewMatrix(viewMatrix));
-					coloredShaderHandler.setUniformMat4f("projectionMatrix", camera.getProjectionMatrix());
 				}
+				defaultShaderHandler.createUniform("projectionMatrix");
+				defaultShaderHandler.createUniform("modelViewMatrix");
+				gameObject.update();
+				defaultShaderHandler.setUniformMat4f("modelViewMatrix", gameObject.getModelViewMatrix(viewMatrix));
+				defaultShaderHandler.setUniformMat4f("projectionMatrix", camera.getProjectionMatrix());
 				gameObject.render();
 			}
 
@@ -182,5 +191,6 @@ public class GameClientRenderer extends Renderer {
 			gameObject.destroy();
 		}
 		defaultShaderHandler.delete();
+		coloredShaderHandler.delete();
 	}
 }
