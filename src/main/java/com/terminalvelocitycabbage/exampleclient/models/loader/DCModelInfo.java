@@ -12,9 +12,10 @@ import org.joml.Vector3i;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
-public class DCModel {
+public class DCModelInfo {
 
 	protected float version;
 	protected String author;
@@ -22,13 +23,10 @@ public class DCModel {
 	protected int textureHeight;
 	protected ArrayList<DCMCube> children;
 
-	public ArrayList<DCMCube> getChildren() {
+	public List<DCMCube> getChildren() {
 		return children;
 	}
 
-	public Model of(DCModel dcModel) {
-		return null;
-	}
 
 	public DCMCube getCube(String name) {
 		DCMCube potentialCube;
@@ -73,7 +71,7 @@ public class DCModel {
 
 	public static class Loader {
 
-		private static ArrayList<DCMCube> readCubes(DataInputStream data, DCModel model) throws IOException {
+		private static ArrayList<DCMCube> readCubes(DataInputStream data, DCModelInfo model) throws IOException {
 			ArrayList<DCMCube> cubes = new ArrayList<>();
 			int amount = (int) data.readFloat();
 			for (int i = 0; i < amount; i++) {
@@ -93,9 +91,9 @@ public class DCModel {
 			return cubes;
 		}
 
-		public static DCModel load(ResourceManager resourceManager, Identifier identifier) {
+		public static DCModelInfo load(ResourceManager resourceManager, Identifier identifier) {
 			Optional<DataInputStream> optData = resourceManager.getResource(identifier).flatMap(Resource::asDataStream);
-			DCModel model = new DCModel();
+			DCModelInfo model = new DCModelInfo();
 			if (optData.isPresent()) {
 				try {
 					DataInputStream data = optData.get();
@@ -116,20 +114,20 @@ public class DCModel {
 
 	public static class DCMCube {
 
-		String name;
-		Vector3i dimensions;
-		Vector3f rotationPoint;
-		Vector3f offset;
-		Vector3f rotation;
-		Vector2i textureOffset;
-		boolean textureMirrored;
-		Vector3f scale;
-		ArrayList<DCMCube> children;
-		DCModel model;
+		public String name;
+		public Vector3i dimensions;
+		public Vector3f rotationPoint;
+		public Vector3f offset;
+		public Vector3f rotation;
+		public Vector2i textureOffset;
+		public boolean textureMirrored;
+		public Vector3f scale;
+		public ArrayList<DCMCube> children;
+		public DCModelInfo model;
 
 		public DCMCube(String name, Vector3i dimensions, Vector3f rotationPoint, Vector3f offset, Vector3f rotation,
 					   Vector2i textureOffset, boolean textureMirrored, Vector3f scale, ArrayList<DCMCube> children,
-					   DCModel model) {
+					   DCModelInfo model) {
 			this.name = name;
 			this.dimensions = dimensions;
 			this.rotationPoint = rotationPoint;
