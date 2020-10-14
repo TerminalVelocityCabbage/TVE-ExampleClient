@@ -1,6 +1,5 @@
 package com.terminalvelocitycabbage.exampleclient.models.loader;
 
-import com.terminalvelocitycabbage.engine.client.renderer.model.Model;
 import com.terminalvelocitycabbage.engine.client.resources.Identifier;
 import com.terminalvelocitycabbage.engine.client.resources.Resource;
 import com.terminalvelocitycabbage.engine.client.resources.ResourceManager;
@@ -11,9 +10,7 @@ import org.joml.Vector3i;
 
 import java.io.DataInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class DCModelInfo {
 
@@ -124,6 +121,7 @@ public class DCModelInfo {
 		public Vector3f scale;
 		public ArrayList<DCMCube> children;
 		public DCModelInfo model;
+		public float[][] uvs;
 
 		public DCMCube(String name, Vector3i dimensions, Vector3f rotationPoint, Vector3f offset, Vector3f rotation,
 					   Vector2i textureOffset, boolean textureMirrored, Vector3f scale, ArrayList<DCMCube> children,
@@ -138,6 +136,7 @@ public class DCModelInfo {
 			this.scale = scale;
 			this.children = children;
 			this.model = model;
+			this.uvs = setUVs();
 		}
 
 		private DCMCube getCube(String name) {
@@ -152,6 +151,52 @@ public class DCModelInfo {
 				}
 			}
 			return null;
+		}
+
+		//Numbers relate to directions in South, East, North, West, Top, Bottom in order
+		private float[][] setUVs() {
+
+			float[][] pixelUvs = new float[6][4];
+
+			pixelUvs[0][0] = textureOffset.x + (2 * dimensions.z) + dimensions.x;
+			pixelUvs[0][1] = textureOffset.y + dimensions.z;
+			pixelUvs[0][2] = textureOffset.x + (2 * dimensions.z) + (2 * dimensions.x);
+			pixelUvs[0][3] = textureOffset.y + dimensions.x + dimensions.y;
+
+			pixelUvs[1][0] = textureOffset.x + dimensions.z;
+			pixelUvs[1][1] = textureOffset.y + dimensions.z;
+			pixelUvs[1][2] = textureOffset.x + (2 * dimensions.z) + dimensions.x;
+			pixelUvs[1][3] = textureOffset.y + dimensions.x + dimensions.y;
+
+			pixelUvs[2][0] = textureOffset.x + dimensions.z;
+			pixelUvs[2][1] = textureOffset.y + dimensions.z;
+			pixelUvs[2][2] = textureOffset.x + dimensions.z + dimensions.x;
+			pixelUvs[2][3] = textureOffset.y + dimensions.x + dimensions.y;
+
+			pixelUvs[3][0] = textureOffset.x + dimensions.z;
+			pixelUvs[3][1] = textureOffset.y + dimensions.z;
+			pixelUvs[3][2] = textureOffset.x + dimensions.z + dimensions.x;
+			pixelUvs[3][3] = textureOffset.y + dimensions.x + dimensions.y;
+
+			pixelUvs[4][0] = textureOffset.x + dimensions.z;
+			pixelUvs[4][1] = textureOffset.y;
+			pixelUvs[4][2] = textureOffset.x + dimensions.z + dimensions.x;
+			pixelUvs[4][3] = textureOffset.y + dimensions.x;
+
+			pixelUvs[5][0] = textureOffset.x + (2 * dimensions.z) + dimensions.x;
+			pixelUvs[5][1] = textureOffset.y;
+			pixelUvs[5][2] = textureOffset.x + (2 * dimensions.z) + dimensions.x;
+			pixelUvs[5][3] = textureOffset.y + dimensions.x;
+
+			//clamp the values from 0 to 1
+			for (int i = 0; i < pixelUvs.length; i++) {
+				pixelUvs[i][0] /= model.textureWidth;
+				pixelUvs[i][1] /= model.textureHeight;
+				pixelUvs[i][2] /= model.textureWidth;
+				pixelUvs[i][3] /= model.textureHeight;
+			}
+
+			return pixelUvs;
 		}
 
 		public String getName() {
