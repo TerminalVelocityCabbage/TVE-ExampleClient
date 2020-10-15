@@ -194,6 +194,13 @@ public class DCModelInfo {
 				pixelUvs[i][2] /= model.textureWidth;
 				pixelUvs[i][3] /= model.textureHeight;
 			}
+			//Account for rounding errors in the clamping
+			for (int i = 0; i < pixelUvs.length; i++) {
+				pixelUvs[i][0] += 0.01 / model.textureWidth;
+				pixelUvs[i][1] += 0.01 / model.textureHeight;
+				pixelUvs[i][2] -= 0.01 / model.textureWidth;
+				pixelUvs[i][3] -= 0.01 / model.textureHeight;
+			}
 
 			return pixelUvs;
 		}
