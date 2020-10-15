@@ -153,36 +153,35 @@ public class DCModelInfo {
 			return null;
 		}
 
-		//Numbers relate to directions in South, East, North, West, Top, Bottom in order
 		private float[][] setUVs() {
 
 			float[][] pixelUvs = new float[6][4];
-
+			//South
 			pixelUvs[0][0] = textureOffset.x + (2 * dimensions.z) + dimensions.x;
 			pixelUvs[0][1] = textureOffset.y + dimensions.z;
 			pixelUvs[0][2] = textureOffset.x + (2 * dimensions.z) + (2 * dimensions.x);
 			pixelUvs[0][3] = textureOffset.y + dimensions.z + dimensions.y;
-
+			//East
 			pixelUvs[1][0] = textureOffset.x + dimensions.z + dimensions.x;
 			pixelUvs[1][1] = textureOffset.y + dimensions.z;
 			pixelUvs[1][2] = textureOffset.x + (2 * dimensions.z) + dimensions.x;
 			pixelUvs[1][3] = textureOffset.y + dimensions.z + dimensions.y;
-
+			//North
 			pixelUvs[2][0] = textureOffset.x + dimensions.z;
 			pixelUvs[2][1] = textureOffset.y + dimensions.z;
 			pixelUvs[2][2] = textureOffset.x + dimensions.z + dimensions.x;
 			pixelUvs[2][3] = textureOffset.y + dimensions.z + dimensions.y;
-
+			//West
 			pixelUvs[3][0] = textureOffset.x;
 			pixelUvs[3][1] = textureOffset.y + dimensions.z;
 			pixelUvs[3][2] = textureOffset.x + dimensions.z;
 			pixelUvs[3][3] = textureOffset.y + dimensions.z + dimensions.y;
-
+			//Top
 			pixelUvs[4][0] = textureOffset.x + dimensions.z;
 			pixelUvs[4][1] = textureOffset.y;
 			pixelUvs[4][2] = textureOffset.x + dimensions.z + dimensions.x;
 			pixelUvs[4][3] = textureOffset.y + dimensions.z;
-
+			//Bottom
 			pixelUvs[5][0] = textureOffset.x + dimensions.z + dimensions.x;
 			pixelUvs[5][1] = textureOffset.y;
 			pixelUvs[5][2] = textureOffset.x + (2 * dimensions.z) + dimensions.x;
