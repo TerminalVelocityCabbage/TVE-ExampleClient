@@ -7,7 +7,6 @@ import com.terminalvelocitycabbage.engine.client.resources.Identifier;
 import com.terminalvelocitycabbage.engine.client.shader.ShaderProgram;
 import com.terminalvelocitycabbage.engine.entity.GameObject;
 import com.terminalvelocitycabbage.exampleclient.models.DCModel;
-import com.terminalvelocitycabbage.exampleclient.models.loader.DCModelInfo;
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
@@ -32,7 +31,7 @@ public class GameClientRenderer extends Renderer {
 		Camera camera = new Camera(60, 0.01f, 1000.0f);
 
 		//Load a model to a Model object from dcm file
-		DCModel model = new DCModel(DCModelInfo.Loader.load(ASSETS_ROOT_RESOURCE_MANAGER, new Identifier(GameClient.ID, "model/Gerald.dcm")));
+		DCModel model = DCModel.Loader.load(ASSETS_ROOT_RESOURCE_MANAGER, new Identifier(GameClient.ID, "model/Gerald.dcm"), new Identifier(GameClient.ID, "textures/gerald_base.png"));
 		//Create a game object from the model loaded
 		GameObject object = GameObject.builder().setModel(model).build();
 		//Expose the head model part from the model so it can be animated in the game loop
