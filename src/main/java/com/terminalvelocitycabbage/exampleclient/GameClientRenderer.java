@@ -7,6 +7,7 @@ import com.terminalvelocitycabbage.engine.client.renderer.lights.components.Atte
 import com.terminalvelocitycabbage.engine.client.renderer.model.Model;
 import com.terminalvelocitycabbage.engine.client.renderer.shader.ShaderProgram;
 import com.terminalvelocitycabbage.engine.client.resources.Identifier;
+import com.terminalvelocitycabbage.engine.debug.Log;
 import com.terminalvelocitycabbage.engine.entity.ModeledGameObject;
 import com.terminalvelocitycabbage.exampleclient.models.DCModel;
 import org.joml.Matrix4f;
@@ -68,8 +69,8 @@ public class GameClientRenderer extends Renderer {
 		Vector3f ambientLight = new Vector3f(0.3f, 0.3f, 0.3f);
 		//Create a point light
 		float specularPower = 10.0f;
-		Attenuation attenuation = new Attenuation(0.0f, 0.0f, 1.0f);
-		PointLight pointLight = new PointLight(new Vector3f(1, 1, 1), new Vector3f(0,0,0), 1.0f, attenuation);
+		Attenuation attenuation = new Attenuation(0.0f, 0.0f, 10.0f);
+		PointLight pointLight = new PointLight(new Vector3f(1, 9, 3), new Vector3f(1,1,1), 1.0f, attenuation);
 
 		//For wireframe mode
 		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -122,7 +123,9 @@ public class GameClientRenderer extends Renderer {
 				defaultShaderHandler.createUniform("specularPower");
 				defaultShaderHandler.createUniform("ambientLight");
 				defaultShaderHandler.createPointLightUniform("pointLight");
+
 				gameObject.update();
+
 				defaultShaderHandler.setUniform("projectionMatrix", camera.getProjectionMatrix());
 				defaultShaderHandler.setUniform("ambientLight", ambientLight);
 				defaultShaderHandler.setUniform("specularPower", specularPower);
@@ -133,8 +136,11 @@ public class GameClientRenderer extends Renderer {
 				//Material stuff
 				//TODO stop rendering models recursively without passing a material to each mesh
 				defaultShaderHandler.setUniform("material", head.getMaterial());
+
 				gameObject.render();
 			}
+
+			Log.info(camera.getPosition());
 
 			//Send the frame
 			push();
