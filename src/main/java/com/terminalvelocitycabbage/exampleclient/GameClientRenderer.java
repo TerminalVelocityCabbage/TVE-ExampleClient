@@ -5,7 +5,7 @@ import com.terminalvelocitycabbage.engine.client.renderer.components.Camera;
 import com.terminalvelocitycabbage.engine.client.renderer.model.Model;
 import com.terminalvelocitycabbage.engine.client.resources.Identifier;
 import com.terminalvelocitycabbage.engine.client.shader.ShaderProgram;
-import com.terminalvelocitycabbage.engine.entity.GameObject;
+import com.terminalvelocitycabbage.engine.entity.ModeledGameObject;
 import com.terminalvelocitycabbage.exampleclient.models.DCModel;
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
@@ -19,7 +19,7 @@ import static org.lwjgl.opengl.GL20.*;
 
 public class GameClientRenderer extends Renderer {
 
-	private ArrayList<GameObject> gameObjects = new ArrayList<>();
+	private ArrayList<ModeledGameObject> gameObjects = new ArrayList<>();
 
 	public GameClientRenderer(int width, int height, String title) {
 		super(width, height, title, new GameInputHandler());
@@ -33,14 +33,14 @@ public class GameClientRenderer extends Renderer {
 		//Load a model to a Model object from dcm file
 		DCModel model = DCModel.Loader.load(ASSETS_ROOT_RESOURCE_MANAGER, new Identifier(GameClient.ID, "model/Gerald.dcm"), new Identifier(GameClient.ID, "textures/gerald_base.png"));
 		//Create a game object from the model loaded
-		GameObject object = GameObject.builder().setModel(model).build();
+		ModeledGameObject object = ModeledGameObject.builder().setModel(model).build();
 		//Expose the head model part from the model so it can be animated in the game loop
 		Model.Part head = model.getPart("head").orElseThrow();
 		//Add the game object to the list of active objects
 		gameObjects.add(object);
 
 		//bind all Game Objects
-		for (GameObject gameObject : gameObjects) {
+		for (ModeledGameObject gameObject : gameObjects) {
 			gameObject.bind();
 		}
 
@@ -93,7 +93,7 @@ public class GameClientRenderer extends Renderer {
 			//Animate the head
 			head.rotation.add(0, 1, 0);
 			//Tell the engine that the game object needs to be re-rendered
-			object.setDirty();
+			object.queueUpdate();
 
 			//This is a temp fix for the camera rotation sliding. I would like for this to happen automatically.
 			inputHandler.resetDisplayVector();
@@ -103,7 +103,7 @@ public class GameClientRenderer extends Renderer {
 			viewMatrix = camera.getViewMatrix();
 
 			//Draw whatever changes were pushed
-			for (GameObject gameObject : gameObjects) {
+			for (ModeledGameObject gameObject : gameObjects) {
 				//Render the current object
 				if (gameObject.isTextured()) {
 					coloredShaderHandler.disable();
@@ -125,7 +125,7 @@ public class GameClientRenderer extends Renderer {
 		}
 
 		//Cleanup
-		for (GameObject gameObject : gameObjects) {
+		for (ModeledGameObject gameObject : gameObjects) {
 			gameObject.destroy();
 		}
 		defaultShaderHandler.delete();
