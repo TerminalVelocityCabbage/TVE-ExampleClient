@@ -1,6 +1,8 @@
 package com.terminalvelocitycabbage.exampleclient.models;
 
+import com.terminalvelocitycabbage.engine.client.renderer.model.Material;
 import com.terminalvelocitycabbage.engine.client.renderer.model.Model;
+import com.terminalvelocitycabbage.engine.client.renderer.model.Texture;
 import com.terminalvelocitycabbage.engine.client.renderer.model.Vertex;
 import com.terminalvelocitycabbage.engine.client.renderer.shapes.TexturedCuboid;
 import com.terminalvelocitycabbage.engine.client.resources.Identifier;
@@ -74,8 +76,7 @@ public class DCModel extends Model {
                     new Vertex().setXYZ(0.0f, 0.0f, 0.0f).setRGB(255, 255, 255).setUv(cube.uvs[4][2], cube.uvs[4][3]),
                     new Vertex().setXYZ(0.0f, 0.0f, 1.0f).setRGB(255, 255, 255).setUv(cube.uvs[4][2], cube.uvs[4][1]),
 
-                    cube.model.resourceManager,
-                    cube.model.textureIdentifier
+                    new Material(new Texture(cube.model.resourceManager, cube.model.textureIdentifier))
                 ),
                 cube.offset,
                 cube.rotationPoint,
