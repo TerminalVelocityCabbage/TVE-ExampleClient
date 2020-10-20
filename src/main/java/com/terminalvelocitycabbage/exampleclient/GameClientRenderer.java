@@ -7,7 +7,6 @@ import com.terminalvelocitycabbage.engine.client.renderer.lights.components.Atte
 import com.terminalvelocitycabbage.engine.client.renderer.model.Model;
 import com.terminalvelocitycabbage.engine.client.renderer.shader.ShaderProgram;
 import com.terminalvelocitycabbage.engine.client.resources.Identifier;
-import com.terminalvelocitycabbage.engine.debug.Log;
 import com.terminalvelocitycabbage.engine.entity.ModeledGameObject;
 import com.terminalvelocitycabbage.exampleclient.models.DCModel;
 import org.joml.Matrix4f;
@@ -70,7 +69,7 @@ public class GameClientRenderer extends Renderer {
 		//Create a point light
 		float specularPower = 10.0f;
 		Attenuation attenuation = new Attenuation(0.0f, 0.0f, 10.0f);
-		PointLight pointLight = new PointLight(new Vector3f(1, 9, 3), new Vector3f(1,1,1), 1.0f, attenuation);
+		PointLight pointLight = new PointLight(new Vector3f(1, 1, 1), new Vector3f(1,9,3), 1.0f, attenuation);
 
 		//For wireframe mode
 		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -117,7 +116,6 @@ public class GameClientRenderer extends Renderer {
 				defaultShaderHandler.createUniform("projectionMatrix");
 				defaultShaderHandler.createUniform("modelViewMatrix");
 				//Mesh materials this should probably be handled by some sort background system
-				//TODO make materials able to be per mesh
 				defaultShaderHandler.createMaterialUniform("material");
 				//Lighting stuff
 				defaultShaderHandler.createUniform("specularPower");
@@ -134,13 +132,11 @@ public class GameClientRenderer extends Renderer {
 				defaultShaderHandler.setUniform("pointLight", new PointLight(pointLight, newPos.mul(viewMatrix)));
 				defaultShaderHandler.setUniform("modelViewMatrix", gameObject.getModelViewMatrix(viewMatrix));
 				//Material stuff
-				//TODO stop rendering models recursively without passing a material to each mesh
+				//TODO stop rendering models recursively without passing a material from each mesh
 				defaultShaderHandler.setUniform("material", head.getMaterial());
 
 				gameObject.render();
 			}
-
-			Log.info(camera.getPosition());
 
 			//Send the frame
 			push();
