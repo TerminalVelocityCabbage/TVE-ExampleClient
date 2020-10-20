@@ -4,7 +4,7 @@ import com.terminalvelocitycabbage.engine.client.renderer.Renderer;
 import com.terminalvelocitycabbage.engine.client.renderer.components.Camera;
 import com.terminalvelocitycabbage.engine.client.renderer.model.Model;
 import com.terminalvelocitycabbage.engine.client.resources.Identifier;
-import com.terminalvelocitycabbage.engine.client.shader.ShaderProgram;
+import com.terminalvelocitycabbage.engine.client.renderer.shader.ShaderProgram;
 import com.terminalvelocitycabbage.engine.entity.ModeledGameObject;
 import com.terminalvelocitycabbage.exampleclient.models.DCModel;
 import org.joml.Matrix4f;
@@ -115,8 +115,8 @@ public class GameClientRenderer extends Renderer {
 				defaultShaderHandler.createUniform("projectionMatrix");
 				defaultShaderHandler.createUniform("modelViewMatrix");
 				gameObject.update();
-				defaultShaderHandler.setUniformMat4f("modelViewMatrix", gameObject.getModelViewMatrix(viewMatrix));
-				defaultShaderHandler.setUniformMat4f("projectionMatrix", camera.getProjectionMatrix());
+				defaultShaderHandler.setUniform("modelViewMatrix", gameObject.getModelViewMatrix(viewMatrix));
+				defaultShaderHandler.setUniform("projectionMatrix", camera.getProjectionMatrix());
 				gameObject.render();
 			}
 
