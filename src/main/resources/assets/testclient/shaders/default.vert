@@ -1,5 +1,6 @@
 #version 330 core
 layout (location = 0) in vec4 inPosition;
+//TODO remove color info from vertex and handle with material
 layout (location = 1) in vec4 inColor;
 layout (location = 2) in vec2 inTextureCoord;
 layout (location = 3) in vec3 vertexNormal;

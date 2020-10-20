@@ -2,14 +2,17 @@ package com.terminalvelocitycabbage.exampleclient;
 
 import com.terminalvelocitycabbage.engine.client.renderer.Renderer;
 import com.terminalvelocitycabbage.engine.client.renderer.components.Camera;
+import com.terminalvelocitycabbage.engine.client.renderer.lights.PointLight;
+import com.terminalvelocitycabbage.engine.client.renderer.lights.components.Attenuation;
 import com.terminalvelocitycabbage.engine.client.renderer.model.Model;
-import com.terminalvelocitycabbage.engine.client.resources.Identifier;
 import com.terminalvelocitycabbage.engine.client.renderer.shader.ShaderProgram;
+import com.terminalvelocitycabbage.engine.client.resources.Identifier;
 import com.terminalvelocitycabbage.engine.entity.ModeledGameObject;
 import com.terminalvelocitycabbage.exampleclient.models.DCModel;
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
+import org.joml.Vector4f;
 
 import java.util.ArrayList;
 
@@ -47,15 +50,9 @@ public class GameClientRenderer extends Renderer {
 		//Create Shaders
 		//Create default shader that is used for textured elements
 		ShaderProgram defaultShaderHandler = new ShaderProgram();
-		defaultShaderHandler.queueShader(GL_VERTEX_SHADER, ASSETS_ROOT_RESOURCE_MANAGER, new Identifier(GameClient.ID, "shaders/textured.vert"));
-		defaultShaderHandler.queueShader(GL_FRAGMENT_SHADER, ASSETS_ROOT_RESOURCE_MANAGER, new Identifier(GameClient.ID, "shaders/textured.frag"));
+		defaultShaderHandler.queueShader(GL_VERTEX_SHADER, ASSETS_ROOT_RESOURCE_MANAGER, new Identifier(GameClient.ID, "shaders/default.vert"));
+		defaultShaderHandler.queueShader(GL_FRAGMENT_SHADER, ASSETS_ROOT_RESOURCE_MANAGER, new Identifier(GameClient.ID, "shaders/default.frag"));
 		defaultShaderHandler.bindAll();
-
-		//Create shader for elements without textures but containing color data in the vertex
-		ShaderProgram coloredShaderHandler = new ShaderProgram();
-		coloredShaderHandler.queueShader(GL_VERTEX_SHADER, ASSETS_ROOT_RESOURCE_MANAGER, new Identifier(GameClient.ID, "shaders/colored.vert"));
-		coloredShaderHandler.queueShader(GL_FRAGMENT_SHADER, ASSETS_ROOT_RESOURCE_MANAGER, new Identifier(GameClient.ID, "shaders/colored.frag"));
-		coloredShaderHandler.bindAll();
 
 		//Init viewMatrix var
 		Matrix4f viewMatrix;
@@ -66,6 +63,13 @@ public class GameClientRenderer extends Renderer {
 		//Store camera increment vectors
 		Vector3f moveVector = inputHandler.getCameraPositionMoveVector();
 		Vector2f rotationVector = inputHandler.getDisplayVector();
+
+		//The amount of light that every object receives
+		Vector3f ambientLight = new Vector3f(0.3f, 0.3f, 0.3f);
+		//Create a point light
+		float specularPower = 10.0f;
+		Attenuation attenuation = new Attenuation(0.0f, 0.0f, 1.0f);
+		PointLight pointLight = new PointLight(new Vector3f(1, 1, 1), new Vector3f(0,0,0), 1.0f, attenuation);
 
 		//For wireframe mode
 		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -102,21 +106,33 @@ public class GameClientRenderer extends Renderer {
 			//This has to happen before game items are updated
 			viewMatrix = camera.getViewMatrix();
 
+			//Reserve memory for light position
+			Vector4f newPos;
+
 			//Draw whatever changes were pushed
 			for (ModeledGameObject gameObject : gameObjects) {
 				//Render the current object
-				if (gameObject.isTextured()) {
-					coloredShaderHandler.disable();
-					defaultShaderHandler.enable();
-				} else {
-					defaultShaderHandler.disable();
-					coloredShaderHandler.enable();
-				}
+				defaultShaderHandler.enable();
 				defaultShaderHandler.createUniform("projectionMatrix");
 				defaultShaderHandler.createUniform("modelViewMatrix");
+				//Mesh materials this should probably be handled by some sort background system
+				//TODO make materials able to be per mesh
+				defaultShaderHandler.createMaterialUniform("material");
+				//Lighting stuff
+				defaultShaderHandler.createUniform("specularPower");
+				defaultShaderHandler.createUniform("ambientLight");
+				defaultShaderHandler.createPointLightUniform("pointLight");
 				gameObject.update();
-				defaultShaderHandler.setUniform("modelViewMatrix", gameObject.getModelViewMatrix(viewMatrix));
 				defaultShaderHandler.setUniform("projectionMatrix", camera.getProjectionMatrix());
+				defaultShaderHandler.setUniform("ambientLight", ambientLight);
+				defaultShaderHandler.setUniform("specularPower", specularPower);
+				//Translate the point light to view coordinates
+				newPos = new Vector4f(pointLight.getPosition(), 0.0f);
+				defaultShaderHandler.setUniform("pointLight", new PointLight(pointLight, newPos.mul(viewMatrix)));
+				defaultShaderHandler.setUniform("modelViewMatrix", gameObject.getModelViewMatrix(viewMatrix));
+				//Material stuff
+				//TODO stop rendering models recursively without passing a material to each mesh
+				defaultShaderHandler.setUniform("material", head.getMaterial());
 				gameObject.render();
 			}
 
@@ -129,6 +145,5 @@ public class GameClientRenderer extends Renderer {
 			gameObject.destroy();
 		}
 		defaultShaderHandler.delete();
-		coloredShaderHandler.delete();
 	}
 }

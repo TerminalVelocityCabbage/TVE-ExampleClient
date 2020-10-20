@@ -38,23 +38,15 @@ vec4 ambientColor;
 vec4 diffuseColor;
 vec4 specularColor;
 
-void setupColors(Material material, vec2 textureCoordinates);
-void calcPointLight(PointLigt light, vec3 position, vec3 normal);
-
-void main() {
-   setupColors(material, vertTextureCoord);
-   fragColor = ambientColor * vec4(ambientLight, 1) + calcPointLight(pointLight, vertVertexPosition,  vertVertexNormal);
-}
-
-void setupColours(Material material, vec2 textCoord) {
+void setupColors(Material material, vec2 textCoord) {
    if (material.hasTexture == 1) {
-      ambientColor = texture(texture_sampler, textCoord);
+      ambientColor = texture(textureSampler, textCoord);
       diffuseColor = ambientColor;
-      speculrColor = ambientColor;
+      specularColor = ambientColor;
    } else {
       ambientColor = material.ambient;
       diffuseColor = material.diffuse;
-      speculrColor = material.specular;
+      specularColor = material.specular;
    }
 }
 
@@ -79,4 +71,9 @@ vec4 calcPointLight(PointLight light, vec3 position, vec3 normal) {
    float distance = length(lightDirection);
    float attenuationInv = light.attenuation.constant + light.attenuation.linear * distance + light.attenuation.exponential * distance * distance;
    return (dC + sC) / attenuationInv;
+}
+
+void main() {
+   setupColors(material, vertTextureCoord);
+   fragColor = ambientColor * vec4(ambientLight, 1) + calcPointLight(pointLight, vertVertexPosition,  vertVertexNormal);
 }
