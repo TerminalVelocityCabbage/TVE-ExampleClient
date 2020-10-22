@@ -69,7 +69,7 @@ vec4 calcPointLight(PointLight light, vec3 position, vec3 normal) {
 
    // Attenuation
    float distance = length(lightDirection);
-   float attenuationInv = light.attenuation.constant + light.attenuation.linear * distance + light.attenuation.exponential * distance * distance;
+   float attenuationInv = light.attenuation.constant + (light.attenuation.linear * distance) + (light.attenuation.exponential * distance * distance);
    return (dC + sC) / attenuationInv;
 }
 

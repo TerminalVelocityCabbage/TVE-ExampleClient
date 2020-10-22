@@ -109,10 +109,16 @@ public class GameClientRenderer extends Renderer {
 			//Reserve memory for light position
 			Vector4f newPos;
 
+			//Point light
+			defaultShaderHandler.enable();
+			defaultShaderHandler.createPointLightUniform("pointLight");
+			//Translate the point light to view coordinates
+			newPos = new Vector4f(pointLight.getPosition(), 0.0f);
+			defaultShaderHandler.setUniform("pointLight", new PointLight(pointLight, newPos.mul(viewMatrix)));
+
 			//Draw whatever changes were pushed
 			for (ModeledGameObject gameObject : gameObjects) {
 				//Render the current object
-				defaultShaderHandler.enable();
 				defaultShaderHandler.createUniform("projectionMatrix");
 				defaultShaderHandler.createUniform("modelViewMatrix");
 				//Mesh materials this should probably be handled by some sort background system
@@ -120,16 +126,12 @@ public class GameClientRenderer extends Renderer {
 				//Lighting stuff
 				defaultShaderHandler.createUniform("specularPower");
 				defaultShaderHandler.createUniform("ambientLight");
-				defaultShaderHandler.createPointLightUniform("pointLight");
 
 				gameObject.update();
 
 				defaultShaderHandler.setUniform("projectionMatrix", camera.getProjectionMatrix());
 				defaultShaderHandler.setUniform("ambientLight", ambientLight);
 				defaultShaderHandler.setUniform("specularPower", specularPower);
-				//Translate the point light to view coordinates
-				newPos = new Vector4f(pointLight.getPosition(), 0.0f);
-				defaultShaderHandler.setUniform("pointLight", new PointLight(pointLight, newPos.mul(viewMatrix)));
 				defaultShaderHandler.setUniform("modelViewMatrix", gameObject.getModelViewMatrix(viewMatrix));
 				//Material stuff
 				//TODO stop rendering models recursively without passing a material from each mesh
