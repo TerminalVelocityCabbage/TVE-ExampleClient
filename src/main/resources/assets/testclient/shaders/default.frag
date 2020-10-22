@@ -75,5 +75,5 @@ vec4 calcPointLight(PointLight light, vec3 position, vec3 normal) {
 
 void main() {
    setupColors(material, vertTextureCoord);
-   fragColor = ambientColor * vec4(ambientLight, 1) + calcPointLight(pointLight, vertVertexPosition,  vertVertexNormal);
+   fragColor = ambientColor * vec4(ambientLight, 1) + calcPointLight(pointLight, vertVertexPosition, vertVertexNormal);
 }
