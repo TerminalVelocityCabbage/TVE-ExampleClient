@@ -111,31 +111,32 @@ public class GameClientRenderer extends Renderer {
 
 			//Point light
 			defaultShaderHandler.enable();
-			defaultShaderHandler.createPointLightUniform("pointLight");
+			//defaultShaderHandler.createPointLightUniform("pointLight");
 			//Translate the point light to view coordinates
 			newPos = new Vector4f(pointLight.getPosition(), 0.0f);
-			defaultShaderHandler.setUniform("pointLight", new PointLight(pointLight, newPos.mul(viewMatrix)));
+
+			//Render the current object
+			defaultShaderHandler.createUniform("projectionMatrix");
+			defaultShaderHandler.createUniform("modelViewMatrix");
+			//Mesh materials this should probably be handled by some sort background system
+			//defaultShaderHandler.createMaterialUniform("material");
+			//Lighting stuff
+			//defaultShaderHandler.createUniform("specularPower");
+			//defaultShaderHandler.createUniform("ambientLight");
 
 			//Draw whatever changes were pushed
 			for (ModeledGameObject gameObject : gameObjects) {
-				//Render the current object
-				defaultShaderHandler.createUniform("projectionMatrix");
-				defaultShaderHandler.createUniform("modelViewMatrix");
-				//Mesh materials this should probably be handled by some sort background system
-				defaultShaderHandler.createMaterialUniform("material");
-				//Lighting stuff
-				defaultShaderHandler.createUniform("specularPower");
-				defaultShaderHandler.createUniform("ambientLight");
 
 				gameObject.update();
 
 				defaultShaderHandler.setUniform("projectionMatrix", camera.getProjectionMatrix());
-				defaultShaderHandler.setUniform("ambientLight", ambientLight);
-				defaultShaderHandler.setUniform("specularPower", specularPower);
+				//defaultShaderHandler.setUniform("ambientLight", ambientLight);
+				//defaultShaderHandler.setUniform("specularPower", specularPower);
 				defaultShaderHandler.setUniform("modelViewMatrix", gameObject.getModelViewMatrix(viewMatrix));
+				//defaultShaderHandler.setUniform("pointLight", new PointLight(pointLight, newPos.mul(viewMatrix)));
 				//Material stuff
 				//TODO stop rendering models recursively without passing a material from each mesh
-				defaultShaderHandler.setUniform("material", head.getMaterial());
+				//defaultShaderHandler.setUniform("material", head.getMaterial());
 
 				gameObject.render();
 			}
