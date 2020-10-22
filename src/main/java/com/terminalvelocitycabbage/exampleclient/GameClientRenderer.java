@@ -68,8 +68,8 @@ public class GameClientRenderer extends Renderer {
 		Vector3f ambientLight = new Vector3f(0.3f, 0.3f, 0.3f);
 		//Create a point light
 		float specularPower = 10.0f;
-		Attenuation attenuation = new Attenuation(0.0f, 0.0f, 10.0f);
-		PointLight pointLight = new PointLight(new Vector3f(1, 1, 1), new Vector3f(1,9,3), 1.0f, attenuation);
+		Attenuation attenuation = new Attenuation(0.0f, 0.0f, 1.0f);
+		PointLight pointLight = new PointLight(new Vector3f(1, 1, 1), new Vector3f(1,9,2), 10.0f, attenuation);
 
 		//For wireframe mode
 		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -111,7 +111,7 @@ public class GameClientRenderer extends Renderer {
 
 			//Point light
 			defaultShaderHandler.enable();
-			//defaultShaderHandler.createPointLightUniform("pointLight");
+			defaultShaderHandler.createPointLightUniform("pointLight");
 			//Translate the point light to view coordinates
 			newPos = new Vector4f(pointLight.getPosition(), 0.0f);
 
@@ -119,10 +119,10 @@ public class GameClientRenderer extends Renderer {
 			defaultShaderHandler.createUniform("projectionMatrix");
 			defaultShaderHandler.createUniform("modelViewMatrix");
 			//Mesh materials this should probably be handled by some sort background system
-			//defaultShaderHandler.createMaterialUniform("material");
+			defaultShaderHandler.createMaterialUniform("material");
 			//Lighting stuff
-			//defaultShaderHandler.createUniform("specularPower");
-			//defaultShaderHandler.createUniform("ambientLight");
+			defaultShaderHandler.createUniform("specularPower");
+			defaultShaderHandler.createUniform("ambientLight");
 
 			//Draw whatever changes were pushed
 			for (ModeledGameObject gameObject : gameObjects) {
@@ -130,13 +130,13 @@ public class GameClientRenderer extends Renderer {
 				gameObject.update();
 
 				defaultShaderHandler.setUniform("projectionMatrix", camera.getProjectionMatrix());
-				//defaultShaderHandler.setUniform("ambientLight", ambientLight);
-				//defaultShaderHandler.setUniform("specularPower", specularPower);
+				defaultShaderHandler.setUniform("ambientLight", ambientLight);
+				defaultShaderHandler.setUniform("specularPower", specularPower);
 				defaultShaderHandler.setUniform("modelViewMatrix", gameObject.getModelViewMatrix(viewMatrix));
-				//defaultShaderHandler.setUniform("pointLight", new PointLight(pointLight, newPos.mul(viewMatrix)));
+				defaultShaderHandler.setUniform("pointLight", new PointLight(pointLight, newPos.mul(viewMatrix)));
 				//Material stuff
 				//TODO stop rendering models recursively without passing a material from each mesh
-				//defaultShaderHandler.setUniform("material", head.getMaterial());
+				defaultShaderHandler.setUniform("material", head.getMaterial());
 
 				gameObject.render();
 			}
