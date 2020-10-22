@@ -95,6 +95,7 @@ public class GameClientRenderer extends Renderer {
 					moveVector.y * 0.05f,
 					moveVector.z * 0.05f
 			);
+			if (!inputHandler.isRightButtonPressed()) inputHandler.resetDisplayVector();
 			camera.rotate(
 					rotationVector.x * 0.4f,
 					rotationVector.y * 0.4f,
