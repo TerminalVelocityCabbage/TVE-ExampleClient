@@ -4,9 +4,11 @@ import com.terminalvelocitycabbage.engine.client.renderer.Renderer;
 import com.terminalvelocitycabbage.engine.client.renderer.components.Camera;
 import com.terminalvelocitycabbage.engine.client.renderer.lights.PointLight;
 import com.terminalvelocitycabbage.engine.client.renderer.lights.components.Attenuation;
+import com.terminalvelocitycabbage.engine.client.renderer.model.Material;
 import com.terminalvelocitycabbage.engine.client.renderer.model.Model;
 import com.terminalvelocitycabbage.engine.client.renderer.shader.ShaderProgram;
 import com.terminalvelocitycabbage.engine.client.resources.Identifier;
+import com.terminalvelocitycabbage.engine.debug.Log;
 import com.terminalvelocitycabbage.engine.entity.ModeledGameObject;
 import com.terminalvelocitycabbage.exampleclient.models.DCModel;
 import org.joml.Matrix4f;
@@ -49,10 +51,18 @@ public class GameClientRenderer extends Renderer {
 
 		//Create Shaders
 		//Create default shader that is used for textured elements
-		ShaderProgram defaultShaderHandler = new ShaderProgram();
-		defaultShaderHandler.queueShader(GL_VERTEX_SHADER, ASSETS_ROOT_RESOURCE_MANAGER, new Identifier(GameClient.ID, "shaders/default.vert"));
-		defaultShaderHandler.queueShader(GL_FRAGMENT_SHADER, ASSETS_ROOT_RESOURCE_MANAGER, new Identifier(GameClient.ID, "shaders/default.frag"));
-		defaultShaderHandler.bindAll();
+		ShaderProgram defaultShaderProgram = new ShaderProgram();
+		defaultShaderProgram.queueShader(GL_VERTEX_SHADER, ASSETS_ROOT_RESOURCE_MANAGER, new Identifier(GameClient.ID, "shaders/default.vert"));
+		defaultShaderProgram.queueShader(GL_FRAGMENT_SHADER, ASSETS_ROOT_RESOURCE_MANAGER, new Identifier(GameClient.ID, "shaders/default.frag"));
+		Log.info(defaultShaderProgram.getID());
+		defaultShaderProgram.build();
+
+		//Create shader program for debugging normals directions
+		ShaderProgram normalShaderProgram = new ShaderProgram();
+		normalShaderProgram.queueShader(GL_VERTEX_SHADER, ASSETS_ROOT_RESOURCE_MANAGER, new Identifier(GameClient.ID, "shaders/default.vert"));
+		normalShaderProgram.queueShader(GL_FRAGMENT_SHADER, ASSETS_ROOT_RESOURCE_MANAGER, new Identifier(GameClient.ID, "shaders/normalonly.frag"));
+		Log.info(normalShaderProgram.getID());
+		normalShaderProgram.build();
 
 		//Init viewMatrix var
 		Matrix4f viewMatrix;
@@ -64,10 +74,7 @@ public class GameClientRenderer extends Renderer {
 		Vector3f moveVector = inputHandler.getCameraPositionMoveVector();
 		Vector2f rotationVector = inputHandler.getDisplayVector();
 
-		//The amount of light that every object receives
-		Vector3f ambientLight = new Vector3f(0.3f, 0.3f, 0.3f);
 		//Create a point light
-		float specularPower = 10.0f;
 		Attenuation attenuation = new Attenuation(0.0f, 0.0f, 1.0f);
 		PointLight pointLight = new PointLight(new Vector3f(1, 1, 1), new Vector3f(1,9,2), 10.0f, attenuation);
 
@@ -106,40 +113,8 @@ public class GameClientRenderer extends Renderer {
 			//This has to happen before game items are updated
 			viewMatrix = camera.getViewMatrix();
 
-			//Reserve memory for light position
-			Vector4f newPos;
-
-			//Point light
-			defaultShaderHandler.enable();
-			defaultShaderHandler.createPointLightUniform("pointLight");
-			//Translate the point light to view coordinates
-			newPos = new Vector4f(pointLight.getPosition(), 0.0f);
-
-			//Render the current object
-			defaultShaderHandler.createUniform("projectionMatrix");
-			defaultShaderHandler.createUniform("modelViewMatrix");
-			//Mesh materials this should probably be handled by some sort background system
-			defaultShaderHandler.createMaterialUniform("material");
-			//Lighting stuff
-			defaultShaderHandler.createUniform("specularPower");
-			defaultShaderHandler.createUniform("ambientLight");
-
-			//Draw whatever changes were pushed
-			for (ModeledGameObject gameObject : gameObjects) {
-
-				gameObject.update();
-
-				defaultShaderHandler.setUniform("projectionMatrix", camera.getProjectionMatrix());
-				defaultShaderHandler.setUniform("ambientLight", ambientLight);
-				defaultShaderHandler.setUniform("specularPower", specularPower);
-				defaultShaderHandler.setUniform("modelViewMatrix", gameObject.getModelViewMatrix(viewMatrix));
-				defaultShaderHandler.setUniform("pointLight", new PointLight(pointLight, newPos.mul(viewMatrix)));
-				//Material stuff
-				//TODO stop rendering models recursively without passing a material from each mesh
-				defaultShaderHandler.setUniform("material", head.getMaterial());
-
-				gameObject.render();
-			}
+			renderNormalsDebug(camera, viewMatrix, normalShaderProgram);
+			//renderDefault(camera, viewMatrix, defaultShaderProgram, pointLight, head.getMaterial());
 
 			//Send the frame
 			push();
@@ -149,6 +124,60 @@ public class GameClientRenderer extends Renderer {
 		for (ModeledGameObject gameObject : gameObjects) {
 			gameObject.destroy();
 		}
-		defaultShaderHandler.delete();
+		defaultShaderProgram.delete();
+	}
+
+	private void renderNormalsDebug(Camera camera, Matrix4f viewMatrix, ShaderProgram shaderProgram) {
+		//Point light
+		shaderProgram.enable();
+
+		//Render the current object
+		shaderProgram.createUniform("projectionMatrix");
+		shaderProgram.createUniform("modelViewMatrix");
+
+		//Draw whatever changes were pushed
+		for (ModeledGameObject gameObject : gameObjects) {
+			gameObject.update();
+			shaderProgram.setUniform("projectionMatrix", camera.getProjectionMatrix());
+			shaderProgram.setUniform("modelViewMatrix", gameObject.getModelViewMatrix(viewMatrix));
+			gameObject.render();
+		}
+	}
+
+	private void renderDefault(Camera camera, Matrix4f viewMatrix, ShaderProgram shaderProgram, PointLight pointLight, Material material) {
+		//Reserve memory for light position
+		Vector4f newPos;
+
+		//Point light
+		shaderProgram.enable();
+		shaderProgram.createPointLightUniform("pointLight");
+		//Translate the point light to view coordinates
+		newPos = new Vector4f(pointLight.getPosition(), 0.0f);
+
+		//Render the current object
+		shaderProgram.createUniform("projectionMatrix");
+		shaderProgram.createUniform("modelViewMatrix");
+		//Mesh materials this should probably be handled by some sort background system
+		shaderProgram.createMaterialUniform("material");
+		//Lighting stuff
+		shaderProgram.createUniform("specularPower");
+		shaderProgram.createUniform("ambientLight");
+
+		//Draw whatever changes were pushed
+		for (ModeledGameObject gameObject : gameObjects) {
+
+			gameObject.update();
+
+			shaderProgram.setUniform("projectionMatrix", camera.getProjectionMatrix());
+			shaderProgram.setUniform("ambientLight", new Vector3f(0.3f, 0.3f, 0.3f));
+			shaderProgram.setUniform("specularPower", 10.0f);
+			shaderProgram.setUniform("modelViewMatrix", gameObject.getModelViewMatrix(viewMatrix));
+			shaderProgram.setUniform("pointLight", new PointLight(pointLight, newPos.mul(viewMatrix)));
+			//Material stuff
+			//TODO stop rendering models recursively without passing a material from each mesh
+			shaderProgram.setUniform("material", material);
+
+			gameObject.render();
+		}
 	}
 }
