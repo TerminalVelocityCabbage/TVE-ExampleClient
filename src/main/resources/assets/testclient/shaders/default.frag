@@ -71,7 +71,7 @@ vec4 calcPointLight(PointLight light, vec3 position, vec3 normal) {
    // Specular Light
    vec4 sC = vec4(0, 0, 0, 0);
    //A value from 0 to 1 that represents the ammount of light making it to the camera
-   float specularFactor = max( dot(cameraDirection, reflectedLight), 0.0);
+   float specularFactor = max(dot(cameraDirection, reflectedLight), 0.0);
    specularFactor = pow(specularFactor, specularPower);
    sC = specularColor * specularFactor * material.reflectivity * vec4(light.color, 1.0);
 
