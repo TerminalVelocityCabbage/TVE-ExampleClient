@@ -51,29 +51,38 @@ void setupColors(Material material, vec2 textCoord) {
 }
 
 vec4 calcPointLight(PointLight light, vec3 position, vec3 normal) {
+
+   //Some inital setup
+   vec3 lightDirection = light.position - position;
+   vec3 cameraDirection = normalize(-position);
+
+   //Create unit vectors for the light directions
+   vec3 unitDirectionTowardsLight  = normalize(lightDirection);
+   vec3 unitDirectionAwayFromLight = -unitDirectionTowardsLight;
+
+   //The ammount of light reflected towards the camera from the light source
+   vec3 reflectedLight = normalize(reflect(unitDirectionAwayFromLight, normal));
+
    // Diffuse Light
    vec4 dC = vec4(0, 0, 0, 0);
-   vec3 lightDirection = light.position - position;
-   vec3 toLightSource  = normalize(lightDirection);
-   float diffuseFactor = max(dot(normal, toLightSource), 0.0);
+   float diffuseFactor = max(dot(normal, unitDirectionTowardsLight), 0.0);
    dC = diffuseColor * vec4(light.color, 1.0) * light.intensity * diffuseFactor;
 
    // Specular Light
    vec4 sC = vec4(0, 0, 0, 0);
-   vec3 cameraDirection = normalize(-position);
-   vec3 fromLightSource = -toLightSource;
-   vec3 reflectedLight = normalize(reflect(fromLightSource, normal));
+   //A value from 0 to 1 that represents the ammount of light making it to the camera
    float specularFactor = max( dot(cameraDirection, reflectedLight), 0.0);
    specularFactor = pow(specularFactor, specularPower);
    sC = specularColor * specularFactor * material.reflectivity * vec4(light.color, 1.0);
 
    // Attenuation
    float distance = length(lightDirection);
-   float attenuationInv = light.attenuation.constant + (light.attenuation.linear * distance) + (light.attenuation.exponential * distance * distance);
+   float attenuationInv = light.attenuation.constant + (light.attenuation.linear * distance) + (light.attenuation.exponential * (distance * distance));
    return (dC + sC) / attenuationInv;
 }
 
 void main() {
    setupColors(material, vertTextureCoord);
-   fragColor = ambientColor * vec4(ambientLight, 1) + calcPointLight(pointLight, vertVertexPosition, vertVertexNormal);
+   vec4 unlitColor = ambientColor * vec4(ambientLight, 1);
+   fragColor = unlitColor + calcPointLight(pointLight, vertVertexPosition, vertVertexNormal);
 }

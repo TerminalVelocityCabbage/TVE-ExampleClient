@@ -8,7 +8,6 @@ import com.terminalvelocitycabbage.engine.client.renderer.model.Material;
 import com.terminalvelocitycabbage.engine.client.renderer.model.Model;
 import com.terminalvelocitycabbage.engine.client.renderer.shader.ShaderProgram;
 import com.terminalvelocitycabbage.engine.client.resources.Identifier;
-import com.terminalvelocitycabbage.engine.debug.Log;
 import com.terminalvelocitycabbage.engine.entity.ModeledGameObject;
 import com.terminalvelocitycabbage.exampleclient.models.DCModel;
 import org.joml.Matrix4f;
@@ -54,14 +53,12 @@ public class GameClientRenderer extends Renderer {
 		ShaderProgram defaultShaderProgram = new ShaderProgram();
 		defaultShaderProgram.queueShader(GL_VERTEX_SHADER, ASSETS_ROOT_RESOURCE_MANAGER, new Identifier(GameClient.ID, "shaders/default.vert"));
 		defaultShaderProgram.queueShader(GL_FRAGMENT_SHADER, ASSETS_ROOT_RESOURCE_MANAGER, new Identifier(GameClient.ID, "shaders/default.frag"));
-		Log.info(defaultShaderProgram.getID());
 		defaultShaderProgram.build();
 
 		//Create shader program for debugging normals directions
 		ShaderProgram normalShaderProgram = new ShaderProgram();
 		normalShaderProgram.queueShader(GL_VERTEX_SHADER, ASSETS_ROOT_RESOURCE_MANAGER, new Identifier(GameClient.ID, "shaders/default.vert"));
 		normalShaderProgram.queueShader(GL_FRAGMENT_SHADER, ASSETS_ROOT_RESOURCE_MANAGER, new Identifier(GameClient.ID, "shaders/normalonly.frag"));
-		Log.info(normalShaderProgram.getID());
 		normalShaderProgram.build();
 
 		//Init viewMatrix var
@@ -76,7 +73,7 @@ public class GameClientRenderer extends Renderer {
 
 		//Create a point light
 		Attenuation attenuation = new Attenuation(0.0f, 0.0f, 1.0f);
-		PointLight pointLight = new PointLight(new Vector3f(1, 1, 1), new Vector3f(1,9,2), 10.0f, attenuation);
+		PointLight pointLight = new PointLight(new Vector3f(1, 1, 1), new Vector3f(0,0,1), 1.0f, attenuation);
 
 		//For wireframe mode
 		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -114,8 +111,8 @@ public class GameClientRenderer extends Renderer {
 			//This has to happen before game items are updated
 			viewMatrix = camera.getViewMatrix();
 
-			renderNormalsDebug(camera, viewMatrix, normalShaderProgram);
-			//renderDefault(camera, viewMatrix, defaultShaderProgram, pointLight, head.getMaterial());
+			//renderNormalsDebug(camera, viewMatrix, normalShaderProgram);
+			renderDefault(camera, viewMatrix, defaultShaderProgram, pointLight, head.getMaterial());
 
 			//Send the frame
 			push();
@@ -170,7 +167,9 @@ public class GameClientRenderer extends Renderer {
 			gameObject.update();
 
 			shaderProgram.setUniform("projectionMatrix", camera.getProjectionMatrix());
+			//The color of light all objects will receive without a light present
 			shaderProgram.setUniform("ambientLight", new Vector3f(0.3f, 0.3f, 0.3f));
+			//How intense the reflected light is
 			shaderProgram.setUniform("specularPower", 10.0f);
 			shaderProgram.setUniform("modelViewMatrix", gameObject.getModelViewMatrix(viewMatrix));
 			shaderProgram.setUniform("pointLight", new PointLight(pointLight, newPos.mul(viewMatrix)));

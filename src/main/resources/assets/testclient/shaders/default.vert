@@ -19,5 +19,5 @@ void main() {
    vertColor = inColor;
    vertTextureCoord = inTextureCoord;
    vertVertexNormal = normalize(modelViewMatrix * vec4(vertexNormal, 0.0)).xyz;
-   vertVertexPosition = modelViewPosition.xyz;
+   vertVertexPosition = inPosition.xyz;
 }
