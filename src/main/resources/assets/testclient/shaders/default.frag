@@ -58,23 +58,28 @@ vec4 calcPointLight(PointLight light, vec3 position, vec3 normal) {
    float distance = length(lightDirection);
    vec3 cd = normalize(cameraDirection);
 
-   //Create unit vectors for the light directions
+   //Unit vector of the direction towards a light
    vec3 unitDirectionTowardsLight  = normalize(lightDirection);
-   vec3 unitDirectionAwayFromLight = -unitDirectionTowardsLight;
 
    //The ammount of light reflected towards the camera from the light source
-   vec3 reflectedLight = normalize(reflect(unitDirectionAwayFromLight, normal));
+   vec3 reflectedLight = normalize(reflect(-unitDirectionTowardsLight, normal));
 
    //how much light 0-1 a vertex gets.
    //If normal vector is opposite to vector coming from light 100% light
    //If normal vector is the same as the vector coming from the light 0% light
    float diffuseFactor = max(dot(normal, unitDirectionTowardsLight), 0.0);
-   vec4 finalDiffuseColor = light.color * diffuseFactor;
+   vec4 finalDiffuseColor = diffuseColor * light.color * diffuseFactor;
+
+   // Specular Light
+   //A value from 0 to 1 that represents the ammount of light reflected into the camera
+   float specularFactor = max(dot(cameraDirection, reflectedLight), 0.0);
+   specularFactor = pow(specularFactor, specularPower);
+   vec4 finalSpecularColor = specularColor * specularFactor * material.reflectivity;
 
    //Attenuation - the higer the number here the less light will make it to an objects
    float attenuationFade = 1 / (light.attenuation.constant + (light.attenuation.linear * distance) + (light.attenuation.exponential * (distance * distance)));
 
-   return light.intensity * attenuationFade * vec4(finalDiffuseColor);
+   return light.intensity * attenuationFade * (vec4(finalDiffuseColor) + finalSpecularColor);
 }
 
 void main() {
