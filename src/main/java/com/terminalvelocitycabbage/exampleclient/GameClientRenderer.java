@@ -111,8 +111,8 @@ public class GameClientRenderer extends Renderer {
 			//This has to happen before game items are updated
 			viewMatrix = camera.getViewMatrix();
 
-			//renderNormalsDebug(camera, viewMatrix, normalShaderProgram);
-			renderDefault(camera, viewMatrix, defaultShaderProgram, pointLight, head.getMaterial());
+			renderNormalsDebug(camera, viewMatrix, normalShaderProgram);
+			//renderDefault(camera, viewMatrix, defaultShaderProgram, pointLight, head.getMaterial());
 
 			//Send the frame
 			push();
@@ -132,12 +132,14 @@ public class GameClientRenderer extends Renderer {
 		//Render the current object
 		shaderProgram.createUniform("projectionMatrix");
 		shaderProgram.createUniform("modelViewMatrix");
+		shaderProgram.createUniform("normalTransformationMatrix");
 
 		//Draw whatever changes were pushed
 		for (ModeledGameObject gameObject : gameObjects) {
 			gameObject.update();
 			shaderProgram.setUniform("projectionMatrix", camera.getProjectionMatrix());
 			shaderProgram.setUniform("modelViewMatrix", gameObject.getModelViewMatrix(viewMatrix));
+			shaderProgram.setUniform("normalTransformationMatrix", gameObject.getModelViewMatrix(viewMatrix).normal(new Matrix4f()));
 			gameObject.render();
 		}
 	}
