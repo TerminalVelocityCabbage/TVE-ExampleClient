@@ -73,7 +73,7 @@ vec4 calcPointLight(PointLight light, vec3 position, vec3 normal) {
    //Attenuation - the higer the number here the less light will make it to an objects
    float attenuationFade = 1 / (light.attenuation.constant + (light.attenuation.linear * distance) + (light.attenuation.exponential * (distance * distance)));
 
-   return attenuationFade * vec4(diffuseFactor);
+   return light.intensity * attenuationFade * vec4(diffuseFactor);
 }
 
 void main() {
