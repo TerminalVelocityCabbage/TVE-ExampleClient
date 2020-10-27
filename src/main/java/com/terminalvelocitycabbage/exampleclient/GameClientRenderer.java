@@ -111,8 +111,8 @@ public class GameClientRenderer extends Renderer {
 			//This has to happen before game items are updated
 			viewMatrix = camera.getViewMatrix();
 
-			renderNormalsDebug(camera, viewMatrix, normalShaderProgram);
-			//renderDefault(camera, viewMatrix, defaultShaderProgram, pointLight, head.getMaterial());
+			//renderNormalsDebug(camera, viewMatrix, normalShaderProgram);
+			renderDefault(camera, viewMatrix, defaultShaderProgram, pointLight, head.getMaterial());
 
 			//Send the frame
 			push();
@@ -162,8 +162,9 @@ public class GameClientRenderer extends Renderer {
 		//Mesh materials this should probably be handled by some sort background system
 		shaderProgram.createMaterialUniform("material");
 		//Lighting stuff
-		shaderProgram.createUniform("specularPower");
+		//shaderProgram.createUniform("specularPower");
 		shaderProgram.createUniform("ambientLight");
+		//shaderProgram.createUniform("cameraDirection");
 
 		//Draw whatever changes were pushed
 		for (ModeledGameObject gameObject : gameObjects) {
@@ -171,16 +172,17 @@ public class GameClientRenderer extends Renderer {
 			gameObject.update();
 
 			shaderProgram.setUniform("projectionMatrix", camera.getProjectionMatrix());
-			shaderProgram.setUniform("normalTransformationMatrix", gameObject.getModelViewMatrix(viewMatrix).normal(new Matrix4f()));
+			shaderProgram.setUniform("normalTransformationMatrix", gameObject.getTransformationMatrix());
 			//The color of light all objects will receive without a light present
 			shaderProgram.setUniform("ambientLight", new Vector3f(0.3f, 0.3f, 0.3f));
 			//How intense the reflected light is
-			shaderProgram.setUniform("specularPower", 10.0f);
+			//shaderProgram.setUniform("specularPower", 10.0f);
 			shaderProgram.setUniform("modelViewMatrix", gameObject.getModelViewMatrix(viewMatrix));
 			shaderProgram.setUniform("pointLight", new PointLight(pointLight, newPos));
 			//Material stuff
 			//TODO stop rendering models recursively without passing a material from each mesh
 			shaderProgram.setUniform("material", material);
+			//shaderProgram.setUniform("cameraDirection", camera.getRotation());
 
 			gameObject.render();
 		}

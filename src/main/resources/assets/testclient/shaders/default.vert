@@ -19,6 +19,6 @@ void main() {
    gl_Position = projectionMatrix * modelViewPosition;
    vertColor = inColor;
    vertTextureCoord = inTextureCoord;
-   vertVertexNormal = normalize(normalTransformationMatrix * vec4(vertexNormal, 0.0)).xyz;
-   vertVertexPosition = modelViewPosition.xyz;
+   vertVertexNormal = (normalTransformationMatrix * vec4(vertexNormal, 0.0)).xyz;
+   vertVertexPosition = inPosition.xyz;
 }

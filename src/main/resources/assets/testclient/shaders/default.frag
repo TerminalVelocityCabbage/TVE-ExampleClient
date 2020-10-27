@@ -33,6 +33,7 @@ uniform vec3 ambientLight;
 uniform float specularPower;
 uniform Material material;
 uniform PointLight pointLight;
+uniform vec3 cameraDirection;
 
 vec4 ambientColor;
 vec4 diffuseColor;
@@ -54,7 +55,8 @@ vec4 calcPointLight(PointLight light, vec3 position, vec3 normal) {
 
    //Some inital setup
    vec3 lightDirection = light.position - position;
-   vec3 cameraDirection = normalize(-position);
+   float distance = length(lightDirection);
+   vec3 cd = normalize(cameraDirection);
 
    //Create unit vectors for the light directions
    vec3 unitDirectionTowardsLight  = normalize(lightDirection);
@@ -63,22 +65,15 @@ vec4 calcPointLight(PointLight light, vec3 position, vec3 normal) {
    //The ammount of light reflected towards the camera from the light source
    vec3 reflectedLight = normalize(reflect(unitDirectionAwayFromLight, normal));
 
-   // Diffuse Light
-   vec4 dC = vec4(0, 0, 0, 0);
+   //how much light 0-1 a vertex gets.
+   //If normal vector is opposite to vector coming from light 100% light
+   //If normal vector is the same as the vector coming from the light 0% light
    float diffuseFactor = max(dot(normal, unitDirectionTowardsLight), 0.0);
-   dC = diffuseColor * vec4(light.color, 1.0) * light.intensity * diffuseFactor;
 
-   // Specular Light
-   vec4 sC = vec4(0, 0, 0, 0);
-   //A value from 0 to 1 that represents the ammount of light making it to the camera
-   float specularFactor = max(dot(cameraDirection, reflectedLight), 0.0);
-   specularFactor = pow(specularFactor, specularPower);
-   sC = specularColor * specularFactor * material.reflectivity * vec4(light.color, 1.0);
+   //Attenuation - the higer the number here the less light will make it to an objects
+   float attenuationFade = 1 / (light.attenuation.constant + (light.attenuation.linear * distance) + (light.attenuation.exponential * (distance * distance)));
 
-   // Attenuation
-   float distance = length(lightDirection);
-   float attenuationInv = light.attenuation.constant + (light.attenuation.linear * distance) + (light.attenuation.exponential * (distance * distance));
-   return (dC + sC) / attenuationInv;
+   return attenuationFade * vec4(diffuseFactor);
 }
 
 void main() {
