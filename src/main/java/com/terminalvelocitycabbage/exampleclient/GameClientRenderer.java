@@ -139,7 +139,7 @@ public class GameClientRenderer extends Renderer {
 			gameObject.update();
 			shaderProgram.setUniform("projectionMatrix", camera.getProjectionMatrix());
 			shaderProgram.setUniform("modelViewMatrix", gameObject.getModelViewMatrix(viewMatrix));
-			shaderProgram.setUniform("normalTransformationMatrix", gameObject.getModelViewMatrix(viewMatrix).normal(new Matrix4f()));
+			shaderProgram.setUniform("normalTransformationMatrix", gameObject.getTransformationMatrix());
 			gameObject.render();
 		}
 	}
