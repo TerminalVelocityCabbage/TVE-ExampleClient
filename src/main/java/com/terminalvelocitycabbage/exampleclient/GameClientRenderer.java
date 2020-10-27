@@ -1,11 +1,11 @@
 package com.terminalvelocitycabbage.exampleclient;
 
-import com.terminalvelocitycabbage.engine.client.renderer.Renderer;
-import com.terminalvelocitycabbage.engine.client.renderer.components.Camera;
-import com.terminalvelocitycabbage.engine.client.renderer.model.Model;
-import com.terminalvelocitycabbage.engine.client.resources.Identifier;
-import com.terminalvelocitycabbage.engine.client.shader.ShaderProgram;
-import com.terminalvelocitycabbage.engine.entity.ModeledGameObject;
+import com.terminalvelocitycabbage.client.renderer.Renderer;
+import com.terminalvelocitycabbage.client.renderer.components.Camera;
+import com.terminalvelocitycabbage.client.renderer.model.Model;
+import com.terminalvelocitycabbage.client.resources.Identifier;
+import com.terminalvelocitycabbage.client.shader.ShaderProgram;
+import com.terminalvelocitycabbage.entity.ModeledGameObject;
 import com.terminalvelocitycabbage.exampleclient.models.DCModel;
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
@@ -31,7 +31,8 @@ public class GameClientRenderer extends Renderer {
 		Camera camera = new Camera(60, 0.01f, 1000.0f);
 
 		//Load a model to a Model object from dcm file
-		DCModel model = DCModel.Loader.load(ASSETS_ROOT_RESOURCE_MANAGER, new Identifier(GameClient.ID, "model/Gerald.dcm"), new Identifier(GameClient.ID, "textures/gerald_base.png"));
+		DCModel model = DCModel.load(ASSETS_ROOT_RESOURCE_MANAGER, new Identifier(GameClient.ID, "model/Gerald.dcm"));
+		model.setTexture(ASSETS_ROOT_RESOURCE_MANAGER, new Identifier(GameClient.ID, "textures/gerald_base.png"));
 		//Create a game object from the model loaded
 		ModeledGameObject object = ModeledGameObject.builder().setModel(model).build();
 		//Expose the head model part from the model so it can be animated in the game loop
