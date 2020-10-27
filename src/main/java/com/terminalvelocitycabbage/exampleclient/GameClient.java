@@ -1,6 +1,6 @@
 package com.terminalvelocitycabbage.exampleclient;
 
-import com.terminalvelocitycabbage.client.ClientBase;
+import com.terminalvelocitycabbage.engine.client.ClientBase;
 
 public class GameClient extends ClientBase {
 

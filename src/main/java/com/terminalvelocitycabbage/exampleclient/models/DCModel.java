@@ -1,13 +1,13 @@
 package com.terminalvelocitycabbage.exampleclient.models;
 
 import com.dumbcodemc.studio.ModelLoader;
-import com.terminalvelocitycabbage.client.renderer.model.Model;
-import com.terminalvelocitycabbage.client.renderer.model.TexturedMesh;
-import com.terminalvelocitycabbage.client.renderer.model.Vertex;
-import com.terminalvelocitycabbage.client.renderer.shapes.TexturedCuboid;
-import com.terminalvelocitycabbage.client.resources.Identifier;
-import com.terminalvelocitycabbage.client.resources.Resource;
-import com.terminalvelocitycabbage.client.resources.ResourceManager;
+import com.terminalvelocitycabbage.engine.client.renderer.model.Model;
+import com.terminalvelocitycabbage.engine.client.renderer.model.TexturedMesh;
+import com.terminalvelocitycabbage.engine.client.renderer.model.Vertex;
+import com.terminalvelocitycabbage.engine.client.renderer.shapes.TexturedCuboid;
+import com.terminalvelocitycabbage.engine.client.resources.Identifier;
+import com.terminalvelocitycabbage.engine.client.resources.Resource;
+import com.terminalvelocitycabbage.engine.client.resources.ResourceManager;
 import com.dumbcodemc.studio.ModelCube;
 import com.dumbcodemc.studio.ModelInfo;
 import org.joml.Vector3f;

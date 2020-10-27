@@ -1,8 +1,8 @@
 package com.terminalvelocitycabbage.exampleclient;
 
-import com.terminalvelocitycabbage.client.input.InputHandler;
-import com.terminalvelocitycabbage.client.input.KeyBind;
-import com.terminalvelocitycabbage.client.renderer.components.Window;
+import com.terminalvelocitycabbage.engine.client.input.InputHandler;
+import com.terminalvelocitycabbage.engine.client.input.KeyBind;
+import com.terminalvelocitycabbage.engine.client.renderer.components.Window;
 import org.joml.Vector3f;
 
 import static org.lwjgl.glfw.GLFW.*;

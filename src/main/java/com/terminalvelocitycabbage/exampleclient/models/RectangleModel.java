@@ -1,7 +1,7 @@
 package com.terminalvelocitycabbage.exampleclient.models;
 
-import com.terminalvelocitycabbage.client.renderer.model.Model;
-import com.terminalvelocitycabbage.client.renderer.shapes.TexturedRectangle;
+import com.terminalvelocitycabbage.engine.client.renderer.model.Model;
+import com.terminalvelocitycabbage.engine.client.renderer.shapes.TexturedRectangle;
 import org.joml.Vector3f;
 
 import java.util.ArrayList;

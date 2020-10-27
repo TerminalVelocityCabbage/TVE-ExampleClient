@@ -1,11 +1,11 @@
 package com.terminalvelocitycabbage.exampleclient;
 
-import com.terminalvelocitycabbage.client.renderer.Renderer;
-import com.terminalvelocitycabbage.client.renderer.components.Camera;
-import com.terminalvelocitycabbage.client.renderer.model.Model;
-import com.terminalvelocitycabbage.client.resources.Identifier;
-import com.terminalvelocitycabbage.client.shader.ShaderProgram;
-import com.terminalvelocitycabbage.entity.ModeledGameObject;
+import com.terminalvelocitycabbage.engine.client.renderer.Renderer;
+import com.terminalvelocitycabbage.engine.client.renderer.components.Camera;
+import com.terminalvelocitycabbage.engine.client.renderer.model.Model;
+import com.terminalvelocitycabbage.engine.client.resources.Identifier;
+import com.terminalvelocitycabbage.engine.client.shader.ShaderProgram;
+import com.terminalvelocitycabbage.engine.entity.ModeledGameObject;
 import com.terminalvelocitycabbage.exampleclient.models.DCModel;
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
