@@ -14,7 +14,7 @@ struct Attenuation {
 };
 
 struct PointLight {
-   vec3 color;
+   vec4 color;
    vec3 position;
    float intensity;
    Attenuation attenuation;
@@ -69,11 +69,12 @@ vec4 calcPointLight(PointLight light, vec3 position, vec3 normal) {
    //If normal vector is opposite to vector coming from light 100% light
    //If normal vector is the same as the vector coming from the light 0% light
    float diffuseFactor = max(dot(normal, unitDirectionTowardsLight), 0.0);
+   vec4 finalDiffuseColor = light.color * diffuseFactor;
 
    //Attenuation - the higer the number here the less light will make it to an objects
    float attenuationFade = 1 / (light.attenuation.constant + (light.attenuation.linear * distance) + (light.attenuation.exponential * (distance * distance)));
 
-   return light.intensity * attenuationFade * vec4(diffuseFactor);
+   return light.intensity * attenuationFade * vec4(finalDiffuseColor);
 }
 
 void main() {

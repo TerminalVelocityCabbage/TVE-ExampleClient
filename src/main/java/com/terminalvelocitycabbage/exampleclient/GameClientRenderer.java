@@ -73,7 +73,7 @@ public class GameClientRenderer extends Renderer {
 
 		//Create a point light
 		Attenuation attenuation = new Attenuation(0.0f, 0.0f, 1.0f);
-		PointLight pointLight = new PointLight(new Vector3f(1, 1, 1), new Vector3f(0,0,1), 1.0f, attenuation);
+		PointLight pointLight = new PointLight(new Vector3f(0, 1, 1), new Vector3f(0,0,1), 1.0f, attenuation);
 
 		//For wireframe mode
 		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -178,7 +178,7 @@ public class GameClientRenderer extends Renderer {
 			//How intense the reflected light is
 			//shaderProgram.setUniform("specularPower", 10.0f);
 			shaderProgram.setUniform("modelViewMatrix", gameObject.getModelViewMatrix(viewMatrix));
-			shaderProgram.setUniform("pointLight", new PointLight(pointLight, newPos));
+			shaderProgram.setUniform("pointLight", pointLight);
 			//Material stuff
 			//TODO stop rendering models recursively without passing a material from each mesh
 			shaderProgram.setUniform("material", material);
