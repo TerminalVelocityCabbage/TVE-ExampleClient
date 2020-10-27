@@ -12,12 +12,13 @@ out vec3 vertVertexPosition;
 
 uniform mat4 projectionMatrix;
 uniform mat4 modelViewMatrix;
+uniform mat4 normalTransformationMatrix;
 
 void main() {
    vec4 modelViewPosition = modelViewMatrix * vec4(inPosition, 1.0);
    gl_Position = projectionMatrix * modelViewPosition;
    vertColor = inColor;
    vertTextureCoord = inTextureCoord;
-   vertVertexNormal = normalize(modelViewMatrix * vec4(vertexNormal, 1.0)).xyz;
+   vertVertexNormal = normalize(normalTransformationMatrix * vec4(vertexNormal, 0.0)).xyz;
    vertVertexPosition = modelViewPosition.xyz;
 }
