@@ -150,7 +150,8 @@ public class GameClientRenderer extends Renderer {
 		shaderProgram.enable();
 		shaderProgram.createPointLightUniform("pointLight");
 		//Translate the point light to view coordinates
-		newPos = new Vector4f(pointLight.getPosition(), 0.0f);
+		newPos = new Vector4f(pointLight.getPosition(), 1.0f);
+		newPos.mul(viewMatrix);
 
 		//Render the current object
 		shaderProgram.createUniform("projectionMatrix");
@@ -172,7 +173,7 @@ public class GameClientRenderer extends Renderer {
 			//How intense the reflected light is
 			shaderProgram.setUniform("specularPower", 10.0f);
 			shaderProgram.setUniform("modelViewMatrix", gameObject.getModelViewMatrix(viewMatrix));
-			shaderProgram.setUniform("pointLight", new PointLight(pointLight, newPos.mul(viewMatrix)));
+			shaderProgram.setUniform("pointLight", new PointLight(pointLight, newPos));
 			//Material stuff
 			//TODO stop rendering models recursively without passing a material from each mesh
 			shaderProgram.setUniform("material", material);
