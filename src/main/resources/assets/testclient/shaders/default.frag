@@ -20,6 +20,12 @@ struct PointLight {
    Attenuation attenuation;
 };
 
+struct SpotLight {
+   PointLight pointLight;
+   vec3 coneDirection;
+   float cutoff;
+};
+
 struct DirectionalLight {
    vec3 direction;
    vec4 color;
@@ -39,6 +45,7 @@ uniform vec3 ambientLight;
 uniform float specularPower;
 uniform Material material;
 uniform PointLight pointLight;
+uniform SpotLight spotLight;
 uniform DirectionalLight directionalLight;
 
 vec4 materialAmbientColor;
@@ -91,12 +98,34 @@ vec4 calcPointLight(PointLight light, vec3 position, vec3 normal) {
    return lightColor / attenuationFade;
 }
 
+vec4 calcSpotLight(SpotLight light, vec3 position, vec3 normal) {
+
+   //Some initial setup
+   vec3 lightDirection = light.pointLight.position - position;
+   vec3 unitFromLightDirection = -normalize(lightDirection);
+   //Get the angle of the vertex to the light source direction to determine later if it's within the cone angle
+   float spotAlpha = dot(unitFromLightDirection, normalize(light.coneDirection));
+
+   vec4 color = vec4(0, 0, 0, 0);
+   if (spotAlpha > light.cutoff) {
+      color = calcPointLight(light.pointLight, position, normal);
+      //Determine the percentage of light getting to a fragment based on the distance from the cone direction vector
+      color *= (1.0 - (1.0 - spotAlpha) / (1.0 - light.cutoff));
+   }
+
+   return color;
+}
+
 vec4 calcDirectionalLight(DirectionalLight light, vec3 position, vec3 normal) {
    return calcLightColor(light.color, light.intensity, position, normalize(light.direction), normal);
 }
 
 void main() {
    setupColors(material, vertTextureCoord);
-   vec4 unlitColor = materialAmbientColor * vec4(ambientLight, 1);
-   fragColor = unlitColor + calcPointLight(pointLight, vertVertexPosition, vertVertexNormal) + calcDirectionalLight(directionalLight, vertVertexPosition, vertVertexNormal);
+   //the color of the fragment multiplied by the ambient light
+   vec4 color = materialAmbientColor * vec4(ambientLight, 1);
+   color += calcPointLight(pointLight, vertVertexPosition, vertVertexNormal);
+   color += calcDirectionalLight(directionalLight, vertVertexPosition, vertVertexNormal);
+   color += calcSpotLight(spotLight, vertVertexPosition, vertVertexNormal);
+   fragColor = color;
 }
