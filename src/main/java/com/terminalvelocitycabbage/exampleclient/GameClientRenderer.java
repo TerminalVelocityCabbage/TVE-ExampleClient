@@ -36,7 +36,8 @@ public class GameClientRenderer extends Renderer {
 		Camera camera = new Camera(60, 0.01f, 1000.0f);
 
 		//Load a model to a Model object from dcm file
-		DCModel model = DCModel.Loader.load(ASSETS_ROOT_RESOURCE_MANAGER, new Identifier(GameClient.ID, "model/Gerald.dcm"), new Identifier(GameClient.ID, "textures/gerald_base.png"));
+		DCModel model = DCModel.load(ASSETS_ROOT_RESOURCE_MANAGER, new Identifier(GameClient.ID, "model/Gerald.dcm"));
+		model.setTexture(ASSETS_ROOT_RESOURCE_MANAGER, new Identifier(GameClient.ID, "textures/gerald_base.png"));
 		//Create a game object from the model loaded
 		ModeledGameObject object = ModeledGameObject.builder().setModel(model).build();
 		//Expose the head model part from the model so it can be animated in the game loop
