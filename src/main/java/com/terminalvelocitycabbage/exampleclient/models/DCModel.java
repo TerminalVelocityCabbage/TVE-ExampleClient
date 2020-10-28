@@ -3,7 +3,6 @@ package com.terminalvelocitycabbage.exampleclient.models;
 import com.dumbcodemc.studio.ModelLoader;
 import com.terminalvelocitycabbage.engine.client.renderer.model.Material;
 import com.terminalvelocitycabbage.engine.client.renderer.model.Model;
-import com.terminalvelocitycabbage.engine.client.renderer.model.TexturedMesh;
 import com.terminalvelocitycabbage.engine.client.renderer.model.Texture;
 import com.terminalvelocitycabbage.engine.client.renderer.model.Vertex;
 import com.terminalvelocitycabbage.engine.client.renderer.shapes.TexturedCuboid;
@@ -83,9 +82,7 @@ public class DCModel extends Model {
                     new Vertex().setXYZ(1.0f, 0.0f, 1.0f).setRGB(255, 255, 255).setUv(cube.uvs[4][0], cube.uvs[4][1]).setNormal(0, -1, 0),
                     new Vertex().setXYZ(1.0f, 0.0f, 0.0f).setRGB(255, 255, 255).setUv(cube.uvs[4][0], cube.uvs[4][3]).setNormal(0, -1, 0),
                     new Vertex().setXYZ(0.0f, 0.0f, 0.0f).setRGB(255, 255, 255).setUv(cube.uvs[4][2], cube.uvs[4][3]).setNormal(0, -1, 0),
-                    new Vertex().setXYZ(0.0f, 0.0f, 1.0f).setRGB(255, 255, 255).setUv(cube.uvs[4][2], cube.uvs[4][1]).setNormal(0, -1, 0),
-
-                    new Material(new Texture(cube.model.resourceManager, cube.model.textureIdentifier))
+                    new Vertex().setXYZ(0.0f, 0.0f, 1.0f).setRGB(255, 255, 255).setUv(cube.uvs[4][2], cube.uvs[4][1]).setNormal(0, -1, 0)
                 ),
                 new Vector3f(cube.offset),
                 new Vector3f(cube.rotationPoint),
