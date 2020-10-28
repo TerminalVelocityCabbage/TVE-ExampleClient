@@ -40,71 +40,63 @@ uniform float specularPower;
 uniform Material material;
 uniform PointLight pointLight;
 uniform DirectionalLight directionalLight;
-uniform vec3 cameraDirection;
 
-vec4 ambientColor;
-vec4 diffuseColor;
-vec4 specularColor;
+vec4 materialAmbientColor;
+vec4 materialDiffuseColor;
+vec4 materialSpecularColor;
 
 void setupColors(Material material, vec2 textCoord) {
    if (material.hasTexture == 1) {
-      ambientColor = texture(textureSampler, textCoord);
-      diffuseColor = ambientColor;
-      specularColor = ambientColor;
+      materialAmbientColor = texture(textureSampler, textCoord);
+      materialDiffuseColor = materialAmbientColor;
+      materialSpecularColor = materialAmbientColor;
    } else {
-      ambientColor = material.ambient;
-      diffuseColor = material.diffuse;
-      specularColor = material.specular;
+      materialAmbientColor = material.ambient;
+      materialDiffuseColor = material.diffuse;
+      materialSpecularColor = material.specular;
    }
+}
+
+vec4 calcLightColor(vec4 lightColor, float lightIntensity, vec3 position, vec3 toLightDirection, vec3 normal) {
+
+   //Setup
+   vec3 cameraDirection = normalize(-position);
+   vec3 fromLightDirection = -toLightDirection;
+   vec3 reflectedLight = normalize(reflect(fromLightDirection, normal));
+
+   //Diffuse
+   vec4 diffuseColor = vec4(0, 0, 0, 0);
+   float diffuseFactor = max(dot(normal, toLightDirection), 0.0);
+   diffuseColor = materialDiffuseColor * lightColor * lightIntensity * diffuseFactor;
+
+   //Specular
+   vec4 specularColor = vec4(0, 0, 0, 0);
+   float specularFactor = pow(max(dot(cameraDirection, reflectedLight), 0.0), specularPower);
+   specularColor = materialSpecularColor * lightIntensity * specularFactor * material.reflectivity * lightColor;
+
+   return (diffuseColor + specularColor);
 }
 
 vec4 calcPointLight(PointLight light, vec3 position, vec3 normal) {
 
    //Some inital setup
    vec3 lightDirection = light.position - position;
+   vec3 unitToLightDirection  = normalize(lightDirection);
+   vec4 lightColor = calcLightColor(light.color, light.intensity, position, unitToLightDirection, normal);
    float distance = length(lightDirection);
-   vec3 cd = normalize(cameraDirection);
 
-   //Unit vector of the direction towards a light
-   vec3 unitDirectionTowardsLight  = normalize(lightDirection);
+   //Attenuation (fade of light by distance)
+   float attenuationFade = light.attenuation.constant + (light.attenuation.linear * distance) + (light.attenuation.exponential * (distance * distance));
 
-   //The ammount of light reflected towards the camera from the light source
-   vec3 reflectedLight = normalize(reflect(-unitDirectionTowardsLight, normal));
-
-   //how much light 0-1 a vertex gets.
-   //If normal vector is opposite to vector coming from light 100% light
-   //If normal vector is the same as the vector coming from the light 0% light
-   float diffuseFactor = max(dot(normal, unitDirectionTowardsLight), 0.0);
-   vec4 finalDiffuseColor = diffuseColor * light.color * diffuseFactor;
-
-   // Specular Light
-   //A value from 0 to 1 that represents the ammount of light reflected into the camera
-   float specularFactor = max(dot(cameraDirection, reflectedLight), 0.0);
-   specularFactor = pow(specularFactor, specularPower);
-   vec4 finalSpecularColor = specularColor * specularFactor * material.reflectivity;
-
-   //Attenuation - the higer the number here the less light will make it to an objects
-   float attenuationFade = 1 / (light.attenuation.constant + (light.attenuation.linear * distance) + (light.attenuation.exponential * (distance * distance)));
-
-   return light.intensity * attenuationFade * (vec4(finalDiffuseColor) + finalSpecularColor);
+   return lightColor / attenuationFade;
 }
 
-vec4 calcDirectionalLight(DirectionalLight light, vec3 normal) {
-
-   //Unit vector of the direction towards a light
-   vec3 unitDirectionTowardsLight  = normalize(light.direction);
-
-   //how much light 0-1 a vertex gets.
-   //If normal vector is opposite to vector coming from light 100% light
-   //If normal vector is the same as the vector coming from the light 0% light
-   float diffuseFactor = max(dot(normal, unitDirectionTowardsLight), 0.0);
-   vec4 finalDiffuseColor = diffuseColor * light.color * diffuseFactor;
-
-   return light.intensity * finalDiffuseColor;
+vec4 calcDirectionalLight(DirectionalLight light, vec3 position, vec3 normal) {
+   return calcLightColor(light.color, light.intensity, position, normalize(light.direction), normal);
 }
 
 void main() {
    setupColors(material, vertTextureCoord);
-   vec4 unlitColor = ambientColor * vec4(ambientLight, 1);
-   fragColor = unlitColor + calcPointLight(pointLight, vertVertexPosition, vertVertexNormal) + calcDirectionalLight(directionalLight, vertVertexNormal);
+   vec4 unlitColor = materialAmbientColor * vec4(ambientLight, 1);
+   fragColor = unlitColor + calcPointLight(pointLight, vertVertexPosition, vertVertexNormal) + calcDirectionalLight(directionalLight, vertVertexPosition, vertVertexNormal);
 }
