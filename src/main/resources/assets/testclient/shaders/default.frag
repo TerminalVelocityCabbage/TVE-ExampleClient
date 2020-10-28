@@ -20,6 +20,12 @@ struct PointLight {
    Attenuation attenuation;
 };
 
+struct DirectionalLight {
+   vec3 direction;
+   vec4 color;
+   float intensity;
+};
+
 struct Material {
    vec4 ambient;
    vec4 diffuse;
@@ -33,6 +39,7 @@ uniform vec3 ambientLight;
 uniform float specularPower;
 uniform Material material;
 uniform PointLight pointLight;
+uniform DirectionalLight directionalLight;
 uniform vec3 cameraDirection;
 
 vec4 ambientColor;
@@ -82,8 +89,22 @@ vec4 calcPointLight(PointLight light, vec3 position, vec3 normal) {
    return light.intensity * attenuationFade * (vec4(finalDiffuseColor) + finalSpecularColor);
 }
 
+vec4 calcDirectionalLight(DirectionalLight light, vec3 normal) {
+
+   //Unit vector of the direction towards a light
+   vec3 unitDirectionTowardsLight  = normalize(light.direction);
+
+   //how much light 0-1 a vertex gets.
+   //If normal vector is opposite to vector coming from light 100% light
+   //If normal vector is the same as the vector coming from the light 0% light
+   float diffuseFactor = max(dot(normal, unitDirectionTowardsLight), 0.0);
+   vec4 finalDiffuseColor = diffuseColor * light.color * diffuseFactor;
+
+   return light.intensity * finalDiffuseColor;
+}
+
 void main() {
    setupColors(material, vertTextureCoord);
    vec4 unlitColor = ambientColor * vec4(ambientLight, 1);
-   fragColor = unlitColor + calcPointLight(pointLight, vertVertexPosition, vertVertexNormal);
+   fragColor = unlitColor + calcPointLight(pointLight, vertVertexPosition, vertVertexNormal) + calcDirectionalLight(directionalLight, vertVertexNormal);
 }

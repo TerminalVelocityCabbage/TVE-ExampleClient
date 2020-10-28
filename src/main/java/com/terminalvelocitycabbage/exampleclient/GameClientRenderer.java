@@ -2,6 +2,7 @@ package com.terminalvelocitycabbage.exampleclient;
 
 import com.terminalvelocitycabbage.engine.client.renderer.Renderer;
 import com.terminalvelocitycabbage.engine.client.renderer.components.Camera;
+import com.terminalvelocitycabbage.engine.client.renderer.lights.DirectionalLight;
 import com.terminalvelocitycabbage.engine.client.renderer.lights.PointLight;
 import com.terminalvelocitycabbage.engine.client.renderer.lights.components.Attenuation;
 import com.terminalvelocitycabbage.engine.client.renderer.model.Material;
@@ -77,6 +78,9 @@ public class GameClientRenderer extends Renderer {
 		Attenuation attenuation = new Attenuation(0.0f, 0.0f, 1.0f);
 		PointLight pointLight = new PointLight(new Vector3f(0, 2, -0.5f), new Vector3f(0,0,1), 1.0f, attenuation);
 
+		//Create a directional light
+		DirectionalLight directionalLight = new DirectionalLight(new Vector3f(-1f, 0f, 0f), new Vector4f(1, 1, 0.5f, 1), 1.0f);
+
 		//For wireframe mode
 		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
@@ -115,7 +119,7 @@ public class GameClientRenderer extends Renderer {
 			viewMatrix = camera.getViewMatrix();
 
 			//renderNormalsDebug(camera, viewMatrix, normalShaderProgram);
-			renderDefault(camera, viewMatrix, defaultShaderProgram, pointLight, head.getMaterial());
+			renderDefault(camera, viewMatrix, defaultShaderProgram, pointLight, directionalLight, head.getMaterial());
 
 			//Send the frame
 			push();
@@ -147,13 +151,14 @@ public class GameClientRenderer extends Renderer {
 		}
 	}
 
-	private void renderDefault(Camera camera, Matrix4f viewMatrix, ShaderProgram shaderProgram, PointLight pointLight, Material material) {
+	private void renderDefault(Camera camera, Matrix4f viewMatrix, ShaderProgram shaderProgram, PointLight pointLight, DirectionalLight directionalLight, Material material) {
 		//Reserve memory for light position
 		Vector4f newPos;
 
 		//Point light
 		shaderProgram.enable();
 		shaderProgram.createPointLightUniform("pointLight");
+		shaderProgram.createDirectionalLightUniform("directionalLight");
 		//Translate the point light to view coordinates
 		newPos = new Vector4f(pointLight.getPosition(), 1.0f);
 		newPos.mul(viewMatrix);
@@ -182,6 +187,7 @@ public class GameClientRenderer extends Renderer {
 			shaderProgram.setUniform("specularPower", 10.0f);
 			shaderProgram.setUniform("modelViewMatrix", gameObject.getModelViewMatrix(viewMatrix));
 			shaderProgram.setUniform("pointLight", pointLight);
+			shaderProgram.setUniform("directionalLight", directionalLight);
 			//Material stuff
 			//TODO stop rendering models recursively without passing a material from each mesh
 			shaderProgram.setUniform("material", material);
