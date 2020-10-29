@@ -79,7 +79,7 @@ public class GameClientRenderer extends Renderer {
 		Attenuation plAttenuation = new Attenuation(0.0f, 0.0f, 1.0f);
 		PointLight pointLight = new PointLight(new Vector3f(0, 2, -0.5f), new Vector3f(0,0,1), 1.0f, plAttenuation);
 		Attenuation slAttenuation = new Attenuation(0.0f, 0.0f, 0.02f);
-		SpotLight spotLight = new SpotLight(new Vector3f(0, 4, 0), new Vector3f(1, 0, 0), 1.0f, slAttenuation, new Vector3f(0, 0, 0), 140);
+		SpotLight spotLight = new SpotLight(new Vector3f(0, 2, 0), new Vector3f(1, 0, 0), 1.0f, slAttenuation, new Vector3f(0, 1, 0), 140);
 		DirectionalLight directionalLight = new DirectionalLight(new Vector3f(-1f, 0f, 0f), new Vector4f(1, 1, 0.5f, 1), 1.0f);
 
 		//For wireframe mode
