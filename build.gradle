@@ -2,7 +2,7 @@ apply plugin: "java"
 apply plugin: "application"
 apply plugin: "com.github.johnrengelman.shadow"
 
-mainClassName = 'GameClient'
+mainClassName = 'com.terminalvelocitycabbage.exampleclient.GameClient'
 
 jar {
 	manifest {
