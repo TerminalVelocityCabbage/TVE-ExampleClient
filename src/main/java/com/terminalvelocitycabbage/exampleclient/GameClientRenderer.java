@@ -27,6 +27,8 @@ import static org.lwjgl.opengl.GL20.*;
 public class GameClientRenderer extends Renderer {
 
 	private ArrayList<ModeledGameObject> gameObjects = new ArrayList<>();
+	private ArrayList<PointLight> pointLights = new ArrayList<>();
+	private ArrayList<SpotLight> spotLights = new ArrayList<>();
 
 	public GameClientRenderer(int width, int height, String title) {
 		super(width, height, title, new GameInputHandler());
@@ -77,9 +79,10 @@ public class GameClientRenderer extends Renderer {
 
 		//Create some light
 		Attenuation plAttenuation = new Attenuation(0.0f, 0.0f, 1.0f);
-		PointLight pointLight = new PointLight(new Vector3f(0, 2, -0.5f), new Vector3f(0,0,1), 1.0f, plAttenuation);
+		pointLights.add(new PointLight(new Vector3f(0, 2, -0.5f), new Vector3f(0,0,1), 1.0f, plAttenuation));
+		pointLights.add(new PointLight(new Vector3f(0, 4, -0.5f), new Vector3f(1,1,1), 1.0f, plAttenuation));
 		Attenuation slAttenuation = new Attenuation(0.0f, 0.0f, 0.02f);
-		SpotLight spotLight = new SpotLight(new Vector3f(0, 2, 0), new Vector3f(1, 0, 0), 1.0f, slAttenuation, new Vector3f(0, 1, 0), 140);
+		spotLights.add(new SpotLight(new Vector3f(0, 2, 0), new Vector3f(1, 0, 0), 1.0f, slAttenuation, new Vector3f(0, 1, 0), 140));
 		DirectionalLight directionalLight = new DirectionalLight(new Vector3f(-1f, 0f, 0f), new Vector4f(1, 1, 0.5f, 1), 1.0f);
 
 		//For wireframe mode
@@ -105,7 +108,8 @@ public class GameClientRenderer extends Renderer {
 					rotationVector.y * 0.4f,
 					inputHandler.getCameraRollVector() * 1.5f
 			);
-			pointLight.setPosition(pointLight.getPosition().add(0, (float)Math.sin(glfwGetTime())/10, 0));
+			pointLights.get(0).setPosition(pointLights.get(0).getPosition().add(0, (float)Math.sin(glfwGetTime())/10, 0));
+			pointLights.get(1).setPosition(pointLights.get(1).getPosition().add(0, (float)Math.cos(glfwGetTime())/8, 0));
 
 			//Animate the head
 			head.rotation.add(0, 1, 0);
@@ -120,7 +124,7 @@ public class GameClientRenderer extends Renderer {
 			viewMatrix = camera.getViewMatrix();
 
 			//renderNormalsDebug(camera, viewMatrix, normalShaderProgram);
-			renderDefault(camera, viewMatrix, defaultShaderProgram, pointLight, spotLight, directionalLight, head.getMaterial());
+			renderDefault(camera, viewMatrix, defaultShaderProgram, pointLights, spotLights, directionalLight, head.getMaterial());
 
 			//Send the frame
 			push();
@@ -152,13 +156,13 @@ public class GameClientRenderer extends Renderer {
 		}
 	}
 
-	private void renderDefault(Camera camera, Matrix4f viewMatrix, ShaderProgram shaderProgram, PointLight pointLight, SpotLight spotLight, DirectionalLight directionalLight, Material material) {
+	private void renderDefault(Camera camera, Matrix4f viewMatrix, ShaderProgram shaderProgram, ArrayList<PointLight> pointLights, ArrayList<SpotLight> spotLights, DirectionalLight directionalLight, Material material) {
 
 		shaderProgram.enable();
 
 		//Update positions of concerned lights in view space (point and spot lights)
-		pointLight.update(viewMatrix);
-		spotLight.update(viewMatrix);
+		pointLights.forEach(light -> light.update(viewMatrix));
+		spotLights.forEach(light -> light.update(viewMatrix));
 
 		//Render the current object
 		shaderProgram.createUniform("projectionMatrix");
@@ -167,8 +171,8 @@ public class GameClientRenderer extends Renderer {
 		//Lighting stuff
 		shaderProgram.createUniform("specularPower");
 		shaderProgram.createUniform("ambientLight");
-		shaderProgram.createPointLightUniform("pointLight");
-		shaderProgram.createSpotLightUniform("spotLight");
+		shaderProgram.createPointLightUniforms("pointLights", pointLights.size());
+		shaderProgram.createSpotLightUniforms("spotLights", spotLights.size());
 		shaderProgram.createDirectionalLightUniform("directionalLight");
 		//Mesh materials - this should probably be handled by some sort background system
 		shaderProgram.createMaterialUniform("material");
@@ -184,8 +188,8 @@ public class GameClientRenderer extends Renderer {
 			//Lighting
 			shaderProgram.setUniform("ambientLight", new Vector3f(0.3f, 0.3f, 0.3f));
 			shaderProgram.setUniform("specularPower", 10.0f); //Reflected light intensity
-			shaderProgram.setUniform("pointLight", pointLight);
-			shaderProgram.setUniform("spotLight", spotLight);
+			pointLights.forEach(light -> shaderProgram.setUniform("pointLights", light, pointLights.indexOf(light)));
+			spotLights.forEach(light -> shaderProgram.setUniform("spotLights", light, spotLights.indexOf(light)));
 			shaderProgram.setUniform("directionalLight", directionalLight);
 			//Material stuff
 			//TODO: stop rendering models recursively without passing a material from each mesh

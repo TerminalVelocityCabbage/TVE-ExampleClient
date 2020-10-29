@@ -7,6 +7,9 @@ in vec3 vertVertexPosition;
 
 out vec4 fragColor;
 
+const int MAX_POINT_LIGHTS = 256;
+const int MAX_SPOT_LIGHTS = 256;
+
 struct Attenuation {
    float constant;
    float linear;
@@ -44,8 +47,8 @@ uniform sampler2D textureSampler;
 uniform vec3 ambientLight;
 uniform float specularPower;
 uniform Material material;
-uniform PointLight pointLight;
-uniform SpotLight spotLight;
+uniform PointLight pointLights[MAX_POINT_LIGHTS];
+uniform SpotLight spotLights[MAX_SPOT_LIGHTS];
 uniform DirectionalLight directionalLight;
 
 vec4 materialAmbientColor;
@@ -124,8 +127,16 @@ void main() {
    setupColors(material, vertTextureCoord);
    //the color of the fragment multiplied by the ambient light
    vec4 color = materialAmbientColor * vec4(ambientLight, 1);
-   color += calcPointLight(pointLight, vertVertexPosition, vertVertexNormal);
    color += calcDirectionalLight(directionalLight, vertVertexPosition, vertVertexNormal);
-   color += calcSpotLight(spotLight, vertVertexPosition, vertVertexNormal);
+   for (int i = 0; i < MAX_POINT_LIGHTS; i++) {
+      if (pointLights[i].intensity > 0) {
+         color += calcPointLight(pointLights[i], vertVertexPosition, vertVertexNormal);
+      }
+   }
+   for (int i = 0; i < MAX_SPOT_LIGHTS; i++) {
+      if (spotLights[i].pointLight.intensity > 0) {
+         color += calcSpotLight(spotLights[i], vertVertexPosition, vertVertexNormal);
+      }
+   }
    fragColor = color;
 }
