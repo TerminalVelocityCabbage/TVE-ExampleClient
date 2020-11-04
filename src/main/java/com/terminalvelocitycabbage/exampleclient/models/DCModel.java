@@ -1,16 +1,14 @@
 package com.terminalvelocitycabbage.exampleclient.models;
 
+import com.dumbcodemc.studio.ModelCube;
+import com.dumbcodemc.studio.ModelInfo;
 import com.dumbcodemc.studio.ModelLoader;
-import com.terminalvelocitycabbage.engine.client.renderer.model.Material;
 import com.terminalvelocitycabbage.engine.client.renderer.model.Model;
-import com.terminalvelocitycabbage.engine.client.renderer.model.Texture;
 import com.terminalvelocitycabbage.engine.client.renderer.model.Vertex;
 import com.terminalvelocitycabbage.engine.client.renderer.shapes.TexturedCuboid;
 import com.terminalvelocitycabbage.engine.client.resources.Identifier;
 import com.terminalvelocitycabbage.engine.client.resources.Resource;
 import com.terminalvelocitycabbage.engine.client.resources.ResourceManager;
-import com.dumbcodemc.studio.ModelCube;
-import com.dumbcodemc.studio.ModelInfo;
 import org.joml.Vector3f;
 
 import java.io.DataInputStream;
@@ -39,12 +37,6 @@ public class DCModel extends Model {
 
     public Optional<Model.Part> getPart(String name) {
         return this.partMap.containsKey(name) ? Optional.of(this.partMap.get(name)) : Optional.empty();
-    }
-
-    public void setTexture(ResourceManager resourceManager, Identifier texture) {
-        recursiveOnPart(modelParts, part -> {
-            part.mesh.setMaterial(new Material(new Texture(resourceManager, texture)));
-        });
     }
 
     private static class Part extends Model.Part {
