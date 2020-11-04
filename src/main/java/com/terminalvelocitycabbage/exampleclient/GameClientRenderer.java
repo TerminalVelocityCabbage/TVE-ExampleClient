@@ -20,7 +20,7 @@ import org.joml.Vector4f;
 
 import java.util.ArrayList;
 
-import static com.terminalvelocitycabbage.exampleclient.GameResourceHandler.ASSETS_ROOT_RESOURCE_MANAGER;
+import static com.terminalvelocitycabbage.exampleclient.GameResourceHandler.*;
 import static org.lwjgl.glfw.GLFW.glfwGetTime;
 import static org.lwjgl.glfw.GLFW.glfwWindowShouldClose;
 import static org.lwjgl.opengl.GL20.*;
@@ -41,8 +41,8 @@ public class GameClientRenderer extends Renderer {
 		Camera camera = new Camera(60, 0.01f, 1000.0f);
 
 		//Load a model to a Model object from dcm file
-		DCModel robotModel = DCModel.load(ASSETS_ROOT_RESOURCE_MANAGER, new Identifier(GameClient.ID, "model/Gerald.dcm"));
-		robotModel.setMaterial(Material.builder().texture(new Texture(ASSETS_ROOT_RESOURCE_MANAGER, new Identifier(GameClient.ID, "textures/gerald_base.png"))).build());
+		DCModel robotModel = DCModel.load(MODEL, new Identifier(GameClient.ID, "Gerald.dcm"));
+		robotModel.setMaterial(Material.builder().texture(new Texture(TEXTURE, new Identifier(GameClient.ID, "gerald_base.png"))).build());
 		//Create a game object from the model loaded
 		ModeledGameObject robot = ModeledGameObject.builder().setModel(robotModel).build();
 		//Expose the head model part from the model so it can be animated in the game loop
@@ -58,14 +58,14 @@ public class GameClientRenderer extends Renderer {
 		//Create Shaders
 		//Create default shader that is used for textured elements
 		ShaderProgram defaultShaderProgram = new ShaderProgram();
-		defaultShaderProgram.queueShader(GL_VERTEX_SHADER, ASSETS_ROOT_RESOURCE_MANAGER, new Identifier(GameClient.ID, "shaders/default.vert"));
-		defaultShaderProgram.queueShader(GL_FRAGMENT_SHADER, ASSETS_ROOT_RESOURCE_MANAGER, new Identifier(GameClient.ID, "shaders/default.frag"));
+		defaultShaderProgram.queueShader(GL_VERTEX_SHADER, SHADER, new Identifier(GameClient.ID, "default.vert"));
+		defaultShaderProgram.queueShader(GL_FRAGMENT_SHADER, SHADER, new Identifier(GameClient.ID, "default.frag"));
 		defaultShaderProgram.build();
 
 		//Create shader program for debugging normals directions
 		ShaderProgram normalShaderProgram = new ShaderProgram();
-		normalShaderProgram.queueShader(GL_VERTEX_SHADER, ASSETS_ROOT_RESOURCE_MANAGER, new Identifier(GameClient.ID, "shaders/default.vert"));
-		normalShaderProgram.queueShader(GL_FRAGMENT_SHADER, ASSETS_ROOT_RESOURCE_MANAGER, new Identifier(GameClient.ID, "shaders/normalonly.frag"));
+		normalShaderProgram.queueShader(GL_VERTEX_SHADER, SHADER, new Identifier(GameClient.ID, "default.vert"));
+		normalShaderProgram.queueShader(GL_FRAGMENT_SHADER, SHADER, new Identifier(GameClient.ID, "normalonly.frag"));
 		normalShaderProgram.build();
 
 		//Init viewMatrix var
