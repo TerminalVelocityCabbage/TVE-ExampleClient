@@ -8,8 +8,10 @@ import com.terminalvelocitycabbage.engine.client.renderer.lights.SpotLight;
 import com.terminalvelocitycabbage.engine.client.renderer.lights.components.Attenuation;
 import com.terminalvelocitycabbage.engine.client.renderer.model.Material;
 import com.terminalvelocitycabbage.engine.client.renderer.model.Model;
+import com.terminalvelocitycabbage.engine.client.renderer.model.Texture;
 import com.terminalvelocitycabbage.engine.client.renderer.shader.ShaderProgram;
 import com.terminalvelocitycabbage.engine.client.resources.Identifier;
+import com.terminalvelocitycabbage.engine.debug.Log;
 import com.terminalvelocitycabbage.engine.entity.ModeledGameObject;
 import com.terminalvelocitycabbage.exampleclient.models.DCModel;
 import org.joml.Matrix4f;
@@ -19,7 +21,7 @@ import org.joml.Vector4f;
 
 import java.util.ArrayList;
 
-import static com.terminalvelocitycabbage.exampleclient.GameResourceHandler.ASSETS_ROOT_RESOURCE_MANAGER;
+import static com.terminalvelocitycabbage.exampleclient.GameResourceHandler.*;
 import static org.lwjgl.glfw.GLFW.glfwGetTime;
 import static org.lwjgl.glfw.GLFW.glfwWindowShouldClose;
 import static org.lwjgl.opengl.GL20.*;
@@ -40,14 +42,17 @@ public class GameClientRenderer extends Renderer {
 		Camera camera = new Camera(60, 0.01f, 1000.0f);
 
 		//Load a model to a Model object from dcm file
-		DCModel model = DCModel.load(ASSETS_ROOT_RESOURCE_MANAGER, new Identifier(GameClient.ID, "model/Gerald.dcm"));
-		model.setTexture(ASSETS_ROOT_RESOURCE_MANAGER, new Identifier(GameClient.ID, "textures/gerald_base.png"));
+		DCModel robotModel = DCModel.load(MODEL, new Identifier(GameClient.ID, "Gerald.dcm"));
+		robotModel.setMaterial(Material.builder()
+						.reflectivity(new Texture(TEXTURE, new Identifier(GameClient.ID, "gerald_reflectivity.png")))
+						.texture(new Texture(TEXTURE, new Identifier(GameClient.ID, "gerald_base.png")))
+						.build());
 		//Create a game object from the model loaded
-		ModeledGameObject object = ModeledGameObject.builder().setModel(model).build();
+		ModeledGameObject robot = ModeledGameObject.builder().setModel(robotModel).build();
 		//Expose the head model part from the model so it can be animated in the game loop
-		Model.Part head = model.getPart("head").orElseThrow();
+		Model.Part head = robotModel.getPart("head").orElseThrow();
 		//Add the game object to the list of active objects
-		gameObjects.add(object);
+		gameObjects.add(robot);
 
 		//bind all Game Objects
 		for (ModeledGameObject gameObject : gameObjects) {
@@ -57,14 +62,14 @@ public class GameClientRenderer extends Renderer {
 		//Create Shaders
 		//Create default shader that is used for textured elements
 		ShaderProgram defaultShaderProgram = new ShaderProgram();
-		defaultShaderProgram.queueShader(GL_VERTEX_SHADER, ASSETS_ROOT_RESOURCE_MANAGER, new Identifier(GameClient.ID, "shaders/default.vert"));
-		defaultShaderProgram.queueShader(GL_FRAGMENT_SHADER, ASSETS_ROOT_RESOURCE_MANAGER, new Identifier(GameClient.ID, "shaders/default.frag"));
+		defaultShaderProgram.queueShader(GL_VERTEX_SHADER, SHADER, new Identifier(GameClient.ID, "default.vert"));
+		defaultShaderProgram.queueShader(GL_FRAGMENT_SHADER, SHADER, new Identifier(GameClient.ID, "default.frag"));
 		defaultShaderProgram.build();
 
 		//Create shader program for debugging normals directions
 		ShaderProgram normalShaderProgram = new ShaderProgram();
-		normalShaderProgram.queueShader(GL_VERTEX_SHADER, ASSETS_ROOT_RESOURCE_MANAGER, new Identifier(GameClient.ID, "shaders/default.vert"));
-		normalShaderProgram.queueShader(GL_FRAGMENT_SHADER, ASSETS_ROOT_RESOURCE_MANAGER, new Identifier(GameClient.ID, "shaders/normalonly.frag"));
+		normalShaderProgram.queueShader(GL_VERTEX_SHADER, SHADER, new Identifier(GameClient.ID, "default.vert"));
+		normalShaderProgram.queueShader(GL_FRAGMENT_SHADER, SHADER, new Identifier(GameClient.ID, "normalonly.frag"));
 		normalShaderProgram.build();
 
 		//Init viewMatrix var
@@ -114,7 +119,7 @@ public class GameClientRenderer extends Renderer {
 			//Animate the head
 			head.rotation.add(0, 1, 0);
 			//Tell the engine that the game object needs to be re-rendered
-			object.queueUpdate();
+			robot.queueUpdate();
 
 			//This is a temp fix for the camera rotation sliding. I would like for this to happen automatically.
 			inputHandler.resetDisplayVector();
@@ -124,7 +129,7 @@ public class GameClientRenderer extends Renderer {
 			viewMatrix = camera.getViewMatrix();
 
 			//renderNormalsDebug(camera, viewMatrix, normalShaderProgram);
-			renderDefault(camera, viewMatrix, defaultShaderProgram, pointLights, spotLights, directionalLight, head.getMaterial());
+			renderDefault(camera, viewMatrix, defaultShaderProgram, pointLights, spotLights, directionalLight);
 
 			//Send the frame
 			push();
@@ -156,7 +161,7 @@ public class GameClientRenderer extends Renderer {
 		}
 	}
 
-	private void renderDefault(Camera camera, Matrix4f viewMatrix, ShaderProgram shaderProgram, ArrayList<PointLight> pointLights, ArrayList<SpotLight> spotLights, DirectionalLight directionalLight, Material material) {
+	private void renderDefault(Camera camera, Matrix4f viewMatrix, ShaderProgram shaderProgram, ArrayList<PointLight> pointLights, ArrayList<SpotLight> spotLights, DirectionalLight directionalLight) {
 
 		shaderProgram.enable();
 
@@ -192,8 +197,7 @@ public class GameClientRenderer extends Renderer {
 			spotLights.forEach(light -> shaderProgram.setUniform("spotLights", light, spotLights.indexOf(light)));
 			shaderProgram.setUniform("directionalLight", directionalLight);
 			//Material stuff
-			//TODO: stop rendering models recursively without passing a material from each mesh
-			shaderProgram.setUniform("material", material);
+			shaderProgram.setUniform("material", gameObject.getModel().getMaterial());
 
 			gameObject.render();
 		}
