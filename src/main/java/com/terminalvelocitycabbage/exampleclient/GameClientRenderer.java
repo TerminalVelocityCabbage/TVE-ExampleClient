@@ -11,6 +11,7 @@ import com.terminalvelocitycabbage.engine.client.renderer.model.Model;
 import com.terminalvelocitycabbage.engine.client.renderer.model.Texture;
 import com.terminalvelocitycabbage.engine.client.renderer.shader.ShaderProgram;
 import com.terminalvelocitycabbage.engine.client.resources.Identifier;
+import com.terminalvelocitycabbage.engine.debug.Log;
 import com.terminalvelocitycabbage.engine.entity.ModeledGameObject;
 import com.terminalvelocitycabbage.exampleclient.models.DCModel;
 import org.joml.Matrix4f;
@@ -42,7 +43,10 @@ public class GameClientRenderer extends Renderer {
 
 		//Load a model to a Model object from dcm file
 		DCModel robotModel = DCModel.load(MODEL, new Identifier(GameClient.ID, "Gerald.dcm"));
-		robotModel.setMaterial(Material.builder().texture(new Texture(TEXTURE, new Identifier(GameClient.ID, "gerald_base.png"))).build());
+		robotModel.setMaterial(Material.builder()
+						.reflectivity(new Texture(TEXTURE, new Identifier(GameClient.ID, "gerald_reflectivity.png")))
+						.texture(new Texture(TEXTURE, new Identifier(GameClient.ID, "gerald_base.png")))
+						.build());
 		//Create a game object from the model loaded
 		ModeledGameObject robot = ModeledGameObject.builder().setModel(robotModel).build();
 		//Expose the head model part from the model so it can be animated in the game loop

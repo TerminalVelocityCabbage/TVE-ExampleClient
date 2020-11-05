@@ -21,6 +21,7 @@ uniform SpotLight spotLights[MAX_SPOT_LIGHTS];
 uniform DirectionalLight directionalLight;
 
 void main() {
+   setupReflectivity(material, vertTextureCoord);
    setupColors(material, vertTextureCoord);
    //the color of the fragment multiplied by the ambient light
    vec4 color = materialAmbientColor * vec4(ambientLight, 1);
