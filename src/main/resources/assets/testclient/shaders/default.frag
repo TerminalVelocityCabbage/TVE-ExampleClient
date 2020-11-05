@@ -6,7 +6,6 @@
 #include "terminalvelocitycabbage:spot_lights.frag";
 #include "terminalvelocitycabbage:directional_lights.frag";
 
-in vec4 vertColor;
 in vec2 vertTextureCoord;
 in vec3 vertVertexNormal;
 in vec3 vertVertexPosition;
