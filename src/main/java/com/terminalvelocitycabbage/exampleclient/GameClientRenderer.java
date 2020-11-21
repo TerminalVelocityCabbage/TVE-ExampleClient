@@ -70,6 +70,7 @@ public class GameClientRenderer extends Renderer {
 			gameObject.bind();
 		}
 		for (TextGameObject text : hud.getTextGameObjects()) {
+			text.scale(10, 10, 10);
 			text.bind();
 		}
 
