@@ -12,6 +12,7 @@ import com.terminalvelocitycabbage.engine.client.renderer.model.Texture;
 import com.terminalvelocitycabbage.engine.client.renderer.shader.ShaderProgram;
 import com.terminalvelocitycabbage.engine.client.resources.Identifier;
 import com.terminalvelocitycabbage.engine.entity.ModeledGameObject;
+import com.terminalvelocitycabbage.engine.entity.TextGameObject;
 import com.terminalvelocitycabbage.exampleclient.models.DCModel;
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
@@ -31,12 +32,15 @@ public class GameClientRenderer extends Renderer {
 	private ArrayList<PointLight> pointLights = new ArrayList<>();
 	private ArrayList<SpotLight> spotLights = new ArrayList<>();
 
+	private GameClientHud hud;
+
 	public GameClientRenderer(int width, int height, String title) {
 		super(width, height, title, new GameInputHandler());
 	}
 
 	@Override
 	public void loop() {
+		hud = new GameClientHud("test text");
 		//Create the controllable camera
 		Camera camera = new Camera(60, 0.01f, 1000.0f);
 
@@ -65,6 +69,9 @@ public class GameClientRenderer extends Renderer {
 		for (ModeledGameObject gameObject : gameObjects) {
 			gameObject.bind();
 		}
+		for (TextGameObject text : hud.getTextGameObjects()) {
+			text.bind();
+		}
 
 		//Create Shaders
 		//Create default shader that is used for textured elements
@@ -78,6 +85,12 @@ public class GameClientRenderer extends Renderer {
 		normalShaderProgram.queueShader(GL_VERTEX_SHADER, SHADER, new Identifier(GameClient.ID, "default.vert"));
 		normalShaderProgram.queueShader(GL_FRAGMENT_SHADER, SHADER, new Identifier(GameClient.ID, "normalonly.frag"));
 		normalShaderProgram.build();
+
+		//Create a shader program for hud rendering
+		ShaderProgram hudShaderProgram = new ShaderProgram();
+		hudShaderProgram.queueShader(GL_VERTEX_SHADER, SHADER, new Identifier(GameClient.ID, "hud_default.vert"));
+		hudShaderProgram.queueShader(GL_FRAGMENT_SHADER, SHADER, new Identifier(GameClient.ID, "hud_default.frag"));
+		hudShaderProgram.build();
 
 		//Init viewMatrix var
 		Matrix4f viewMatrix;
@@ -103,7 +116,7 @@ public class GameClientRenderer extends Renderer {
 		// Run the rendering loop until the user has attempted to close the window
 		while (!glfwWindowShouldClose(getWindow().getID())) {
 			//Setup the frame for drawing
-			glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+			glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 			glEnable(GL_DEPTH_TEST);
 			glDepthFunc(GL_LEQUAL);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -137,6 +150,7 @@ public class GameClientRenderer extends Renderer {
 
 			//renderNormalsDebug(camera, viewMatrix, normalShaderProgram);
 			renderDefault(camera, viewMatrix, defaultShaderProgram, pointLights, spotLights, directionalLight);
+			renderHud(hudShaderProgram);
 
 			//Send the frame
 			push();
@@ -146,7 +160,12 @@ public class GameClientRenderer extends Renderer {
 		for (ModeledGameObject gameObject : gameObjects) {
 			gameObject.destroy();
 		}
+		for (TextGameObject text : hud.getTextGameObjects()) {
+			text.getModel().destroy();
+		}
 		defaultShaderProgram.delete();
+		normalShaderProgram.delete();
+		hudShaderProgram.delete();
 	}
 
 	private void renderNormalsDebug(Camera camera, Matrix4f viewMatrix, ShaderProgram shaderProgram) {
@@ -207,6 +226,23 @@ public class GameClientRenderer extends Renderer {
 			shaderProgram.setUniform("material", gameObject.getModel().getMaterial());
 
 			gameObject.render();
+		}
+	}
+
+	private void renderHud(ShaderProgram shaderProgram) {
+
+		shaderProgram.enable();
+
+		shaderProgram.createUniform("projModelMatrix");
+		shaderProgram.createUniform("color");
+
+		Matrix4f ortho = getWindow().getOrthoProjectionMatrix();
+		for (TextGameObject text : hud.getTextGameObjects()) {
+
+			shaderProgram.setUniform("projModelMatrix", text.getOrthoProjModelMatrix(ortho));
+			shaderProgram.setUniform("color", new Vector4f(1, 1, 1, 1));
+
+			text.render();
 		}
 	}
 }
