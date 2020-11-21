@@ -11,7 +11,6 @@ import com.terminalvelocitycabbage.engine.client.renderer.model.Model;
 import com.terminalvelocitycabbage.engine.client.renderer.model.Texture;
 import com.terminalvelocitycabbage.engine.client.renderer.shader.ShaderProgram;
 import com.terminalvelocitycabbage.engine.client.resources.Identifier;
-import com.terminalvelocitycabbage.engine.debug.Log;
 import com.terminalvelocitycabbage.engine.entity.ModeledGameObject;
 import com.terminalvelocitycabbage.exampleclient.models.DCModel;
 import org.joml.Matrix4f;
@@ -53,6 +52,14 @@ public class GameClientRenderer extends Renderer {
 		Model.Part head = robotModel.getPart("head").orElseThrow();
 		//Add the game object to the list of active objects
 		gameObjects.add(robot);
+
+		DCModel wormModel = DCModel.load(MODEL, new Identifier(GameClient.ID, "Worm.dcm"));
+		wormModel.setMaterial(Material.builder()
+				.texture(new Texture(TEXTURE, new Identifier(GameClient.ID, "worm.png")))
+				.build());
+		ModeledGameObject worm = ModeledGameObject.builder().setModel(wormModel).build();
+		gameObjects.add(worm);
+		worm.move(0, 0, 10);
 
 		//bind all Game Objects
 		for (ModeledGameObject gameObject : gameObjects) {
