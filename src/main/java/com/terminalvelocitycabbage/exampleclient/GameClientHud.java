@@ -30,4 +30,8 @@ public class GameClientHud {
 	public ArrayList<TextGameObject> getTextGameObjects() {
 		return textGameObjects;
 	}
+
+	public void setText(int index, String text) {
+		textGameObjects.get(index).setText(text);
+	}
 }

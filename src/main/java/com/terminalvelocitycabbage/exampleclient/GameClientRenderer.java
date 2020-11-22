@@ -12,6 +12,7 @@ import com.terminalvelocitycabbage.engine.client.renderer.model.Texture;
 import com.terminalvelocitycabbage.engine.client.renderer.shader.ShaderHandler;
 import com.terminalvelocitycabbage.engine.client.renderer.shader.ShaderProgram;
 import com.terminalvelocitycabbage.engine.client.resources.Identifier;
+import com.terminalvelocitycabbage.engine.entity.EmptyGameObject;
 import com.terminalvelocitycabbage.engine.entity.ModeledGameObject;
 import com.terminalvelocitycabbage.engine.entity.TextGameObject;
 import com.terminalvelocitycabbage.exampleclient.models.DCModel;
@@ -147,6 +148,8 @@ public class GameClientRenderer extends Renderer {
 
 		//renderNormalsDebug(camera, viewMatrix, normalShaderProgram);
 		renderDefault(camera, viewMatrix, shaderHandler.get("default"), pointLights, spotLights, directionalLight);
+		hud.setText(0, "FPS: " + this.getFramerate());
+		hud.getTextGameObjects().forEach(EmptyGameObject::queueUpdate);
 		renderHud(shaderHandler.get("hud"));
 
 		//Send the frame
