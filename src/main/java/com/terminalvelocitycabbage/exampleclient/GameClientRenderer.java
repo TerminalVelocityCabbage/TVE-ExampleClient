@@ -11,6 +11,7 @@ import com.terminalvelocitycabbage.engine.client.renderer.model.Model;
 import com.terminalvelocitycabbage.engine.client.renderer.model.Texture;
 import com.terminalvelocitycabbage.engine.client.renderer.shader.ShaderProgram;
 import com.terminalvelocitycabbage.engine.client.resources.Identifier;
+import com.terminalvelocitycabbage.engine.debug.Log;
 import com.terminalvelocitycabbage.engine.entity.ModeledGameObject;
 import com.terminalvelocitycabbage.engine.entity.TextGameObject;
 import com.terminalvelocitycabbage.exampleclient.models.DCModel;
@@ -40,7 +41,7 @@ public class GameClientRenderer extends Renderer {
 
 	@Override
 	public void loop() {
-		hud = new GameClientHud("test text");
+		hud = new GameClientHud("This is some text rendered dynamically!");
 		//Create the controllable camera
 		Camera camera = new Camera(60, 0.01f, 1000.0f);
 
@@ -70,7 +71,6 @@ public class GameClientRenderer extends Renderer {
 			gameObject.bind();
 		}
 		for (TextGameObject text : hud.getTextGameObjects()) {
-			text.scale(10, 10, 10);
 			text.bind();
 		}
 
@@ -162,7 +162,7 @@ public class GameClientRenderer extends Renderer {
 			gameObject.destroy();
 		}
 		for (TextGameObject text : hud.getTextGameObjects()) {
-			text.getModel().destroy();
+			text.destroy();
 		}
 		defaultShaderProgram.delete();
 		normalShaderProgram.delete();
@@ -239,6 +239,8 @@ public class GameClientRenderer extends Renderer {
 
 		Matrix4f ortho = getWindow().getOrthoProjectionMatrix();
 		for (TextGameObject text : hud.getTextGameObjects()) {
+
+			text.update();
 
 			shaderProgram.setUniform("projModelMatrix", text.getOrthoProjModelMatrix(ortho));
 			shaderProgram.setUniform("color", new Vector4f(1, 1, 1, 1));
