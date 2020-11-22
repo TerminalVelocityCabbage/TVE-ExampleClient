@@ -12,9 +12,9 @@ import java.util.Collections;
  * In most cases this would never exist and instead if would be replaced with a model loader
  * a model loader would read a model from a file and convert it into a real model part tree.
  */
-public class RectangleModel extends Model {
+public class TexturedRectangleModel extends Model {
 
-	public RectangleModel(TexturedRectangle rectangle) {
+	public TexturedRectangleModel(TexturedRectangle rectangle) {
 		super(new ArrayList<>(Collections.singletonList(new Part(rectangle, new Vector3f(0, 0, 0), new Vector3f(0, 0, 0), new Vector3f(0, 0, 0), new Vector3f(1, 1, 1), new ArrayList<>()))));
 	}
 }
