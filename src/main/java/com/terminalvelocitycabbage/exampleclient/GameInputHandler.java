@@ -21,7 +21,7 @@ public class GameInputHandler extends InputHandler {
 	public static KeyBind ROT_LEFT;
 	public static KeyBind ROT_RIGHT;
 
-	Vector3f cameraMoveVector = new Vector3f();
+	Vector3f cameraMoveVector = new Vector3f(0);
 	int cameraRollVector = 0;
 
 	@Override
@@ -45,6 +45,7 @@ public class GameInputHandler extends InputHandler {
 		if (keyBind.equalsKeyAndAction(CLOSE)) {
 			setFocus(false);
 			glfwSetWindowShouldClose(keyBind.getWindow(), true);
+			return;
 		}
 
 		//Process movement inputs

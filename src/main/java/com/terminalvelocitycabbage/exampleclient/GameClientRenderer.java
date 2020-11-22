@@ -9,22 +9,22 @@ import com.terminalvelocitycabbage.engine.client.renderer.lights.components.Atte
 import com.terminalvelocitycabbage.engine.client.renderer.model.Material;
 import com.terminalvelocitycabbage.engine.client.renderer.model.Model;
 import com.terminalvelocitycabbage.engine.client.renderer.model.Texture;
+import com.terminalvelocitycabbage.engine.client.renderer.shader.ShaderHandler;
 import com.terminalvelocitycabbage.engine.client.renderer.shader.ShaderProgram;
 import com.terminalvelocitycabbage.engine.client.resources.Identifier;
-import com.terminalvelocitycabbage.engine.debug.Log;
 import com.terminalvelocitycabbage.engine.entity.ModeledGameObject;
 import com.terminalvelocitycabbage.engine.entity.TextGameObject;
 import com.terminalvelocitycabbage.exampleclient.models.DCModel;
 import org.joml.Matrix4f;
-import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 
 import java.util.ArrayList;
 
+import static com.terminalvelocitycabbage.engine.client.renderer.shader.Shader.Type.FRAGMENT;
+import static com.terminalvelocitycabbage.engine.client.renderer.shader.Shader.Type.VERTEX;
 import static com.terminalvelocitycabbage.exampleclient.GameResourceHandler.*;
 import static org.lwjgl.glfw.GLFW.glfwGetTime;
-import static org.lwjgl.glfw.GLFW.glfwWindowShouldClose;
 import static org.lwjgl.opengl.GL20.*;
 
 public class GameClientRenderer extends Renderer {
@@ -32,6 +32,13 @@ public class GameClientRenderer extends Renderer {
 	private ArrayList<ModeledGameObject> gameObjects = new ArrayList<>();
 	private ArrayList<PointLight> pointLights = new ArrayList<>();
 	private ArrayList<SpotLight> spotLights = new ArrayList<>();
+	private DirectionalLight directionalLight;
+
+	private final ShaderHandler shaderHandler = new ShaderHandler();
+	private GameInputHandler inputHandler = new GameInputHandler();
+
+	ModeledGameObject robot;
+	Model.Part head;
 
 	private GameClientHud hud;
 
@@ -40,21 +47,22 @@ public class GameClientRenderer extends Renderer {
 	}
 
 	@Override
-	public void loop() {
+	public void init() {
+		super.init();
 		hud = new GameClientHud("This is some text rendered dynamically!");
 		//Create the controllable camera
-		Camera camera = new Camera(60, 0.01f, 1000.0f);
+		camera = new Camera(60, 0.01f, 1000.0f);
 
 		//Load a model to a Model object from dcm file
 		DCModel robotModel = DCModel.load(MODEL, new Identifier(GameClient.ID, "Gerald.dcm"));
 		robotModel.setMaterial(Material.builder()
-						.reflectivity(new Texture(TEXTURE, new Identifier(GameClient.ID, "gerald_reflectivity.png")))
-						.texture(new Texture(TEXTURE, new Identifier(GameClient.ID, "gerald_base.png")))
-						.build());
+				.reflectivity(new Texture(TEXTURE, new Identifier(GameClient.ID, "gerald_reflectivity.png")))
+				.texture(new Texture(TEXTURE, new Identifier(GameClient.ID, "gerald_base.png")))
+				.build());
 		//Create a game object from the model loaded
-		ModeledGameObject robot = ModeledGameObject.builder().setModel(robotModel).build();
+		robot = ModeledGameObject.builder().setModel(robotModel).build();
 		//Expose the head model part from the model so it can be animated in the game loop
-		Model.Part head = robotModel.getPart("head").orElseThrow();
+		head = robotModel.getPart("head").orElseThrow();
 		//Add the game object to the list of active objects
 		gameObjects.add(robot);
 
@@ -76,32 +84,25 @@ public class GameClientRenderer extends Renderer {
 
 		//Create Shaders
 		//Create default shader that is used for textured elements
-		ShaderProgram defaultShaderProgram = new ShaderProgram();
-		defaultShaderProgram.queueShader(GL_VERTEX_SHADER, SHADER, new Identifier(GameClient.ID, "default.vert"));
-		defaultShaderProgram.queueShader(GL_FRAGMENT_SHADER, SHADER, new Identifier(GameClient.ID, "default.frag"));
-		defaultShaderProgram.build();
+		shaderHandler.newProgram("default");
+		shaderHandler.queueShader("default", VERTEX, SHADER, new Identifier(GameClient.ID, "default.vert"));
+		shaderHandler.queueShader("default", FRAGMENT, SHADER, new Identifier(GameClient.ID, "default.frag"));
+		shaderHandler.build("default");
 
 		//Create shader program for debugging normals directions
-		ShaderProgram normalShaderProgram = new ShaderProgram();
-		normalShaderProgram.queueShader(GL_VERTEX_SHADER, SHADER, new Identifier(GameClient.ID, "default.vert"));
-		normalShaderProgram.queueShader(GL_FRAGMENT_SHADER, SHADER, new Identifier(GameClient.ID, "normalonly.frag"));
-		normalShaderProgram.build();
+		shaderHandler.newProgram("normals");
+		shaderHandler.queueShader("normals", VERTEX, SHADER, new Identifier(GameClient.ID, "default.vert"));
+		shaderHandler.queueShader("normals", FRAGMENT, SHADER, new Identifier(GameClient.ID, "normalonly.frag"));
+		shaderHandler.build("normals");
 
 		//Create a shader program for hud rendering
-		ShaderProgram hudShaderProgram = new ShaderProgram();
-		hudShaderProgram.queueShader(GL_VERTEX_SHADER, SHADER, new Identifier(GameClient.ID, "hud_default.vert"));
-		hudShaderProgram.queueShader(GL_FRAGMENT_SHADER, SHADER, new Identifier(GameClient.ID, "hud_default.frag"));
-		hudShaderProgram.build();
-
-		//Init viewMatrix var
-		Matrix4f viewMatrix;
+		shaderHandler.newProgram("hud");
+		shaderHandler.queueShader("hud", VERTEX, SHADER, new Identifier(GameClient.ID, "hud_default.vert"));
+		shaderHandler.queueShader("hud", FRAGMENT, SHADER, new Identifier(GameClient.ID, "hud_default.frag"));
+		shaderHandler.build("hud");
 
 		//Store InputHandler
-		GameInputHandler inputHandler = (GameInputHandler) getWindow().getInputHandler();
-
-		//Store camera increment vectors
-		Vector3f moveVector = inputHandler.getCameraPositionMoveVector();
-		Vector2f rotationVector = inputHandler.getDisplayVector();
+		inputHandler = (GameInputHandler) getWindow().getInputHandler();
 
 		//Create some light
 		Attenuation plAttenuation = new Attenuation(0.0f, 0.0f, 1.0f);
@@ -109,54 +110,52 @@ public class GameClientRenderer extends Renderer {
 		pointLights.add(new PointLight(new Vector3f(0, 4, -0.5f), new Vector3f(1,1,1), 1.0f, plAttenuation));
 		Attenuation slAttenuation = new Attenuation(0.0f, 0.0f, 0.02f);
 		spotLights.add(new SpotLight(new Vector3f(0, 2, 0), new Vector3f(1, 0, 0), 1.0f, slAttenuation, new Vector3f(0, 1, 0), 140));
-		DirectionalLight directionalLight = new DirectionalLight(new Vector3f(-1f, 0f, 0f), new Vector4f(1, 1, 0.5f, 1), 1.0f);
+		directionalLight = new DirectionalLight(new Vector3f(-1f, 0f, 0f), new Vector4f(1, 1, 0.5f, 1), 1.0f);
 
 		//For wireframe mode
 		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	}
 
-		// Run the rendering loop until the user has attempted to close the window
-		while (!glfwWindowShouldClose(getWindow().getID())) {
-			//Setup the frame for drawing
-			glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-			glEnable(GL_DEPTH_TEST);
-			glDepthFunc(GL_LEQUAL);
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	@Override
+	public void loop() {
+		//Setup the frame for drawing
+		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+		glEnable(GL_DEPTH_TEST);
+		glDepthFunc(GL_LEQUAL);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-			//Update the camera position
-			camera.move(
-					moveVector.x * 0.05f,
-					moveVector.y * 0.05f,
-					moveVector.z * 0.05f
-			);
-			if (!inputHandler.isRightButtonPressed()) inputHandler.resetDisplayVector();
-			camera.rotate(
-					rotationVector.x * 0.4f,
-					rotationVector.y * 0.4f,
-					inputHandler.getCameraRollVector() * 1.5f
-			);
-			pointLights.get(0).setPosition(pointLights.get(0).getPosition().add(0, (float)Math.sin(glfwGetTime())/10, 0));
-			pointLights.get(1).setPosition(pointLights.get(1).getPosition().add(0, (float)Math.cos(glfwGetTime())/8, 0));
+		//Update the camera position
+		camera.move(inputHandler.getCameraPositionMoveVector(), 0.05f);
+		//Only allow looking around when right click is held
+		if (!inputHandler.isRightButtonPressed()) inputHandler.resetDisplayVector();
+		//Update camera rotation
+		camera.rotate(inputHandler.getDisplayVector().mul(0.4f), inputHandler.getCameraRollVector() * 0.05f);
 
-			//Animate the head
-			head.rotation.add(0, 1, 0);
-			//Tell the engine that the game object needs to be re-rendered
-			robot.queueUpdate();
+		//Move around the point lights
+		pointLights.get(0).setPosition(pointLights.get(0).getPosition().add(0, (float)Math.sin(glfwGetTime())/10, 0));
+		pointLights.get(1).setPosition(pointLights.get(1).getPosition().add(0, (float)Math.cos(glfwGetTime())/8, 0));
 
-			//This is a temp fix for the camera rotation sliding. I would like for this to happen automatically.
-			inputHandler.resetDisplayVector();
+		//TODO add game object handler
+		//Animate the head
+		head.rotation.add(0, 1, 0);
+		//Tell the engine that the game object needs to be re-rendered
+		robot.queueUpdate();
 
-			//Update the view Matrix with the current camera position
-			//This has to happen before game items are updated
-			viewMatrix = camera.getViewMatrix();
+		//Update the view Matrix with the current camera position
+		//This has to happen before game items are updated
+		viewMatrix.identity().set(camera.getViewMatrix());
 
-			//renderNormalsDebug(camera, viewMatrix, normalShaderProgram);
-			renderDefault(camera, viewMatrix, defaultShaderProgram, pointLights, spotLights, directionalLight);
-			renderHud(hudShaderProgram);
+		//renderNormalsDebug(camera, viewMatrix, normalShaderProgram);
+		renderDefault(camera, viewMatrix, shaderHandler.get("default"), pointLights, spotLights, directionalLight);
+		renderHud(shaderHandler.get("hud"));
 
-			//Send the frame
-			push();
-		}
+		//Send the frame
+		push();
+	}
 
+	@Override
+	public void destroy() {
+		super.destroy();
 		//Cleanup
 		for (ModeledGameObject gameObject : gameObjects) {
 			gameObject.destroy();
@@ -164,9 +163,7 @@ public class GameClientRenderer extends Renderer {
 		for (TextGameObject text : hud.getTextGameObjects()) {
 			text.destroy();
 		}
-		defaultShaderProgram.delete();
-		normalShaderProgram.delete();
-		hudShaderProgram.delete();
+		shaderHandler.cleanup();
 	}
 
 	private void renderNormalsDebug(Camera camera, Matrix4f viewMatrix, ShaderProgram shaderProgram) {
