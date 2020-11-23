@@ -31,7 +31,7 @@ void main() {
       }
    }
    for (int i = 0; i < MAX_SPOT_LIGHTS; i++) {
-      if (spotLights[i].pointLight.intensity > 0) {
+      if (spotLights[i].intensity > 0) {
          color += calcSpotLight(spotLights[i], vertVertexPosition, vertVertexNormal);
       }
    }
