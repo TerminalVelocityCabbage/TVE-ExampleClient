@@ -2,7 +2,7 @@ package com.terminalvelocitycabbage.exampleclient;
 
 import com.terminalvelocitycabbage.engine.client.renderer.font.FontTexture;
 import com.terminalvelocitycabbage.engine.client.resources.Identifier;
-import com.terminalvelocitycabbage.engine.entity.TextGameObject;
+import com.terminalvelocitycabbage.engine.client.renderer.gameobjects.TextGameObject;
 
 import java.awt.*;
 import java.util.ArrayList;

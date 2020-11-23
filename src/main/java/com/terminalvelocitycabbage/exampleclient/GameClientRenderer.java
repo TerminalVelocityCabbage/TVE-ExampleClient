@@ -2,25 +2,25 @@ package com.terminalvelocitycabbage.exampleclient;
 
 import com.terminalvelocitycabbage.engine.client.renderer.Renderer;
 import com.terminalvelocitycabbage.engine.client.renderer.components.Camera;
-import com.terminalvelocitycabbage.engine.client.renderer.lights.DirectionalLight;
-import com.terminalvelocitycabbage.engine.client.renderer.lights.PointLight;
-import com.terminalvelocitycabbage.engine.client.renderer.lights.SpotLight;
-import com.terminalvelocitycabbage.engine.client.renderer.lights.components.Attenuation;
+import com.terminalvelocitycabbage.engine.client.renderer.gameobjects.EmptyGameObject;
+import com.terminalvelocitycabbage.engine.client.renderer.gameobjects.TextGameObject;
+import com.terminalvelocitycabbage.engine.client.renderer.gameobjects.entity.ModeledGameObject;
+import com.terminalvelocitycabbage.engine.client.renderer.gameobjects.lights.DirectionalLight;
+import com.terminalvelocitycabbage.engine.client.renderer.gameobjects.lights.PointLight;
+import com.terminalvelocitycabbage.engine.client.renderer.gameobjects.lights.SpotLight;
+import com.terminalvelocitycabbage.engine.client.renderer.lights.Attenuation;
 import com.terminalvelocitycabbage.engine.client.renderer.model.Material;
 import com.terminalvelocitycabbage.engine.client.renderer.model.Texture;
 import com.terminalvelocitycabbage.engine.client.renderer.shader.ShaderHandler;
 import com.terminalvelocitycabbage.engine.client.renderer.shader.ShaderProgram;
 import com.terminalvelocitycabbage.engine.client.renderer.util.GameObjectHandler;
 import com.terminalvelocitycabbage.engine.client.resources.Identifier;
-import com.terminalvelocitycabbage.engine.entity.EmptyGameObject;
-import com.terminalvelocitycabbage.engine.entity.ModeledGameObject;
-import com.terminalvelocitycabbage.engine.entity.TextGameObject;
 import com.terminalvelocitycabbage.exampleclient.models.DCModel;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import static com.terminalvelocitycabbage.engine.client.renderer.shader.Shader.Type.FRAGMENT;
 import static com.terminalvelocitycabbage.engine.client.renderer.shader.Shader.Type.VERTEX;
@@ -31,10 +31,6 @@ import static org.lwjgl.opengl.GL20.*;
 public class GameClientRenderer extends Renderer {
 
 	private GameObjectHandler gameObjectHandler = new GameObjectHandler();
-	private ArrayList<PointLight> pointLights = new ArrayList<>();
-	private ArrayList<SpotLight> spotLights = new ArrayList<>();
-	private DirectionalLight directionalLight;
-
 	private final ShaderHandler shaderHandler = new ShaderHandler();
 	private GameInputHandler inputHandler = new GameInputHandler();
 
@@ -100,11 +96,11 @@ public class GameClientRenderer extends Renderer {
 
 		//Create some light
 		Attenuation plAttenuation = new Attenuation(0.0f, 0.0f, 1.0f);
-		pointLights.add(new PointLight(new Vector3f(0, 2, -0.5f), new Vector3f(0,0,1), 1.0f, plAttenuation));
-		pointLights.add(new PointLight(new Vector3f(0, 4, -0.5f), new Vector3f(1,1,1), 1.0f, plAttenuation));
+		gameObjectHandler.add("blueLight", new PointLight(new Vector3f(0, 2, -0.5f), new Vector3f(0,0,1), 1.0f, plAttenuation));
+		gameObjectHandler.add("whiteLight", new PointLight(new Vector3f(0, 4, -0.5f), new Vector3f(1,1,1), 1.0f, plAttenuation));
 		Attenuation slAttenuation = new Attenuation(0.0f, 0.0f, 0.02f);
-		spotLights.add(new SpotLight(new Vector3f(0, 2, 0), new Vector3f(1, 0, 0), 1.0f, slAttenuation, new Vector3f(0, 1, 0), 140));
-		directionalLight = new DirectionalLight(new Vector3f(-1f, 0f, 0f), new Vector4f(1, 1, 0.5f, 1), 1.0f);
+		gameObjectHandler.add("redSpotLight", new SpotLight(new Vector3f(0, 2, 0), new Vector3f(1, 0, 0), 1.0f, slAttenuation, new Vector3f(0, 1, 0), 140));
+		gameObjectHandler.add("sun", new DirectionalLight(new Vector3f(-1f, 0f, 0f), new Vector4f(1, 1, 0.5f, 1), 1.0f));
 
 		//For wireframe mode
 		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -126,8 +122,8 @@ public class GameClientRenderer extends Renderer {
 		camera.rotate(inputHandler.getDisplayVector().mul(0.4f), inputHandler.getCameraRollVector() * 0.05f);
 
 		//Move around the point lights
-		pointLights.get(0).setPosition(pointLights.get(0).getPosition().add(0, (float)Math.sin(glfwGetTime())/10, 0));
-		pointLights.get(1).setPosition(pointLights.get(1).getPosition().add(0, (float)Math.cos(glfwGetTime())/8, 0));
+		gameObjectHandler.getObject("blueLight").move(0, (float)Math.sin(glfwGetTime())/10, 0);
+		gameObjectHandler.getObject("whiteLight").move(0, (float)Math.cos(glfwGetTime())/8, 0);
 
 		//TODO add game object handler
 		//Animate the head
@@ -141,7 +137,7 @@ public class GameClientRenderer extends Renderer {
 		viewMatrix.identity().set(camera.getViewMatrix());
 
 		//renderNormalsDebug(camera, viewMatrix, normalShaderProgram);
-		renderDefault(camera, viewMatrix, shaderHandler.get("default"), pointLights, spotLights, directionalLight);
+		renderDefault(camera, viewMatrix, shaderHandler.get("default"));
 		hud.setText(0, "FPS: " + this.getFramerate());
 		hud.getTextGameObjects().forEach(EmptyGameObject::queueUpdate);
 		renderHud(shaderHandler.get("hud"));
@@ -182,12 +178,14 @@ public class GameClientRenderer extends Renderer {
 		}
 	}
 
-	private void renderDefault(Camera camera, Matrix4f viewMatrix, ShaderProgram shaderProgram, ArrayList<PointLight> pointLights, ArrayList<SpotLight> spotLights, DirectionalLight directionalLight) {
+	private void renderDefault(Camera camera, Matrix4f viewMatrix, ShaderProgram shaderProgram) {
 
 		shaderProgram.enable();
 
 		//Update positions of concerned lights in view space (point and spot lights)
+		List<PointLight> pointLights = gameObjectHandler.getAllOfType(PointLight.class);
 		pointLights.forEach(light -> light.update(viewMatrix));
+		List<SpotLight> spotLights = gameObjectHandler.getAllOfType(SpotLight.class);
 		spotLights.forEach(light -> light.update(viewMatrix));
 
 		//Render the current object
@@ -216,7 +214,7 @@ public class GameClientRenderer extends Renderer {
 			shaderProgram.setUniform("specularPower", 10.0f); //Reflected light intensity
 			pointLights.forEach(light -> shaderProgram.setUniform("pointLights", light, pointLights.indexOf(light)));
 			spotLights.forEach(light -> shaderProgram.setUniform("spotLights", light, spotLights.indexOf(light)));
-			shaderProgram.setUniform("directionalLight", directionalLight);
+			shaderProgram.setUniform("directionalLight", gameObjectHandler.getObject("sun"));
 			//Material stuff
 			shaderProgram.setUniform("material", gameObject.getModel().getMaterial());
 
