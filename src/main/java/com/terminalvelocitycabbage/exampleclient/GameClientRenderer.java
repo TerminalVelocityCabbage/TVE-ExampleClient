@@ -7,10 +7,10 @@ import com.terminalvelocitycabbage.engine.client.renderer.lights.PointLight;
 import com.terminalvelocitycabbage.engine.client.renderer.lights.SpotLight;
 import com.terminalvelocitycabbage.engine.client.renderer.lights.components.Attenuation;
 import com.terminalvelocitycabbage.engine.client.renderer.model.Material;
-import com.terminalvelocitycabbage.engine.client.renderer.model.Model;
 import com.terminalvelocitycabbage.engine.client.renderer.model.Texture;
 import com.terminalvelocitycabbage.engine.client.renderer.shader.ShaderHandler;
 import com.terminalvelocitycabbage.engine.client.renderer.shader.ShaderProgram;
+import com.terminalvelocitycabbage.engine.client.renderer.util.GameObjectHandler;
 import com.terminalvelocitycabbage.engine.client.resources.Identifier;
 import com.terminalvelocitycabbage.engine.entity.EmptyGameObject;
 import com.terminalvelocitycabbage.engine.entity.ModeledGameObject;
@@ -30,16 +30,13 @@ import static org.lwjgl.opengl.GL20.*;
 
 public class GameClientRenderer extends Renderer {
 
-	private ArrayList<ModeledGameObject> gameObjects = new ArrayList<>();
+	private GameObjectHandler gameObjectHandler = new GameObjectHandler();
 	private ArrayList<PointLight> pointLights = new ArrayList<>();
 	private ArrayList<SpotLight> spotLights = new ArrayList<>();
 	private DirectionalLight directionalLight;
 
 	private final ShaderHandler shaderHandler = new ShaderHandler();
 	private GameInputHandler inputHandler = new GameInputHandler();
-
-	ModeledGameObject robot;
-	Model.Part head;
 
 	private GameClientHud hud;
 
@@ -60,23 +57,19 @@ public class GameClientRenderer extends Renderer {
 				.reflectivity(new Texture(TEXTURE, new Identifier(GameClient.ID, "gerald_reflectivity.png")))
 				.texture(new Texture(TEXTURE, new Identifier(GameClient.ID, "gerald_base.png")))
 				.build());
-		//Create a game object from the model loaded
-		robot = ModeledGameObject.builder().setModel(robotModel).build();
-		//Expose the head model part from the model so it can be animated in the game loop
-		head = robotModel.getPart("head").orElseThrow();
-		//Add the game object to the list of active objects
-		gameObjects.add(robot);
+		//Create a game object from the model loaded and add the game object to the list of active objects
+		gameObjectHandler.add("robot", ModeledGameObject.builder().setModel(robotModel).build());
 
+		//Do it again so we have two objects with different models and different textures
 		DCModel wormModel = DCModel.load(MODEL, new Identifier(GameClient.ID, "Worm.dcm"));
 		wormModel.setMaterial(Material.builder()
 				.texture(new Texture(TEXTURE, new Identifier(GameClient.ID, "worm.png")))
 				.build());
-		ModeledGameObject worm = ModeledGameObject.builder().setModel(wormModel).build();
-		gameObjects.add(worm);
-		worm.move(0, 0, 10);
+		gameObjectHandler.add("worm", ModeledGameObject.builder().setModel(wormModel).build());
+		gameObjectHandler.getObject("worm").move(0, 0, 10);
 
 		//bind all Game Objects
-		for (ModeledGameObject gameObject : gameObjects) {
+		for (ModeledGameObject gameObject : gameObjectHandler.getAllOfType(ModeledGameObject.class)) {
 			gameObject.bind();
 		}
 		for (TextGameObject text : hud.getTextGameObjects()) {
@@ -138,7 +131,8 @@ public class GameClientRenderer extends Renderer {
 
 		//TODO add game object handler
 		//Animate the head
-		head.rotation.add(0, 1, 0);
+		ModeledGameObject robot = gameObjectHandler.getObject("robot");
+		((DCModel)robot.getModel()).getPart("head").orElseThrow().rotation.add(0, 1, 0);
 		//Tell the engine that the game object needs to be re-rendered
 		robot.queueUpdate();
 
@@ -160,7 +154,7 @@ public class GameClientRenderer extends Renderer {
 	public void destroy() {
 		super.destroy();
 		//Cleanup
-		for (ModeledGameObject gameObject : gameObjects) {
+		for (ModeledGameObject gameObject : gameObjectHandler.getAllOfType(ModeledGameObject.class)) {
 			gameObject.destroy();
 		}
 		for (TextGameObject text : hud.getTextGameObjects()) {
@@ -179,7 +173,7 @@ public class GameClientRenderer extends Renderer {
 		shaderProgram.createUniform("normalTransformationMatrix");
 
 		//Draw whatever changes were pushed
-		for (ModeledGameObject gameObject : gameObjects) {
+		for (ModeledGameObject gameObject : gameObjectHandler.getAllOfType(ModeledGameObject.class)) {
 			gameObject.update();
 			shaderProgram.setUniform("projectionMatrix", camera.getProjectionMatrix());
 			shaderProgram.setUniform("modelViewMatrix", gameObject.getModelViewMatrix(viewMatrix));
@@ -210,7 +204,7 @@ public class GameClientRenderer extends Renderer {
 		shaderProgram.createMaterialUniform("material");
 
 		//Draw whatever changes were pushed
-		for (ModeledGameObject gameObject : gameObjects) {
+		for (ModeledGameObject gameObject : gameObjectHandler.getAllOfType(ModeledGameObject.class)) {
 
 			gameObject.update();
 
