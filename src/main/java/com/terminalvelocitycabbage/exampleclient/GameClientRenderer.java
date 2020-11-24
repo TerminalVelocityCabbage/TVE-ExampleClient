@@ -108,6 +108,7 @@ public class GameClientRenderer extends Renderer {
 
 	@Override
 	public void loop() {
+		super.loop();
 		//Setup the frame for drawing
 		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 		glEnable(GL_DEPTH_TEST);
@@ -125,7 +126,6 @@ public class GameClientRenderer extends Renderer {
 		gameObjectHandler.getObject("blueLight").move(0, (float)Math.sin(glfwGetTime())/10, 0);
 		gameObjectHandler.getObject("whiteLight").move(0, (float)Math.cos(glfwGetTime())/8, 0);
 
-		//TODO add game object handler
 		//Animate the head
 		ModeledGameObject robot = gameObjectHandler.getObject("robot");
 		((DCModel)robot.getModel()).getPart("head").orElseThrow().rotation.add(0, 1, 0);
