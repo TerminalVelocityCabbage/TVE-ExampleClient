@@ -13,6 +13,10 @@ import com.terminalvelocitycabbage.engine.client.renderer.model.Material;
 import com.terminalvelocitycabbage.engine.client.renderer.model.Texture;
 import com.terminalvelocitycabbage.engine.client.renderer.shader.ShaderHandler;
 import com.terminalvelocitycabbage.engine.client.renderer.shader.ShaderProgram;
+import com.terminalvelocitycabbage.engine.client.renderer.ui.elements.UICanvas;
+import com.terminalvelocitycabbage.engine.client.renderer.ui.constraints.CenterConstraint;
+import com.terminalvelocitycabbage.engine.client.renderer.ui.constraints.SizeConstraint;
+import com.terminalvelocitycabbage.engine.client.renderer.ui.elements.BoxElement;
 import com.terminalvelocitycabbage.engine.client.renderer.util.GameObjectHandler;
 import com.terminalvelocitycabbage.engine.client.resources.Identifier;
 import com.terminalvelocitycabbage.exampleclient.models.DCModel;
@@ -43,7 +47,19 @@ public class GameClientRenderer extends Renderer {
 	@Override
 	public void init() {
 		super.init();
-		hud = new GameClientHud("This is some text rendered dynamically!");
+		hud = new GameClientHud(getWindow(), "This is some text rendered dynamically!");
+
+
+		hud.create("boxTest", new UICanvas()
+				.addChild(new BoxElement(new Vector3f(1, 1, 1))
+						.addConstraint(new SizeConstraint(SizeConstraint.Type.WIDTH, 10, SizeConstraint.Unit.PERCENT))
+						.addConstraint(new SizeConstraint(SizeConstraint.Type.HEIGHT, 10, SizeConstraint.Unit.PERCENT))
+						.addConstraint(new CenterConstraint(CenterConstraint.Direction.BOTH)))
+		);
+
+		hud.show("boxTest");
+
+
 		//Create the controllable camera
 		camera = new Camera(60, 0.01f, 1000.0f);
 
@@ -157,6 +173,7 @@ public class GameClientRenderer extends Renderer {
 			text.destroy();
 		}
 		shaderHandler.cleanup();
+		hud.cleanup();
 	}
 
 	private void renderNormalsDebug(Camera camera, Matrix4f viewMatrix, ShaderProgram shaderProgram) {
@@ -239,5 +256,6 @@ public class GameClientRenderer extends Renderer {
 
 			text.render();
 		}
+		hud.render("boxTest");
 	}
 }
