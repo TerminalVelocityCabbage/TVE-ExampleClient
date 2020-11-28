@@ -13,6 +13,7 @@ import com.terminalvelocitycabbage.engine.client.renderer.model.Material;
 import com.terminalvelocitycabbage.engine.client.renderer.model.Texture;
 import com.terminalvelocitycabbage.engine.client.renderer.shader.ShaderHandler;
 import com.terminalvelocitycabbage.engine.client.renderer.shader.ShaderProgram;
+import com.terminalvelocitycabbage.engine.client.renderer.ui.components.UIElement;
 import com.terminalvelocitycabbage.engine.client.renderer.ui.elements.UICanvas;
 import com.terminalvelocitycabbage.engine.client.renderer.ui.constraints.CenterConstraint;
 import com.terminalvelocitycabbage.engine.client.renderer.ui.constraints.SizeConstraint;
@@ -101,11 +102,17 @@ public class GameClientRenderer extends Renderer {
 		shaderHandler.queueShader("normals", FRAGMENT, SHADER, new Identifier(GameClient.ID, "normalonly.frag"));
 		shaderHandler.build("normals");
 
-		//Create a shader program for hud rendering
+		//Create a shader program for text rendering
 		shaderHandler.newProgram("text");
 		shaderHandler.queueShader("text", VERTEX, SHADER, new Identifier(GameClient.ID, "text_default.vert"));
 		shaderHandler.queueShader("text", FRAGMENT, SHADER, new Identifier(GameClient.ID, "text_default.frag"));
 		shaderHandler.build("text");
+
+		//Create a shader program for hud rendering
+		shaderHandler.newProgram("hud");
+		shaderHandler.queueShader("hud", VERTEX, SHADER, new Identifier(GameClient.ID, "hud.vert"));
+		shaderHandler.queueShader("hud", FRAGMENT, SHADER, new Identifier(GameClient.ID, "hud.frag"));
+		shaderHandler.build("hud");
 
 		//Store InputHandler
 		inputHandler = (GameInputHandler) getWindow().getInputHandler();
@@ -156,6 +163,7 @@ public class GameClientRenderer extends Renderer {
 		renderDefault(camera, viewMatrix, shaderHandler.get("default"));
 		hud.setText(0, "FPS: " + this.getFramerate());
 		hud.getTextGameObjects().forEach(EmptyGameObject::queueUpdate);
+		renderHud(shaderHandler.get("hud"));
 		renderText(shaderHandler.get("text"));
 
 		//Send the frame
@@ -255,6 +263,25 @@ public class GameClientRenderer extends Renderer {
 			shaderProgram.setUniform("color", new Vector4f(1, 1, 1, 1));
 
 			text.render();
+		}
+	}
+
+	private void renderHud(ShaderProgram shaderProgram) {
+
+		shaderProgram.enable();
+
+		shaderProgram.createUniform("color");
+
+		for (UIElement element : hud.getScenes()) {
+
+			element.marginLeft = 0.99f;
+
+			element.update();
+
+			//TODO this wont work since colors can change for child elements. These need to be supplied somehow
+			shaderProgram.setUniform("color", new Vector4f(1, 0, 0, 0.2f));
+
+			element.render();
 		}
 	}
 }

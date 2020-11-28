@@ -12,9 +12,6 @@ import static com.terminalvelocitycabbage.exampleclient.GameResourceHandler.FONT
 
 public class GameClientHud extends UISceneHandler {
 
-
-
-
 	@Deprecated
 	private TextGameObject testTextObject;
 	@Deprecated
