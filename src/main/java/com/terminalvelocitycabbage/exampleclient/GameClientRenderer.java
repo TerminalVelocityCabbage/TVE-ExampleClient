@@ -102,10 +102,10 @@ public class GameClientRenderer extends Renderer {
 		shaderHandler.build("normals");
 
 		//Create a shader program for hud rendering
-		shaderHandler.newProgram("hud");
-		shaderHandler.queueShader("hud", VERTEX, SHADER, new Identifier(GameClient.ID, "hud_default.vert"));
-		shaderHandler.queueShader("hud", FRAGMENT, SHADER, new Identifier(GameClient.ID, "hud_default.frag"));
-		shaderHandler.build("hud");
+		shaderHandler.newProgram("text");
+		shaderHandler.queueShader("text", VERTEX, SHADER, new Identifier(GameClient.ID, "text_default.vert"));
+		shaderHandler.queueShader("text", FRAGMENT, SHADER, new Identifier(GameClient.ID, "text_default.frag"));
+		shaderHandler.build("text");
 
 		//Store InputHandler
 		inputHandler = (GameInputHandler) getWindow().getInputHandler();
@@ -156,7 +156,7 @@ public class GameClientRenderer extends Renderer {
 		renderDefault(camera, viewMatrix, shaderHandler.get("default"));
 		hud.setText(0, "FPS: " + this.getFramerate());
 		hud.getTextGameObjects().forEach(EmptyGameObject::queueUpdate);
-		renderHud(shaderHandler.get("hud"));
+		renderText(shaderHandler.get("text"));
 
 		//Send the frame
 		push();
@@ -239,7 +239,7 @@ public class GameClientRenderer extends Renderer {
 		}
 	}
 
-	private void renderHud(ShaderProgram shaderProgram) {
+	private void renderText(ShaderProgram shaderProgram) {
 
 		shaderProgram.enable();
 
@@ -256,6 +256,5 @@ public class GameClientRenderer extends Renderer {
 
 			text.render();
 		}
-		hud.render("boxTest");
 	}
 }
