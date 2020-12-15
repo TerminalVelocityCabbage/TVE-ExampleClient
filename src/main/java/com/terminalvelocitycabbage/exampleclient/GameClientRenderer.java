@@ -14,10 +14,10 @@ import com.terminalvelocitycabbage.engine.client.renderer.model.Texture;
 import com.terminalvelocitycabbage.engine.client.renderer.shader.ShaderHandler;
 import com.terminalvelocitycabbage.engine.client.renderer.shader.ShaderProgram;
 import com.terminalvelocitycabbage.engine.client.renderer.ui.components.UIElement;
-import com.terminalvelocitycabbage.engine.client.renderer.ui.elements.UICanvas;
 import com.terminalvelocitycabbage.engine.client.renderer.ui.constraints.CenterConstraint;
 import com.terminalvelocitycabbage.engine.client.renderer.ui.constraints.SizeConstraint;
 import com.terminalvelocitycabbage.engine.client.renderer.ui.elements.BoxElement;
+import com.terminalvelocitycabbage.engine.client.renderer.ui.elements.UICanvas;
 import com.terminalvelocitycabbage.engine.client.renderer.util.GameObjectHandler;
 import com.terminalvelocitycabbage.engine.client.resources.Identifier;
 import com.terminalvelocitycabbage.exampleclient.models.DCModel;
@@ -274,12 +274,9 @@ public class GameClientRenderer extends Renderer {
 
 		for (UIElement element : hud.getScenes()) {
 
-			element.marginLeft = 0.99f;
-
 			element.update();
 
-			//TODO this wont work since colors can change for child elements. These need to be supplied somehow
-			shaderProgram.setUniform("color", new Vector4f(1, 0, 0, 0.2f));
+			shaderProgram.setUniform("color", new Vector4f(element.color, 0.2f));
 
 			element.render();
 		}
