@@ -1,5 +1,8 @@
 package com.terminalvelocitycabbage.exampleclient;
 
+import com.dumbcodemc.studio.animation.info.AnimationInfo;
+import com.dumbcodemc.studio.animation.info.AnimationLoader;
+import com.dumbcodemc.studio.animation.instance.ModelAnimationHandler;
 import com.terminalvelocitycabbage.engine.client.renderer.Renderer;
 import com.terminalvelocitycabbage.engine.client.renderer.components.Camera;
 import com.terminalvelocitycabbage.engine.client.renderer.gameobjects.EmptyGameObject;
@@ -20,7 +23,11 @@ import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 
 import static com.terminalvelocitycabbage.engine.client.renderer.shader.Shader.Type.FRAGMENT;
 import static com.terminalvelocitycabbage.engine.client.renderer.shader.Shader.Type.VERTEX;
@@ -36,6 +43,10 @@ public class GameClientRenderer extends Renderer {
 
 	private GameClientHud hud;
 
+	//DEBUG ANIMATION STUFF:
+	private AnimationInfo waveAnimation;
+	private UUID waveUUID;
+
 	public GameClientRenderer(int width, int height, String title) {
 		super(width, height, title, new GameInputHandler());
 	}
@@ -48,11 +59,11 @@ public class GameClientRenderer extends Renderer {
 		camera = new Camera(60, 0.01f, 1000.0f);
 
 		//Load a model to a Model object from dcm file
-		DCModel robotModel = DCModel.load(MODEL, new Identifier(GameClient.ID, "Gerald.dcm"));
+		DCModel robotModel = DCModel.load(MODEL, new Identifier(GameClient.ID, "trex.dcm"));
 		robotModel.setMaterial(Material.builder()
-				.reflectivity(new Texture(TEXTURE, new Identifier(GameClient.ID, "gerald_reflectivity.png")))
-				.texture(new Texture(TEXTURE, new Identifier(GameClient.ID, "gerald_base.png")))
+				.texture(new Texture(TEXTURE, new Identifier(GameClient.ID, "trex.png")))
 				.build());
+
 		//Create a game object from the model loaded and add the game object to the list of active objects
 		gameObjectHandler.add("robot", ModeledGameObject.builder().setModel(robotModel).build());
 
@@ -63,6 +74,13 @@ public class GameClientRenderer extends Renderer {
 				.build());
 		gameObjectHandler.add("worm", ModeledGameObject.builder().setModel(wormModel).build());
 		gameObjectHandler.getObject("worm").move(0, 0, 10);
+
+		try {
+			this.waveAnimation = AnimationLoader.loadAnimation(ANIMATION.getResource(new Identifier(GameClient.ID, "roar.dca")).orElseThrow().openStream());
+			this.waveUUID = wormModel.handler.startAnimation(waveAnimation);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 
 		//bind all Game Objects
 		for (ModeledGameObject gameObject : gameObjectHandler.getAllOfType(ModeledGameObject.class)) {
@@ -116,7 +134,7 @@ public class GameClientRenderer extends Renderer {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		//Update the camera position
-		camera.move(inputHandler.getCameraPositionMoveVector(), 0.05f);
+		camera.move(inputHandler.getCameraPositionMoveVector(), 1f);
 		//Only allow looking around when right click is held
 		if (!inputHandler.isRightButtonPressed()) inputHandler.resetDisplayVector();
 		//Update camera rotation
@@ -128,7 +146,12 @@ public class GameClientRenderer extends Renderer {
 
 		//Animate the head
 		ModeledGameObject robot = gameObjectHandler.getObject("robot");
-		((DCModel)robot.getModel()).getPart("head").orElseThrow().rotation.add(0, 1, 0);
+		ModelAnimationHandler handler = ((DCModel) robot.getModel()).handler;
+		handler.animate(this.getDeltaTime());
+		if(!handler.isPlaying(this.waveUUID)) {
+			this.waveUUID = handler.startAnimation(this.waveAnimation);
+		}
+
 		//Tell the engine that the game object needs to be re-rendered
 		robot.queueUpdate();
 
