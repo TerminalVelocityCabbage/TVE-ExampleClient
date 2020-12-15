@@ -9,13 +9,12 @@ import com.terminalvelocitycabbage.engine.client.renderer.model.Model;
 import com.terminalvelocitycabbage.engine.client.renderer.model.Vertex;
 import com.terminalvelocitycabbage.engine.client.renderer.shapes.TexturedCuboid;
 import com.terminalvelocitycabbage.engine.client.resources.Identifier;
-import com.terminalvelocitycabbage.engine.client.resources.Resource;
 import com.terminalvelocitycabbage.engine.client.resources.ResourceManager;
 import org.joml.Vector3f;
 
-import java.io.DataInputStream;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -66,15 +65,15 @@ public class DCModel extends Model {
                     new Vertex().setXYZ(0.0f, 0.0f, 1.0f).setUv(uv[1][0], uv[1][1]).setNormal(-1, 0, 0),
                     new Vertex().setXYZ(0.0f, 1.0f, 1.0f).setUv(uv[1][0], uv[1][3]).setNormal(-1, 0, 0),
 
-                    new Vertex().setXYZ(0.0f, 1.0f, 0.0f).setUv(uv[2][2], uv[2][3]).setNormal(0, 1, 0),
-                    new Vertex().setXYZ(0.0f, 1.0f, 1.0f).setUv(uv[2][2], uv[2][1]).setNormal(0, 1, 0),
-                    new Vertex().setXYZ(1.0f, 1.0f, 1.0f).setUv(uv[2][0], uv[2][1]).setNormal(0, 1, 0),
-                    new Vertex().setXYZ(1.0f, 1.0f, 0.0f).setUv(uv[2][0], uv[2][3]).setNormal(0, 1, 0),
+                    new Vertex().setXYZ(0.0f, 1.0f, 0.0f).setUv(uv[3][2], uv[3][3]).setNormal(0, 1, 0),
+                    new Vertex().setXYZ(0.0f, 1.0f, 1.0f).setUv(uv[3][2], uv[3][1]).setNormal(0, 1, 0),
+                    new Vertex().setXYZ(1.0f, 1.0f, 1.0f).setUv(uv[3][0], uv[3][1]).setNormal(0, 1, 0),
+                    new Vertex().setXYZ(1.0f, 1.0f, 0.0f).setUv(uv[3][0], uv[3][3]).setNormal(0, 1, 0),
 
-                    new Vertex().setXYZ(1.0f, 0.0f, 1.0f).setUv(uv[3][0], uv[3][1]).setNormal(0, -1, 0),
-                    new Vertex().setXYZ(1.0f, 0.0f, 0.0f).setUv(uv[3][0], uv[3][3]).setNormal(0, -1, 0),
-                    new Vertex().setXYZ(0.0f, 0.0f, 0.0f).setUv(uv[3][2], uv[3][3]).setNormal(0, -1, 0),
-                    new Vertex().setXYZ(0.0f, 0.0f, 1.0f).setUv(uv[3][2], uv[3][1]).setNormal(0, -1, 0)
+                    new Vertex().setXYZ(1.0f, 0.0f, 1.0f).setUv(uv[2][0], uv[2][1]).setNormal(0, -1, 0),
+                    new Vertex().setXYZ(1.0f, 0.0f, 0.0f).setUv(uv[2][0], uv[2][3]).setNormal(0, -1, 0),
+                    new Vertex().setXYZ(0.0f, 0.0f, 0.0f).setUv(uv[2][2], uv[2][3]).setNormal(0, -1, 0),
+                    new Vertex().setXYZ(0.0f, 0.0f, 1.0f).setUv(uv[2][2], uv[2][1]).setNormal(0, -1, 0)
                 ),
                 new Vector3f(cube.getOffset()),
                 new Vector3f(cube.getRotationPoint()),
