@@ -75,10 +75,10 @@ public class DCModel extends Model {
                     new Vertex().setXYZ(0.0f, 0.0f, 0.0f).setUv(uv[2][2], uv[2][3]).setNormal(0, -1, 0),
                     new Vertex().setXYZ(0.0f, 0.0f, 1.0f).setUv(uv[2][2], uv[2][1]).setNormal(0, -1, 0)
                 ),
-                new Vector3f(cube.getOffset()),
+                new Vector3f(cube.getOffset()[0] - cube.getCubeGrow()[0], cube.getOffset()[1] - cube.getCubeGrow()[1], cube.getOffset()[2] - cube.getCubeGrow()[2]),
                 new Vector3f(cube.getRotationPoint()),
                 new Vector3f(cube.getRotation()),
-                new Vector3f(cube.getDimensions()[0], cube.getDimensions()[1], cube.getDimensions()[2]),
+                new Vector3f(cube.getDimensions()[0] + (2*cube.getCubeGrow()[0]), cube.getDimensions()[1] + (2*cube.getCubeGrow()[1]), cube.getDimensions()[2] + (2*cube.getCubeGrow()[2])),
                 cube.getChildren().stream().map(Part::createPart).collect(Collectors.toList())
             );
             this.cube = cube;
