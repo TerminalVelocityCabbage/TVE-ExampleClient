@@ -1,8 +1,5 @@
 package com.terminalvelocitycabbage.exampleclient;
 
-import com.dumbcodemc.studio.animation.info.AnimationInfo;
-import com.dumbcodemc.studio.animation.info.AnimationLoader;
-import com.dumbcodemc.studio.animation.instance.ModelAnimationHandler;
 import com.terminalvelocitycabbage.engine.client.renderer.Renderer;
 import com.terminalvelocitycabbage.engine.client.renderer.components.Camera;
 import com.terminalvelocitycabbage.engine.client.renderer.gameobjects.TextGameObject;
@@ -18,6 +15,9 @@ import com.terminalvelocitycabbage.engine.client.renderer.shader.ShaderProgram;
 import com.terminalvelocitycabbage.engine.client.renderer.util.GameObjectHandler;
 import com.terminalvelocitycabbage.engine.client.resources.Identifier;
 import com.terminalvelocitycabbage.exampleclient.models.DCModel;
+import net.dumbcode.studio.animation.info.AnimationInfo;
+import net.dumbcode.studio.animation.info.AnimationLoader;
+import net.dumbcode.studio.animation.instance.ModelAnimationHandler;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;

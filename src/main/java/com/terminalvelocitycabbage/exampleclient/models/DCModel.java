@@ -1,15 +1,15 @@
 package com.terminalvelocitycabbage.exampleclient.models;
 
-import com.dumbcodemc.studio.animation.instance.AnimatedCube;
-import com.dumbcodemc.studio.animation.instance.ModelAnimationHandler;
-import com.dumbcodemc.studio.model.CubeInfo;
-import com.dumbcodemc.studio.model.ModelInfo;
-import com.dumbcodemc.studio.model.ModelLoader;
 import com.terminalvelocitycabbage.engine.client.renderer.model.Model;
 import com.terminalvelocitycabbage.engine.client.renderer.model.Vertex;
 import com.terminalvelocitycabbage.engine.client.renderer.shapes.TexturedCuboid;
 import com.terminalvelocitycabbage.engine.client.resources.Identifier;
 import com.terminalvelocitycabbage.engine.client.resources.ResourceManager;
+import net.dumbcode.studio.animation.instance.AnimatedCube;
+import net.dumbcode.studio.animation.instance.ModelAnimationHandler;
+import net.dumbcode.studio.model.CubeInfo;
+import net.dumbcode.studio.model.ModelInfo;
+import net.dumbcode.studio.model.ModelLoader;
 import org.joml.Vector3f;
 
 import java.io.IOException;
