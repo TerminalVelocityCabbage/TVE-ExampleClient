@@ -2,6 +2,7 @@ package com.terminalvelocitycabbage.exampleclient;
 
 import com.terminalvelocitycabbage.engine.client.renderer.Renderer;
 import com.terminalvelocitycabbage.engine.client.renderer.components.Camera;
+import com.terminalvelocitycabbage.engine.client.renderer.gameobjects.EmptyGameObject;
 import com.terminalvelocitycabbage.engine.client.renderer.gameobjects.TextGameObject;
 import com.terminalvelocitycabbage.engine.client.renderer.gameobjects.entity.ModeledGameObject;
 import com.terminalvelocitycabbage.engine.client.renderer.gameobjects.lights.DirectionalLight;
@@ -38,12 +39,9 @@ public class GameClientRenderer extends Renderer {
 	private final ShaderHandler shaderHandler = new ShaderHandler();
 	private GameInputHandler inputHandler = new GameInputHandler();
 
-	private GameClientHud hud;
 
-	//DEBUG ANIMATION STUFF:
-	private AnimationInfo roarAnimation;
 	private UUID roarAnimationUUID;
-
+	private AnimationInfo roarAnimation;
 	public GameClientRenderer(int width, int height, String title) {
 		super(width, height, title, new GameInputHandler());
 	}
@@ -51,7 +49,7 @@ public class GameClientRenderer extends Renderer {
 	@Override
 	public void init() {
 		super.init();
-		hud = new GameClientHud("This is some text rendered dynamically!");
+
 		//Create the controllable camera
 		camera = new Camera(60, 0.01f, 1000.0f);
 
@@ -83,9 +81,6 @@ public class GameClientRenderer extends Renderer {
 		for (ModeledGameObject gameObject : gameObjectHandler.getAllOfType(ModeledGameObject.class)) {
 			gameObject.bind();
 		}
-		for (TextGameObject text : hud.getTextGameObjects()) {
-			text.bind();
-		}
 
 		//Create Shaders
 		//Create default shader that is used for textured elements
@@ -99,12 +94,6 @@ public class GameClientRenderer extends Renderer {
 		shaderHandler.queueShader("normals", VERTEX, SHADER, new Identifier(GameClient.ID, "default.vert"));
 		shaderHandler.queueShader("normals", FRAGMENT, SHADER, new Identifier(GameClient.ID, "normalonly.frag"));
 		shaderHandler.build("normals");
-
-		//Create a shader program for hud rendering
-		shaderHandler.newProgram("hud");
-		shaderHandler.queueShader("hud", VERTEX, SHADER, new Identifier(GameClient.ID, "hud_default.vert"));
-		shaderHandler.queueShader("hud", FRAGMENT, SHADER, new Identifier(GameClient.ID, "hud_default.frag"));
-		shaderHandler.build("hud");
 
 		//Store InputHandler
 		inputHandler = (GameInputHandler) getWindow().getInputHandler();
@@ -158,9 +147,6 @@ public class GameClientRenderer extends Renderer {
 
 		//renderNormalsDebug(camera, viewMatrix, shaderHandler.get("normals"));
 		renderDefault(camera, viewMatrix, shaderHandler.get("default"));
-		//hud.setText(0, "FPS: " + this.getFramerate());
-		//hud.getTextGameObjects().forEach(EmptyGameObject::queueUpdate);
-		//renderHud(shaderHandler.get("hud"));
 
 		//Since the text rendering is so awful I'm just going to use the window title for now
 		getWindow().setTitle("FPS: " + String.valueOf(getFramerate()).split("\\.")[0] + " (" + getFrameTimeAverageMillis() + "ms)");
@@ -175,9 +161,6 @@ public class GameClientRenderer extends Renderer {
 		//Cleanup
 		for (ModeledGameObject gameObject : gameObjectHandler.getAllOfType(ModeledGameObject.class)) {
 			gameObject.destroy();
-		}
-		for (TextGameObject text : hud.getTextGameObjects()) {
-			text.destroy();
 		}
 		shaderHandler.cleanup();
 	}
@@ -242,25 +225,6 @@ public class GameClientRenderer extends Renderer {
 			shaderProgram.setUniform("material", gameObject.getModel().getMaterial());
 
 			gameObject.render();
-		}
-	}
-
-	private void renderHud(ShaderProgram shaderProgram) {
-
-		shaderProgram.enable();
-
-		shaderProgram.createUniform("projModelMatrix");
-		shaderProgram.createUniform("color");
-
-		Matrix4f ortho = getWindow().getOrthoProjectionMatrix();
-		for (TextGameObject text : hud.getTextGameObjects()) {
-
-			text.update();
-
-			shaderProgram.setUniform("projModelMatrix", text.getOrthoProjModelMatrix(ortho));
-			shaderProgram.setUniform("color", new Vector4f(1, 1, 1, 1));
-
-			text.render();
 		}
 	}
 }
