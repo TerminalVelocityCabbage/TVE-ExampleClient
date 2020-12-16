@@ -2,8 +2,6 @@ package com.terminalvelocitycabbage.exampleclient;
 
 import com.terminalvelocitycabbage.engine.client.renderer.Renderer;
 import com.terminalvelocitycabbage.engine.client.renderer.components.Camera;
-import com.terminalvelocitycabbage.engine.client.renderer.gameobjects.EmptyGameObject;
-import com.terminalvelocitycabbage.engine.client.renderer.gameobjects.TextGameObject;
 import com.terminalvelocitycabbage.engine.client.renderer.gameobjects.entity.ModeledGameObject;
 import com.terminalvelocitycabbage.engine.client.renderer.gameobjects.lights.DirectionalLight;
 import com.terminalvelocitycabbage.engine.client.renderer.gameobjects.lights.PointLight;
@@ -13,11 +11,6 @@ import com.terminalvelocitycabbage.engine.client.renderer.model.Material;
 import com.terminalvelocitycabbage.engine.client.renderer.model.Texture;
 import com.terminalvelocitycabbage.engine.client.renderer.shader.ShaderHandler;
 import com.terminalvelocitycabbage.engine.client.renderer.shader.ShaderProgram;
-import com.terminalvelocitycabbage.engine.client.renderer.ui.components.UIElement;
-import com.terminalvelocitycabbage.engine.client.renderer.ui.constraints.CenterConstraint;
-import com.terminalvelocitycabbage.engine.client.renderer.ui.constraints.SizeConstraint;
-import com.terminalvelocitycabbage.engine.client.renderer.ui.elements.BoxElement;
-import com.terminalvelocitycabbage.engine.client.renderer.ui.elements.UICanvas;
 import com.terminalvelocitycabbage.engine.client.renderer.util.GameObjectHandler;
 import com.terminalvelocitycabbage.engine.client.resources.Identifier;
 import com.terminalvelocitycabbage.exampleclient.models.DCModel;
@@ -39,8 +32,6 @@ public class GameClientRenderer extends Renderer {
 	private final ShaderHandler shaderHandler = new ShaderHandler();
 	private GameInputHandler inputHandler = new GameInputHandler();
 
-	private GameClientHud hud;
-
 	public GameClientRenderer(int width, int height, String title) {
 		super(width, height, title, new GameInputHandler());
 	}
@@ -48,18 +39,6 @@ public class GameClientRenderer extends Renderer {
 	@Override
 	public void init() {
 		super.init();
-		hud = new GameClientHud(getWindow(), "This is some text rendered dynamically!");
-
-
-		hud.create("boxTest", new UICanvas()
-				.addChild(new BoxElement(new Vector3f(1, 1, 1))
-						.addConstraint(new SizeConstraint(SizeConstraint.Type.WIDTH, 10, SizeConstraint.Unit.PERCENT))
-						.addConstraint(new SizeConstraint(SizeConstraint.Type.HEIGHT, 10, SizeConstraint.Unit.PERCENT))
-						.addConstraint(new CenterConstraint(CenterConstraint.Direction.BOTH)))
-		);
-
-		hud.show("boxTest");
-
 
 		//Create the controllable camera
 		camera = new Camera(60, 0.01f, 1000.0f);
@@ -84,9 +63,6 @@ public class GameClientRenderer extends Renderer {
 		//bind all Game Objects
 		for (ModeledGameObject gameObject : gameObjectHandler.getAllOfType(ModeledGameObject.class)) {
 			gameObject.bind();
-		}
-		for (TextGameObject text : hud.getTextGameObjects()) {
-			text.bind();
 		}
 
 		//Create Shaders
@@ -161,10 +137,6 @@ public class GameClientRenderer extends Renderer {
 
 		//renderNormalsDebug(camera, viewMatrix, normalShaderProgram);
 		renderDefault(camera, viewMatrix, shaderHandler.get("default"));
-		hud.setText(0, "FPS: " + this.getFramerate());
-		hud.getTextGameObjects().forEach(EmptyGameObject::queueUpdate);
-		renderHud(shaderHandler.get("hud"));
-		renderText(shaderHandler.get("text"));
 
 		//Send the frame
 		push();
@@ -177,11 +149,7 @@ public class GameClientRenderer extends Renderer {
 		for (ModeledGameObject gameObject : gameObjectHandler.getAllOfType(ModeledGameObject.class)) {
 			gameObject.destroy();
 		}
-		for (TextGameObject text : hud.getTextGameObjects()) {
-			text.destroy();
-		}
 		shaderHandler.cleanup();
-		hud.cleanup();
 	}
 
 	private void renderNormalsDebug(Camera camera, Matrix4f viewMatrix, ShaderProgram shaderProgram) {
@@ -244,41 +212,6 @@ public class GameClientRenderer extends Renderer {
 			shaderProgram.setUniform("material", gameObject.getModel().getMaterial());
 
 			gameObject.render();
-		}
-	}
-
-	private void renderText(ShaderProgram shaderProgram) {
-
-		shaderProgram.enable();
-
-		shaderProgram.createUniform("projModelMatrix");
-		shaderProgram.createUniform("color");
-
-		Matrix4f ortho = getWindow().getOrthoProjectionMatrix();
-		for (TextGameObject text : hud.getTextGameObjects()) {
-
-			text.update();
-
-			shaderProgram.setUniform("projModelMatrix", text.getOrthoProjModelMatrix(ortho));
-			shaderProgram.setUniform("color", new Vector4f(1, 1, 1, 1));
-
-			text.render();
-		}
-	}
-
-	private void renderHud(ShaderProgram shaderProgram) {
-
-		shaderProgram.enable();
-
-		shaderProgram.createUniform("color");
-
-		for (UIElement element : hud.getScenes()) {
-
-			element.update();
-
-			shaderProgram.setUniform("color", new Vector4f(element.color, 0.2f));
-
-			element.render();
 		}
 	}
 }
