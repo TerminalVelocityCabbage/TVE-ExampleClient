@@ -10,6 +10,7 @@ import net.dumbcode.studio.animation.instance.ModelAnimationHandler;
 import net.dumbcode.studio.model.CubeInfo;
 import net.dumbcode.studio.model.ModelInfo;
 import net.dumbcode.studio.model.ModelLoader;
+import net.dumbcode.studio.model.RotationOrder;
 import org.joml.Vector3f;
 
 import java.io.IOException;
@@ -27,7 +28,7 @@ public class DCModel extends Model {
 
         List<Part> partMap = new ArrayList<>();
         recursiveOnPart(modelParts, partMap::add);
-        this.handler = new ModelAnimationHandler(partMap);
+        this.handler = new ModelAnimationHandler(model.getOrder(), partMap);
     }
 
     private void recursiveOnPart(List<Model.Part> modelParts, Consumer<Part> consumer) {
@@ -116,7 +117,7 @@ public class DCModel extends Model {
             })
             .map(stream -> {
                 try {
-                    return ModelLoader.loadModel(stream);
+                    return ModelLoader.loadModel(stream, RotationOrder.XYZ);
                 } catch (IOException e) {
                     throw new RuntimeException("Could not read model: " + model.toString(), e);
                 }
