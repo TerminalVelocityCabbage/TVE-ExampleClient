@@ -15,6 +15,7 @@ import com.terminalvelocitycabbage.engine.client.renderer.shader.ShaderProgram;
 import com.terminalvelocitycabbage.engine.client.renderer.util.GameObjectHandler;
 import com.terminalvelocitycabbage.engine.client.resources.Identifier;
 import com.terminalvelocitycabbage.exampleclient.models.DCModel;
+import net.dumbcode.studio.animation.events.AnimationEventRegister;
 import net.dumbcode.studio.animation.info.AnimationInfo;
 import net.dumbcode.studio.animation.info.AnimationLoader;
 import net.dumbcode.studio.animation.instance.ModelAnimationHandler;
@@ -56,9 +57,9 @@ public class GameClientRenderer extends Renderer {
 		camera = new Camera(60, 0.01f, 1000.0f);
 
 		//Load a model to a Model object from dcm file
-		DCModel trexModel = DCModel.load(MODEL, new Identifier(GameClient.ID, "trex.dcm"));
+		DCModel trexModel = DCModel.load(MODEL, new Identifier(GameClient.ID, "Gerald.dcm"));
 		trexModel.setMaterial(Material.builder()
-				.texture(new Texture(TEXTURE, new Identifier(GameClient.ID, "trex.png")))
+				.texture(new Texture(TEXTURE, new Identifier(GameClient.ID, "gerald_base.png")))
 				.build());
 
 		//Create a game object from the model loaded and add the game object to the list of active objects
@@ -73,8 +74,8 @@ public class GameClientRenderer extends Renderer {
 		gameObjectHandler.getObject("worm").move(0, 0, 10);
 
 		try {
-			this.roarAnimation = AnimationLoader.loadAnimation(ANIMATION.getResource(new Identifier(GameClient.ID, "roar.dca")).orElseThrow().openStream());
-			this.roarAnimationUUID = wormModel.handler.startAnimation(roarAnimation);
+			this.roarAnimation = AnimationLoader.loadAnimation(ANIMATION.getResource(new Identifier(GameClient.ID, "wave.dca")).orElseThrow().openStream());
+			this.roarAnimationUUID = trexModel.handler.startAnimation(roarAnimation);
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
@@ -116,6 +117,9 @@ public class GameClientRenderer extends Renderer {
 		Attenuation slAttenuation = new Attenuation(0.0f, 0.0f, 0.02f);
 		gameObjectHandler.add("redSpotLight", new SpotLight(new Vector3f(0, 2, 0), new Vector3f(1, 0, 0), 1.0f, slAttenuation, new Vector3f(0, 1, 0), 140));
 		gameObjectHandler.add("sun", new DirectionalLight(new Vector3f(-0.68f, 0.55f, 0.42f), new Vector4f(1, 1, 0.5f, 1), 1.0f));
+
+
+		AnimationEventRegister.registerEvent("foo", (data, src) -> System.out.println(data + ", " + src));
 
 		//For wireframe mode
 		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
