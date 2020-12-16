@@ -78,18 +78,6 @@ public class GameClientRenderer extends Renderer {
 		shaderHandler.queueShader("normals", FRAGMENT, SHADER, new Identifier(GameClient.ID, "normalonly.frag"));
 		shaderHandler.build("normals");
 
-		//Create a shader program for text rendering
-		shaderHandler.newProgram("text");
-		shaderHandler.queueShader("text", VERTEX, SHADER, new Identifier(GameClient.ID, "text_default.vert"));
-		shaderHandler.queueShader("text", FRAGMENT, SHADER, new Identifier(GameClient.ID, "text_default.frag"));
-		shaderHandler.build("text");
-
-		//Create a shader program for hud rendering
-		shaderHandler.newProgram("hud");
-		shaderHandler.queueShader("hud", VERTEX, SHADER, new Identifier(GameClient.ID, "hud.vert"));
-		shaderHandler.queueShader("hud", FRAGMENT, SHADER, new Identifier(GameClient.ID, "hud.frag"));
-		shaderHandler.build("hud");
-
 		//Store InputHandler
 		inputHandler = (GameInputHandler) getWindow().getInputHandler();
 
