@@ -4,7 +4,7 @@ import com.dumbcodemc.studio.ModelCube;
 import com.dumbcodemc.studio.ModelInfo;
 import com.dumbcodemc.studio.ModelLoader;
 import com.terminalvelocitycabbage.engine.client.renderer.model.Model;
-import com.terminalvelocitycabbage.engine.client.renderer.model.Vertex;
+import com.terminalvelocitycabbage.engine.client.renderer.model.ModelVertex;
 import com.terminalvelocitycabbage.engine.client.renderer.shapes.TexturedCuboid;
 import com.terminalvelocitycabbage.engine.client.resources.Identifier;
 import com.terminalvelocitycabbage.engine.client.resources.Resource;
@@ -46,35 +46,35 @@ public class DCModel extends Model {
         public Part(ModelCube cube) {
             super(
                 new TexturedCuboid(
-                    new Vertex().setXYZ(0.0f, 1.0f, 1.0f).setUv(cube.uvs[0][2], cube.uvs[0][3]).setNormal(0, 0, 1),
-                    new Vertex().setXYZ(0.0f, 0.0f, 1.0f).setUv(cube.uvs[0][2], cube.uvs[0][1]).setNormal(0, 0, 1),
-                    new Vertex().setXYZ(1.0f, 0.0f, 1.0f).setUv(cube.uvs[0][0], cube.uvs[0][1]).setNormal(0, 0, 1),
-                    new Vertex().setXYZ(1.0f, 1.0f, 1.0f).setUv(cube.uvs[0][0], cube.uvs[0][3]).setNormal(0, 0, 1),
+                    new ModelVertex().setXYZ(0.0f, 1.0f, 1.0f).setUv(cube.uvs[0][2], cube.uvs[0][3]).setNormal(0, 0, 1),
+                    new ModelVertex().setXYZ(0.0f, 0.0f, 1.0f).setUv(cube.uvs[0][2], cube.uvs[0][1]).setNormal(0, 0, 1),
+                    new ModelVertex().setXYZ(1.0f, 0.0f, 1.0f).setUv(cube.uvs[0][0], cube.uvs[0][1]).setNormal(0, 0, 1),
+                    new ModelVertex().setXYZ(1.0f, 1.0f, 1.0f).setUv(cube.uvs[0][0], cube.uvs[0][3]).setNormal(0, 0, 1),
 
-                    new Vertex().setXYZ(1.0f, 1.0f, 1.0f).setUv(cube.uvs[1][2], cube.uvs[1][3]).setNormal(1, 0, 0),
-                    new Vertex().setXYZ(1.0f, 0.0f, 1.0f).setUv(cube.uvs[1][2], cube.uvs[1][1]).setNormal(1, 0, 0),
-                    new Vertex().setXYZ(1.0f, 0.0f, 0.0f).setUv(cube.uvs[1][0], cube.uvs[1][1]).setNormal(1, 0, 0),
-                    new Vertex().setXYZ(1.0f, 1.0f, 0.0f).setUv(cube.uvs[1][0], cube.uvs[1][3]).setNormal(1, 0, 0),
+                    new ModelVertex().setXYZ(1.0f, 1.0f, 1.0f).setUv(cube.uvs[1][2], cube.uvs[1][3]).setNormal(1, 0, 0),
+                    new ModelVertex().setXYZ(1.0f, 0.0f, 1.0f).setUv(cube.uvs[1][2], cube.uvs[1][1]).setNormal(1, 0, 0),
+                    new ModelVertex().setXYZ(1.0f, 0.0f, 0.0f).setUv(cube.uvs[1][0], cube.uvs[1][1]).setNormal(1, 0, 0),
+                    new ModelVertex().setXYZ(1.0f, 1.0f, 0.0f).setUv(cube.uvs[1][0], cube.uvs[1][3]).setNormal(1, 0, 0),
 
-                    new Vertex().setXYZ(1.0f, 1.0f, 0.0f).setUv(cube.uvs[2][2], cube.uvs[2][3]).setNormal(0, 0, -1),
-                    new Vertex().setXYZ(1.0f, 0.0f, 0.0f).setUv(cube.uvs[2][2], cube.uvs[2][1]).setNormal(0, 0, -1),
-                    new Vertex().setXYZ(0.0f, 0.0f, 0.0f).setUv(cube.uvs[2][0], cube.uvs[2][1]).setNormal(0, 0, -1),
-                    new Vertex().setXYZ(0.0f, 1.0f, 0.0f).setUv(cube.uvs[2][0], cube.uvs[2][3]).setNormal(0, 0, -1),
+                    new ModelVertex().setXYZ(1.0f, 1.0f, 0.0f).setUv(cube.uvs[2][2], cube.uvs[2][3]).setNormal(0, 0, -1),
+                    new ModelVertex().setXYZ(1.0f, 0.0f, 0.0f).setUv(cube.uvs[2][2], cube.uvs[2][1]).setNormal(0, 0, -1),
+                    new ModelVertex().setXYZ(0.0f, 0.0f, 0.0f).setUv(cube.uvs[2][0], cube.uvs[2][1]).setNormal(0, 0, -1),
+                    new ModelVertex().setXYZ(0.0f, 1.0f, 0.0f).setUv(cube.uvs[2][0], cube.uvs[2][3]).setNormal(0, 0, -1),
 
-                    new Vertex().setXYZ(0.0f, 1.0f, 0.0f).setUv(cube.uvs[3][2], cube.uvs[3][3]).setNormal(-1, 0, 0),
-                    new Vertex().setXYZ(0.0f, 0.0f, 0.0f).setUv(cube.uvs[3][2], cube.uvs[3][1]).setNormal(-1, 0, 0),
-                    new Vertex().setXYZ(0.0f, 0.0f, 1.0f).setUv(cube.uvs[3][0], cube.uvs[3][1]).setNormal(-1, 0, 0),
-                    new Vertex().setXYZ(0.0f, 1.0f, 1.0f).setUv(cube.uvs[3][0], cube.uvs[3][3]).setNormal(-1, 0, 0),
+                    new ModelVertex().setXYZ(0.0f, 1.0f, 0.0f).setUv(cube.uvs[3][2], cube.uvs[3][3]).setNormal(-1, 0, 0),
+                    new ModelVertex().setXYZ(0.0f, 0.0f, 0.0f).setUv(cube.uvs[3][2], cube.uvs[3][1]).setNormal(-1, 0, 0),
+                    new ModelVertex().setXYZ(0.0f, 0.0f, 1.0f).setUv(cube.uvs[3][0], cube.uvs[3][1]).setNormal(-1, 0, 0),
+                    new ModelVertex().setXYZ(0.0f, 1.0f, 1.0f).setUv(cube.uvs[3][0], cube.uvs[3][3]).setNormal(-1, 0, 0),
 
-                    new Vertex().setXYZ(0.0f, 1.0f, 0.0f).setUv(cube.uvs[5][2], cube.uvs[5][3]).setNormal(0, 1, 0),
-                    new Vertex().setXYZ(0.0f, 1.0f, 1.0f).setUv(cube.uvs[5][2], cube.uvs[5][1]).setNormal(0, 1, 0),
-                    new Vertex().setXYZ(1.0f, 1.0f, 1.0f).setUv(cube.uvs[5][0], cube.uvs[5][1]).setNormal(0, 1, 0),
-                    new Vertex().setXYZ(1.0f, 1.0f, 0.0f).setUv(cube.uvs[5][0], cube.uvs[5][3]).setNormal(0, 1, 0),
+                    new ModelVertex().setXYZ(0.0f, 1.0f, 0.0f).setUv(cube.uvs[5][2], cube.uvs[5][3]).setNormal(0, 1, 0),
+                    new ModelVertex().setXYZ(0.0f, 1.0f, 1.0f).setUv(cube.uvs[5][2], cube.uvs[5][1]).setNormal(0, 1, 0),
+                    new ModelVertex().setXYZ(1.0f, 1.0f, 1.0f).setUv(cube.uvs[5][0], cube.uvs[5][1]).setNormal(0, 1, 0),
+                    new ModelVertex().setXYZ(1.0f, 1.0f, 0.0f).setUv(cube.uvs[5][0], cube.uvs[5][3]).setNormal(0, 1, 0),
 
-                    new Vertex().setXYZ(1.0f, 0.0f, 1.0f).setUv(cube.uvs[4][0], cube.uvs[4][1]).setNormal(0, -1, 0),
-                    new Vertex().setXYZ(1.0f, 0.0f, 0.0f).setUv(cube.uvs[4][0], cube.uvs[4][3]).setNormal(0, -1, 0),
-                    new Vertex().setXYZ(0.0f, 0.0f, 0.0f).setUv(cube.uvs[4][2], cube.uvs[4][3]).setNormal(0, -1, 0),
-                    new Vertex().setXYZ(0.0f, 0.0f, 1.0f).setUv(cube.uvs[4][2], cube.uvs[4][1]).setNormal(0, -1, 0)
+                    new ModelVertex().setXYZ(1.0f, 0.0f, 1.0f).setUv(cube.uvs[4][0], cube.uvs[4][1]).setNormal(0, -1, 0),
+                    new ModelVertex().setXYZ(1.0f, 0.0f, 0.0f).setUv(cube.uvs[4][0], cube.uvs[4][3]).setNormal(0, -1, 0),
+                    new ModelVertex().setXYZ(0.0f, 0.0f, 0.0f).setUv(cube.uvs[4][2], cube.uvs[4][3]).setNormal(0, -1, 0),
+                    new ModelVertex().setXYZ(0.0f, 0.0f, 1.0f).setUv(cube.uvs[4][2], cube.uvs[4][1]).setNormal(0, -1, 0)
                 ),
                 new Vector3f(cube.offset),
                 new Vector3f(cube.rotationPoint),
