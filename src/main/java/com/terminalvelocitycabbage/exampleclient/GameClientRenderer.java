@@ -162,6 +162,9 @@ public class GameClientRenderer extends Renderer {
 		//hud.getTextGameObjects().forEach(EmptyGameObject::queueUpdate);
 		//renderHud(shaderHandler.get("hud"));
 
+		//Since the text rendering is so awful I'm just going to use the window title for now
+		getWindow().setTitle("FPS: " + String.valueOf(getFramerate()).split("\\.")[0] + " (" + getFrameTimeAverageMillis() + "ms)");
+
 		//Send the frame
 		push();
 	}
