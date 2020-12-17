@@ -2,8 +2,6 @@ package com.terminalvelocitycabbage.exampleclient;
 
 import com.terminalvelocitycabbage.engine.client.renderer.Renderer;
 import com.terminalvelocitycabbage.engine.client.renderer.components.Camera;
-import com.terminalvelocitycabbage.engine.client.renderer.gameobjects.EmptyGameObject;
-import com.terminalvelocitycabbage.engine.client.renderer.gameobjects.TextGameObject;
 import com.terminalvelocitycabbage.engine.client.renderer.gameobjects.entity.ModeledGameObject;
 import com.terminalvelocitycabbage.engine.client.renderer.gameobjects.lights.DirectionalLight;
 import com.terminalvelocitycabbage.engine.client.renderer.gameobjects.lights.PointLight;
@@ -28,7 +26,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.LongStream;
 
 import static com.terminalvelocitycabbage.engine.client.renderer.shader.Shader.Type.FRAGMENT;
 import static com.terminalvelocitycabbage.engine.client.renderer.shader.Shader.Type.VERTEX;
@@ -140,7 +137,7 @@ public class GameClientRenderer extends Renderer {
 		//Animate the model
 		ModeledGameObject trex = gameObjectHandler.getObject("trex");
 		ModelAnimationHandler handler = ((DCModel) trex.getModel()).handler;
-		handler.animate(this.getDeltaTime());
+		handler.animate(this.getAnimationDeltaTime());
 		if(!handler.isPlaying(this.roarAnimationUUID)) {
 			this.roarAnimationUUID = handler.startAnimation(this.roarAnimation);
 		}
@@ -154,9 +151,7 @@ public class GameClientRenderer extends Renderer {
 
 		//renderNormalsDebug(camera, viewMatrix, shaderHandler.get("normals"));
 		renderDefault(camera, viewMatrix, shaderHandler.get("default"));
-
-
-
+		
 		//Since the text rendering is so awful I'm just going to use the window title for now
 		getWindow().setTitle("FPS: " + String.valueOf(getFramerate()).split("\\.")[0] + " (" + getFrameTimeAverageMillis() + "ms)");
 
