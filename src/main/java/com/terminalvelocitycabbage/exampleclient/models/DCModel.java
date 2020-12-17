@@ -28,6 +28,7 @@ public class DCModel extends Model {
 
         List<Part> partMap = new ArrayList<>();
         recursiveOnPart(modelParts, partMap::add);
+        //TODO pass the game object as the third parameter to this ...   \/
         this.handler = new ModelAnimationHandler(model.getOrder(), partMap);
     }
 

@@ -11,6 +11,7 @@ import com.terminalvelocitycabbage.engine.client.renderer.model.Material;
 import com.terminalvelocitycabbage.engine.client.renderer.model.Texture;
 import com.terminalvelocitycabbage.engine.client.renderer.shader.ShaderHandler;
 import com.terminalvelocitycabbage.engine.client.renderer.shader.ShaderProgram;
+import com.terminalvelocitycabbage.engine.client.renderer.shapes.Rectangle;
 import com.terminalvelocitycabbage.engine.client.renderer.ui.UICanvas;
 import com.terminalvelocitycabbage.engine.client.renderer.util.GameObjectHandler;
 import com.terminalvelocitycabbage.engine.client.resources.Identifier;
@@ -44,6 +45,9 @@ public class GameClientRenderer extends Renderer {
 
 	private UUID roarAnimationUUID;
 	private AnimationInfo roarAnimation;
+	private UUID waveAnimationUUID;
+	private AnimationInfo waveAnimation;
+
 	public GameClientRenderer(int width, int height, String title) {
 		super(width, height, title, new GameInputHandler());
 		getWindow().setvSync(true);
@@ -67,14 +71,32 @@ public class GameClientRenderer extends Renderer {
 		testCanvas.queueUpdate();
 		GameClient.getInstance().addEventHandler(testCanvas);
 
-		//Load a model to a Model object from dcm file
-		DCModel trexModel = DCModel.load(MODEL, new Identifier(GameClient.ID, "Gerald.dcm"));
-		trexModel.setMaterial(Material.builder()
-				.texture(new Texture(TEXTURE, new Identifier(GameClient.ID, "gerald_base.png")))
-				.build());
-
+		//Load trex model to a Model object from dcm file
+		DCModel trexModel = DCModel.load(MODEL, new Identifier(GameClient.ID, "trex.dcm"));
+		trexModel.setMaterial(Material.builder().texture(new Texture(TEXTURE, new Identifier(GameClient.ID, "trex.png"))).build());
 		//Create a game object from the model loaded and add the game object to the list of active objects
-		gameObjectHandler.add("trex", ModeledGameObject.builder().setModel(trexModel).setPosition(new Vector3f(0F, 0F, -30F)).build());
+		gameObjectHandler.add("trex", ModeledGameObject.builder().setModel(trexModel).build());
+		gameObjectHandler.getObject("trex").move(-50F, 0F, -30F);
+		try {
+			this.roarAnimation = AnimationLoader.loadAnimation(ANIMATION.getResource(new Identifier(GameClient.ID, "roar.dca")).orElseThrow().openStream());
+			this.roarAnimationUUID = trexModel.handler.startAnimation(roarAnimation);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+
+		//Load gerald model to a Model object from dcm file
+		DCModel robotModel = DCModel.load(MODEL, new Identifier(GameClient.ID, "Gerald.dcm"));
+		robotModel.setMaterial(Material.builder().texture(new Texture(TEXTURE, new Identifier(GameClient.ID, "gerald_base.png"))).build());
+		//Create a game object from the model loaded and add the game object to the list of active objects
+		gameObjectHandler.add("robot", ModeledGameObject.builder().setModel(robotModel).build());
+		gameObjectHandler.getObject("robot").move(0F, 0F, -30F);
+		try {
+			this.waveAnimation = AnimationLoader.loadAnimation(ANIMATION.getResource(new Identifier(GameClient.ID, "wave.dca")).orElseThrow().openStream());
+			this.waveAnimationUUID = robotModel.handler.startAnimation(waveAnimation);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+		AnimationEventRegister.registerEvent("foo", (data, src) -> System.out.println(data + ", " + src));
 
 		//Do it again so we have two objects with different models and different textures
 		DCModel wormModel = DCModel.load(MODEL, new Identifier(GameClient.ID, "Worm.dcm"));
@@ -83,13 +105,6 @@ public class GameClientRenderer extends Renderer {
 				.build());
 		gameObjectHandler.add("worm", ModeledGameObject.builder().setModel(wormModel).build());
 		gameObjectHandler.getObject("worm").move(0, 0, 10);
-
-		try {
-			this.roarAnimation = AnimationLoader.loadAnimation(ANIMATION.getResource(new Identifier(GameClient.ID, "wave.dca")).orElseThrow().openStream());
-			this.roarAnimationUUID = trexModel.handler.startAnimation(roarAnimation);
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
 
 		//bind all Game Objects
 		for (ModeledGameObject gameObject : gameObjectHandler.getAllOfType(ModeledGameObject.class)) {
@@ -126,9 +141,6 @@ public class GameClientRenderer extends Renderer {
 		gameObjectHandler.add("redSpotLight", new SpotLight(new Vector3f(0, 2, 0), new Vector3f(1, 0, 0), 1.0f, slAttenuation, new Vector3f(0, 1, 0), 140));
 		gameObjectHandler.add("sun", new DirectionalLight(new Vector3f(-0.68f, 0.55f, 0.42f), new Vector4f(1, 1, 0.5f, 1), 1.0f));
 
-
-		AnimationEventRegister.registerEvent("foo", (data, src) -> System.out.println(data + ", " + src));
-
 		//For wireframe mode
 		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	}
@@ -155,14 +167,21 @@ public class GameClientRenderer extends Renderer {
 
 		//Animate the model
 		ModeledGameObject trex = gameObjectHandler.getObject("trex");
-		ModelAnimationHandler handler = ((DCModel) trex.getModel()).handler;
-		handler.animate(this.getAnimationDeltaTime());
-		if(!handler.isPlaying(this.roarAnimationUUID)) {
-			this.roarAnimationUUID = handler.startAnimation(this.roarAnimation);
+		ModelAnimationHandler trexHandler = ((DCModel) trex.getModel()).handler;
+		trexHandler.animate(this.getAnimationDeltaTime());
+		if(!trexHandler.isPlaying(this.roarAnimationUUID)) {
+			this.roarAnimationUUID = trexHandler.startAnimation(this.roarAnimation);
 		}
-
 		//Tell the engine that the game object needs to be re-rendered
 		trex.queueUpdate();
+		ModeledGameObject robot = gameObjectHandler.getObject("robot");
+		ModelAnimationHandler robotHandler = ((DCModel) robot.getModel()).handler;
+		robotHandler.animate(this.getAnimationDeltaTime());
+		if(!robotHandler.isPlaying(this.waveAnimationUUID)) {
+			this.waveAnimationUUID = robotHandler.startAnimation(this.waveAnimation);
+		}
+		//Tell the engine that the game object needs to be re-rendered
+		robot.queueUpdate();
 
 		//Update the view Matrix with the current camera position
 		//This has to happen before game items are updated
@@ -267,11 +286,11 @@ public class GameClientRenderer extends Renderer {
 
 		shaderProgram.setUniform("color", testCanvas.getStyle().getBackgroundColor());
 		shaderProgram.setUniform("screenRes", new Vector2f(getWindow().width(), getWindow().height()));
-		//TODO make this not suck
+		Rectangle rectangle = testCanvas.getRectangle();
 		shaderProgram.setUniform("cornerStuff", new Matrix3f(
-				testCanvas.getRectangle().vertices[0].getXYZ()[0], testCanvas.getRectangle().vertices[0].getXYZ()[1], testCanvas.getRectangle().vertices[1].getXYZ()[0],
-				testCanvas.getRectangle().vertices[1].getXYZ()[1], testCanvas.getRectangle().vertices[2].getXYZ()[0], testCanvas.getRectangle().vertices[2].getXYZ()[1],
-				testCanvas.getRectangle().vertices[3].getXYZ()[0], testCanvas.getRectangle().vertices[3].getXYZ()[1], testCanvas.style.getBorderRadius()
+				rectangle.vertices[0].getXYZ()[0], rectangle.vertices[0].getXYZ()[1], rectangle.vertices[1].getXYZ()[0],
+				rectangle.vertices[1].getXYZ()[1], rectangle.vertices[2].getXYZ()[0], rectangle.vertices[2].getXYZ()[1],
+				rectangle.vertices[3].getXYZ()[0], rectangle.vertices[3].getXYZ()[1], testCanvas.style.getBorderRadius()
 		));
 		shaderProgram.setUniform("borderColor", testCanvas.style.getBorderColor());
 		shaderProgram.setUniform("borderThickness", testCanvas.style.getBorderThickness());
