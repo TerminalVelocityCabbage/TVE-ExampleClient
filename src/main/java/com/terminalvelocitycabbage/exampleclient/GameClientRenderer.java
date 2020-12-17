@@ -151,7 +151,7 @@ public class GameClientRenderer extends Renderer {
 
 		//renderNormalsDebug(camera, viewMatrix, shaderHandler.get("normals"));
 		renderDefault(camera, viewMatrix, shaderHandler.get("default"));
-		
+
 		//Since the text rendering is so awful I'm just going to use the window title for now
 		getWindow().setTitle("FPS: " + String.valueOf(getFramerate()).split("\\.")[0] + " (" + getFrameTimeAverageMillis() + "ms)");
 
