@@ -44,8 +44,7 @@ public class DCModel extends Model {
 
         public Part(CubeInfo cube, float[][] uv) {
             super(
-                new TexturedCuboid(
-                    //1, 3, 4, 5, 0, 2
+                TexturedCuboid.createTexturedCuboid(
                     new ModelVertex().setXYZ(0.0f, 1.0f, 1.0f).setUv(uv[4][2], uv[4][3]).setNormal(0, 0, 1),
                     new ModelVertex().setXYZ(0.0f, 0.0f, 1.0f).setUv(uv[4][2], uv[4][1]).setNormal(0, 0, 1),
                     new ModelVertex().setXYZ(1.0f, 0.0f, 1.0f).setUv(uv[4][0], uv[4][1]).setNormal(0, 0, 1),

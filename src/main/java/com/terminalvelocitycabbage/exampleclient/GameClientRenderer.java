@@ -25,8 +25,10 @@ import org.joml.Vector3f;
 import org.joml.Vector4f;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.LongStream;
 
 import static com.terminalvelocitycabbage.engine.client.renderer.shader.Shader.Type.FRAGMENT;
 import static com.terminalvelocitycabbage.engine.client.renderer.shader.Shader.Type.VERTEX;
@@ -40,6 +42,7 @@ public class GameClientRenderer extends Renderer {
 	private final ShaderHandler shaderHandler = new ShaderHandler();
 	private GameInputHandler inputHandler = new GameInputHandler();
 
+	List<Long> frameList = new ArrayList<>();
 
 	private UUID roarAnimationUUID;
 	private AnimationInfo roarAnimation;
@@ -61,7 +64,7 @@ public class GameClientRenderer extends Renderer {
 				.build());
 
 		//Create a game object from the model loaded and add the game object to the list of active objects
-		gameObjectHandler.add("trex", ModeledGameObject.builder().setModel(trexModel).build());
+		gameObjectHandler.add("trex", ModeledGameObject.builder().setModel(trexModel).setPosition(new Vector3f(0F, 0F, -30F)).build());
 
 		//Do it again so we have two objects with different models and different textures
 		DCModel wormModel = DCModel.load(MODEL, new Identifier(GameClient.ID, "Worm.dcm"));
@@ -151,6 +154,8 @@ public class GameClientRenderer extends Renderer {
 
 		//renderNormalsDebug(camera, viewMatrix, shaderHandler.get("normals"));
 		renderDefault(camera, viewMatrix, shaderHandler.get("default"));
+
+
 
 		//Since the text rendering is so awful I'm just going to use the window title for now
 		getWindow().setTitle("FPS: " + String.valueOf(getFramerate()).split("\\.")[0] + " (" + getFrameTimeAverageMillis() + "ms)");
