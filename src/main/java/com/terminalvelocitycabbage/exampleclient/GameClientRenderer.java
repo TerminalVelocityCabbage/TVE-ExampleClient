@@ -23,7 +23,6 @@ import org.joml.Vector3f;
 import org.joml.Vector4f;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -38,8 +37,6 @@ public class GameClientRenderer extends Renderer {
 	private GameObjectHandler gameObjectHandler = new GameObjectHandler();
 	private final ShaderHandler shaderHandler = new ShaderHandler();
 	private GameInputHandler inputHandler = new GameInputHandler();
-
-	List<Long> frameList = new ArrayList<>();
 
 	private UUID roarAnimationUUID;
 	private AnimationInfo roarAnimation;
