@@ -28,6 +28,8 @@ import java.util.UUID;
 
 import static com.terminalvelocitycabbage.engine.client.renderer.shader.Shader.Type.FRAGMENT;
 import static com.terminalvelocitycabbage.engine.client.renderer.shader.Shader.Type.VERTEX;
+import static com.terminalvelocitycabbage.engine.client.renderer.ui.UIDimension.Unit.PERCENT;
+import static com.terminalvelocitycabbage.engine.client.renderer.ui.UIDimension.Unit.PIXELS;
 import static com.terminalvelocitycabbage.exampleclient.GameResourceHandler.*;
 import static org.lwjgl.glfw.GLFW.glfwGetTime;
 import static org.lwjgl.opengl.GL20.*;
@@ -56,12 +58,14 @@ public class GameClientRenderer extends Renderer {
 
 		//Configure the canvas
 		testCanvas.bind();
-		testCanvas.setMargins(0.5f, 0.5f, 0.5f, 0.5f);
-		testCanvas.setColor(1, 0, 0 ,0.5f);
+		testCanvas.setMargins(100, 40, 100, 100);
+		testCanvas.setMarginUnits(PIXELS, PERCENT, PIXELS, PIXELS);
+		testCanvas.style.setBackgroundColor(0.3f, 0.4f, 1 ,0.25f);
 		testCanvas.style.setBorderRadius(30);
-		testCanvas.style.setBorderColor(0, 1, 0, 1);
-		testCanvas.style.setBorderThickness(10);
+		testCanvas.style.setBorderColor(1, 1, 1, 1);
+		testCanvas.style.setBorderThickness(4);
 		testCanvas.queueUpdate();
+		GameClient.getInstance().addEventHandler(testCanvas);
 
 		//Load a model to a Model object from dcm file
 		DCModel trexModel = DCModel.load(MODEL, new Identifier(GameClient.ID, "Gerald.dcm"));
