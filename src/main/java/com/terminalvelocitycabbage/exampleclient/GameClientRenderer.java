@@ -11,6 +11,7 @@ import com.terminalvelocitycabbage.engine.client.renderer.model.Material;
 import com.terminalvelocitycabbage.engine.client.renderer.model.Texture;
 import com.terminalvelocitycabbage.engine.client.renderer.shader.ShaderHandler;
 import com.terminalvelocitycabbage.engine.client.renderer.shader.ShaderProgram;
+import com.terminalvelocitycabbage.engine.client.renderer.ui.UICanvas;
 import com.terminalvelocitycabbage.engine.client.renderer.util.GameObjectHandler;
 import com.terminalvelocitycabbage.engine.client.resources.Identifier;
 import com.terminalvelocitycabbage.exampleclient.models.DCModel;
@@ -32,6 +33,8 @@ public class GameClientRenderer extends Renderer {
 	private final ShaderHandler shaderHandler = new ShaderHandler();
 	private GameInputHandler inputHandler = new GameInputHandler();
 
+	private UICanvas testCanvas = new UICanvas(getWindow());
+
 	public GameClientRenderer(int width, int height, String title) {
 		super(width, height, title, new GameInputHandler());
 	}
@@ -42,6 +45,12 @@ public class GameClientRenderer extends Renderer {
 
 		//Create the controllable camera
 		camera = new Camera(60, 0.01f, 1000.0f);
+
+		//Configure the canvas
+		testCanvas.setMargins(0.5f, 0.5f, 0.5f, 0.5f);
+		testCanvas.setColor(1, 0, 0 ,0.5f);
+		testCanvas.bind();
+		testCanvas.queueUpdate();
 
 		//Load a model to a Model object from dcm file
 		DCModel robotModel = DCModel.load(MODEL, new Identifier(GameClient.ID, "Gerald.dcm"));
@@ -77,6 +86,12 @@ public class GameClientRenderer extends Renderer {
 		shaderHandler.queueShader("normals", VERTEX, SHADER, new Identifier(GameClient.ID, "default.vert"));
 		shaderHandler.queueShader("normals", FRAGMENT, SHADER, new Identifier(GameClient.ID, "normalonly.frag"));
 		shaderHandler.build("normals");
+
+		//Create shader program for debugging normals directions
+		shaderHandler.newProgram("hud");
+		shaderHandler.queueShader("hud", VERTEX, SHADER, new Identifier(GameClient.ID, "hud.vert"));
+		shaderHandler.queueShader("hud", FRAGMENT, SHADER, new Identifier(GameClient.ID, "hud.frag"));
+		shaderHandler.build("hud");
 
 		//Store InputHandler
 		inputHandler = (GameInputHandler) getWindow().getInputHandler();
@@ -125,6 +140,7 @@ public class GameClientRenderer extends Renderer {
 
 		//renderNormalsDebug(camera, viewMatrix, normalShaderProgram);
 		renderDefault(camera, viewMatrix, shaderHandler.get("default"));
+		renderHud(shaderHandler.get("hud"));
 
 		//Send the frame
 		push();
@@ -201,5 +217,19 @@ public class GameClientRenderer extends Renderer {
 
 			gameObject.render();
 		}
+	}
+
+	private void renderHud(ShaderProgram shaderProgram) {
+
+		shaderProgram.enable();
+
+		shaderProgram.createUniform("color");
+
+		testCanvas.update();
+
+		shaderProgram.setUniform("color", testCanvas.getStyle().getBackgroundColor());
+
+		testCanvas.render();
+
 	}
 }
