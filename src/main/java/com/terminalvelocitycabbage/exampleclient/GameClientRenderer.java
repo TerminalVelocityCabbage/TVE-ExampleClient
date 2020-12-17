@@ -15,6 +15,10 @@ import com.terminalvelocitycabbage.engine.client.renderer.ui.UICanvas;
 import com.terminalvelocitycabbage.engine.client.renderer.util.GameObjectHandler;
 import com.terminalvelocitycabbage.engine.client.resources.Identifier;
 import com.terminalvelocitycabbage.exampleclient.models.DCModel;
+import net.dumbcode.studio.animation.events.AnimationEventRegister;
+import net.dumbcode.studio.animation.info.AnimationInfo;
+import net.dumbcode.studio.animation.info.AnimationLoader;
+import net.dumbcode.studio.animation.instance.ModelAnimationHandler;
 import org.joml.*;
 
 import java.io.IOException;
