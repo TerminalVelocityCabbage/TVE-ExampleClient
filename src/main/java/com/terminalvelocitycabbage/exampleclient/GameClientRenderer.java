@@ -47,9 +47,9 @@ public class GameClientRenderer extends Renderer {
 		camera = new Camera(60, 0.01f, 1000.0f);
 
 		//Configure the canvas
-		testCanvas.setMargins(0.5f, 0.5f, 0.5f, 0.5f);
-		testCanvas.setColor(1, 0, 0 ,0.5f);
 		testCanvas.bind();
+		testCanvas.setMargins(0, 0, 0, 0);
+		testCanvas.setColor(1, 0, 0 ,0.5f);
 		testCanvas.queueUpdate();
 
 		//Load a model to a Model object from dcm file
@@ -154,6 +154,7 @@ public class GameClientRenderer extends Renderer {
 			gameObject.destroy();
 		}
 		shaderHandler.cleanup();
+		testCanvas.destroy();
 	}
 
 	private void renderNormalsDebug(Camera camera, Matrix4f viewMatrix, ShaderProgram shaderProgram) {
