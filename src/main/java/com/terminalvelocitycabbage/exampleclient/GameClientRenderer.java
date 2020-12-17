@@ -15,10 +15,9 @@ import com.terminalvelocitycabbage.engine.client.renderer.ui.UICanvas;
 import com.terminalvelocitycabbage.engine.client.renderer.util.GameObjectHandler;
 import com.terminalvelocitycabbage.engine.client.resources.Identifier;
 import com.terminalvelocitycabbage.exampleclient.models.DCModel;
-import org.joml.Matrix4f;
-import org.joml.Vector3f;
-import org.joml.Vector4f;
+import org.joml.*;
 
+import java.lang.Math;
 import java.util.List;
 
 import static com.terminalvelocitycabbage.engine.client.renderer.shader.Shader.Type.FRAGMENT;
@@ -48,8 +47,9 @@ public class GameClientRenderer extends Renderer {
 
 		//Configure the canvas
 		testCanvas.bind();
-		testCanvas.setMargins(0, 0, 0, 0);
+		testCanvas.setMargins(0.5f, 0.5f, 0.5f, 0.5f);
 		testCanvas.setColor(1, 0, 0 ,0.5f);
+		testCanvas.style.setBorderRadius(30);
 		testCanvas.queueUpdate();
 
 		//Load a model to a Model object from dcm file
@@ -225,10 +225,19 @@ public class GameClientRenderer extends Renderer {
 		shaderProgram.enable();
 
 		shaderProgram.createUniform("color");
+		shaderProgram.createUniform("screenRes");
+		shaderProgram.createUniform("cornerStuff");
 
 		testCanvas.update();
 
 		shaderProgram.setUniform("color", testCanvas.getStyle().getBackgroundColor());
+		shaderProgram.setUniform("screenRes", new Vector2f(getWindow().width(), getWindow().height()));
+		//TODO make this not suck
+		shaderProgram.setUniform("cornerStuff", new Matrix3f(
+				testCanvas.getRectangle().vertices[0].getXYZ()[0], testCanvas.getRectangle().vertices[0].getXYZ()[1], testCanvas.getRectangle().vertices[1].getXYZ()[0],
+				testCanvas.getRectangle().vertices[1].getXYZ()[1], testCanvas.getRectangle().vertices[2].getXYZ()[0], testCanvas.getRectangle().vertices[2].getXYZ()[1],
+				testCanvas.getRectangle().vertices[3].getXYZ()[0], testCanvas.getRectangle().vertices[3].getXYZ()[0], testCanvas.style.getBorderRadius()
+		));
 
 		testCanvas.render();
 
