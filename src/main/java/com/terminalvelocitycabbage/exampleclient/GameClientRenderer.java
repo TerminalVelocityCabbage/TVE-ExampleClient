@@ -44,6 +44,7 @@ public class GameClientRenderer extends Renderer {
 	private AnimationInfo roarAnimation;
 	public GameClientRenderer(int width, int height, String title) {
 		super(width, height, title, new GameInputHandler());
+		getWindow().setvSync(true);
 	}
 
 	@Override
@@ -58,6 +59,8 @@ public class GameClientRenderer extends Renderer {
 		testCanvas.setMargins(0.5f, 0.5f, 0.5f, 0.5f);
 		testCanvas.setColor(1, 0, 0 ,0.5f);
 		testCanvas.style.setBorderRadius(30);
+		testCanvas.style.setBorderColor(0, 1, 0, 1);
+		testCanvas.style.setBorderThickness(10);
 		testCanvas.queueUpdate();
 
 		//Load a model to a Model object from dcm file
@@ -253,6 +256,8 @@ public class GameClientRenderer extends Renderer {
 		shaderProgram.createUniform("color");
 		shaderProgram.createUniform("screenRes");
 		shaderProgram.createUniform("cornerStuff");
+		shaderProgram.createUniform("borderColor");
+		shaderProgram.createUniform("borderThickness");
 
 		testCanvas.update();
 
@@ -262,8 +267,10 @@ public class GameClientRenderer extends Renderer {
 		shaderProgram.setUniform("cornerStuff", new Matrix3f(
 				testCanvas.getRectangle().vertices[0].getXYZ()[0], testCanvas.getRectangle().vertices[0].getXYZ()[1], testCanvas.getRectangle().vertices[1].getXYZ()[0],
 				testCanvas.getRectangle().vertices[1].getXYZ()[1], testCanvas.getRectangle().vertices[2].getXYZ()[0], testCanvas.getRectangle().vertices[2].getXYZ()[1],
-				testCanvas.getRectangle().vertices[3].getXYZ()[0], testCanvas.getRectangle().vertices[3].getXYZ()[0], testCanvas.style.getBorderRadius()
+				testCanvas.getRectangle().vertices[3].getXYZ()[0], testCanvas.getRectangle().vertices[3].getXYZ()[1], testCanvas.style.getBorderRadius()
 		));
+		shaderProgram.setUniform("borderColor", testCanvas.style.getBorderColor());
+		shaderProgram.setUniform("borderThickness", testCanvas.style.getBorderThickness());
 
 		testCanvas.render();
 
