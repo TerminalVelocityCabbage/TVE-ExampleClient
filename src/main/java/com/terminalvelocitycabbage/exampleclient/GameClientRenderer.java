@@ -2,8 +2,6 @@ package com.terminalvelocitycabbage.exampleclient;
 
 import com.terminalvelocitycabbage.engine.client.renderer.Renderer;
 import com.terminalvelocitycabbage.engine.client.renderer.components.Camera;
-import com.terminalvelocitycabbage.engine.client.renderer.gameobjects.EmptyGameObject;
-import com.terminalvelocitycabbage.engine.client.renderer.gameobjects.TextGameObject;
 import com.terminalvelocitycabbage.engine.client.renderer.gameobjects.entity.ModeledGameObject;
 import com.terminalvelocitycabbage.engine.client.renderer.gameobjects.lights.DirectionalLight;
 import com.terminalvelocitycabbage.engine.client.renderer.gameobjects.lights.PointLight;
@@ -40,7 +38,6 @@ public class GameClientRenderer extends Renderer {
 	private final ShaderHandler shaderHandler = new ShaderHandler();
 	private GameInputHandler inputHandler = new GameInputHandler();
 
-
 	private UUID roarAnimationUUID;
 	private AnimationInfo roarAnimation;
 	public GameClientRenderer(int width, int height, String title) {
@@ -61,7 +58,7 @@ public class GameClientRenderer extends Renderer {
 				.build());
 
 		//Create a game object from the model loaded and add the game object to the list of active objects
-		gameObjectHandler.add("trex", ModeledGameObject.builder().setModel(trexModel).build());
+		gameObjectHandler.add("trex", ModeledGameObject.builder().setModel(trexModel).setPosition(new Vector3f(0F, 0F, -30F)).build());
 
 		//Do it again so we have two objects with different models and different textures
 		DCModel wormModel = DCModel.load(MODEL, new Identifier(GameClient.ID, "Worm.dcm"));
@@ -137,7 +134,7 @@ public class GameClientRenderer extends Renderer {
 		//Animate the model
 		ModeledGameObject trex = gameObjectHandler.getObject("trex");
 		ModelAnimationHandler handler = ((DCModel) trex.getModel()).handler;
-		handler.animate(this.getDeltaTime());
+		handler.animate(this.getAnimationDeltaTime());
 		if(!handler.isPlaying(this.roarAnimationUUID)) {
 			this.roarAnimationUUID = handler.startAnimation(this.roarAnimation);
 		}
