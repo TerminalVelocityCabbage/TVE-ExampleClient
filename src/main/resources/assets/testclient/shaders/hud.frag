@@ -8,7 +8,7 @@ uniform vec4 color;
 uniform vec2 screenRes;
 uniform mat3 cornerStuff;
 uniform vec4 borderColor;
-uniform float borderThickness;
+uniform int borderThickness;
 
 void main() {
 

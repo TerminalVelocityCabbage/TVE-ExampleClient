@@ -62,14 +62,16 @@ public class GameClientRenderer extends Renderer {
 
 		//Configure the canvas
 		testCanvas.bind();
-		testCanvas.setMargins(100, 40, 100, 100);
-		testCanvas.setMarginUnits(PIXELS, PERCENT, PIXELS, PIXELS);
-		testCanvas.style.setBackgroundColor(0.3f, 0.4f, 1 ,0.25f);
-		testCanvas.style.setBorderRadius(30);
-		testCanvas.style.setBorderColor(1, 1, 1, 1);
-		testCanvas.style.setBorderThickness(4);
+		testCanvas.style
+				.marginLeft(100, PIXELS)
+				.marginRight(40, PERCENT)
+				.marginTop(10, PIXELS)
+				.marginBottom(10, PIXELS)
+				.setBackgroundColor(0.3f, 0.4f, 1 ,0.25f)
+				.setBorderRadius(15)
+				.setBorderColor(1, 1, 1, 1)
+				.setBorderThickness(4);
 		testCanvas.queueUpdate();
-		GameClient.getInstance().addEventHandler(testCanvas);
 
 		//Load trex model to a Model object from dcm file
 		DCModel trexModel = DCModel.load(MODEL, new Identifier(GameClient.ID, "trex.dcm"));
@@ -288,9 +290,9 @@ public class GameClientRenderer extends Renderer {
 		shaderProgram.setUniform("screenRes", new Vector2f(getWindow().width(), getWindow().height()));
 		Rectangle rectangle = testCanvas.getRectangle();
 		shaderProgram.setUniform("cornerStuff", new Matrix3f(
-				rectangle.vertices[0].getXYZ()[0], rectangle.vertices[0].getXYZ()[1], rectangle.vertices[1].getXYZ()[0],
-				rectangle.vertices[1].getXYZ()[1], rectangle.vertices[2].getXYZ()[0], rectangle.vertices[2].getXYZ()[1],
-				rectangle.vertices[3].getXYZ()[0], rectangle.vertices[3].getXYZ()[1], testCanvas.style.getBorderRadius()
+				rectangle.vertices[0].getX(), rectangle.vertices[0].getY(), rectangle.vertices[1].getX(),
+				rectangle.vertices[1].getY(), rectangle.vertices[2].getX(), rectangle.vertices[2].getY(),
+				rectangle.vertices[3].getX(), rectangle.vertices[3].getY(), testCanvas.style.getBorderRadius()
 		));
 		shaderProgram.setUniform("borderColor", testCanvas.style.getBorderColor());
 		shaderProgram.setUniform("borderThickness", testCanvas.style.getBorderThickness());
