@@ -15,6 +15,7 @@ import com.terminalvelocitycabbage.engine.client.renderer.shapes.Rectangle;
 import com.terminalvelocitycabbage.engine.client.renderer.ui.*;
 import com.terminalvelocitycabbage.engine.client.renderer.util.GameObjectHandler;
 import com.terminalvelocitycabbage.engine.client.resources.Identifier;
+import com.terminalvelocitycabbage.engine.debug.Log;
 import com.terminalvelocitycabbage.exampleclient.models.DCModel;
 import net.dumbcode.studio.animation.events.AnimationEventRegister;
 import net.dumbcode.studio.animation.info.AnimationInfo;
@@ -67,11 +68,13 @@ public class GameClientRenderer extends Renderer {
 				.marginRight(40, PERCENT)
 				.marginTop(10, PIXELS)
 				.marginBottom(10, PIXELS)
-				.setBackgroundColor(0.3f, 0.4f, 1 ,0.25f)
+				.setColor(0.3f, 0.4f, 1 ,0.25f)
 				.setBorderRadius(15)
 				.setBorderColor(1, 1, 1, 1)
 				.setBorderThickness(4);
-		testCanvas.addContainer(new UIContainer(new UIDimension(100, PIXELS), new UIDimension(100, PIXELS), new UIAnchor(AnchorPoint.TOP_MIDDLE), new UIStyle()));
+		testCanvas.addContainer(new UIContainer(new UIDimension(100, PIXELS), new UIDimension(100, PIXELS), new UIAnchor(AnchorPoint.TOP_MIDDLE, AnchorDirection.RIGHT_DOWN), new UIStyle().setColor(1, 1, 0, 1)));
+		testCanvas.addContainer(new UIContainer(new UIDimension(400, PIXELS), new UIDimension(50, PIXELS), new UIAnchor(AnchorPoint.TOP_MIDDLE, AnchorDirection.LEFT_DOWN), new UIStyle().setColor(1, 0, 0, 1).marginRight(10, PERCENT)));
+		testCanvas.addContainer(new UIContainer(new UIDimension(400, PIXELS), new UIDimension(40, PERCENT), new UIAnchor(AnchorPoint.BOTTOM_MIDDLE, AnchorDirection.UP), new UIStyle().setColor(1, 0, 1, 1).marginBottom(10, PIXELS)));
 		testCanvas.queueUpdate();
 
 		//Load trex model to a Model object from dcm file
@@ -295,7 +298,7 @@ public class GameClientRenderer extends Renderer {
 
 		element.update();
 
-		shaderProgram.setUniform("color", element.style.getBackgroundColor());
+		shaderProgram.setUniform("color", element.style.getColor());
 		shaderProgram.setUniform("screenRes", new Vector2f(getWindow().width(), getWindow().height()));
 		Rectangle rectangle = element.getRectangle();
 		shaderProgram.setUniform("cornerStuff", new Matrix3f(
