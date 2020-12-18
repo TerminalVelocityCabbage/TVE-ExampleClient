@@ -12,7 +12,7 @@ import com.terminalvelocitycabbage.engine.client.renderer.model.Texture;
 import com.terminalvelocitycabbage.engine.client.renderer.shader.ShaderHandler;
 import com.terminalvelocitycabbage.engine.client.renderer.shader.ShaderProgram;
 import com.terminalvelocitycabbage.engine.client.renderer.shapes.Rectangle;
-import com.terminalvelocitycabbage.engine.client.renderer.ui.UICanvas;
+import com.terminalvelocitycabbage.engine.client.renderer.ui.*;
 import com.terminalvelocitycabbage.engine.client.renderer.util.GameObjectHandler;
 import com.terminalvelocitycabbage.engine.client.resources.Identifier;
 import com.terminalvelocitycabbage.exampleclient.models.DCModel;
@@ -71,6 +71,7 @@ public class GameClientRenderer extends Renderer {
 				.setBorderRadius(15)
 				.setBorderColor(1, 1, 1, 1)
 				.setBorderThickness(4);
+		testCanvas.addContainer(new UIContainer(new UIDimension(100, PIXELS), new UIDimension(100, PIXELS), new UIAnchor(AnchorPoint.TOP_MIDDLE), new UIStyle()));
 		testCanvas.queueUpdate();
 
 		//Load trex model to a Model object from dcm file
@@ -208,6 +209,7 @@ public class GameClientRenderer extends Renderer {
 			gameObject.destroy();
 		}
 		shaderHandler.cleanup();
+		testCanvas.getContainers().forEach(UIRenderableElement::destroy);
 		testCanvas.destroy();
 	}
 
@@ -284,20 +286,26 @@ public class GameClientRenderer extends Renderer {
 		shaderProgram.createUniform("borderColor");
 		shaderProgram.createUniform("borderThickness");
 
-		testCanvas.update();
+		renderHudElement(testCanvas, shaderProgram);
+		testCanvas.getContainers().forEach(container -> renderHudElement(container, shaderProgram));
 
-		shaderProgram.setUniform("color", testCanvas.getStyle().getBackgroundColor());
+	}
+
+	public void renderHudElement(UIRenderableElement element, ShaderProgram shaderProgram) {
+
+		element.update();
+
+		shaderProgram.setUniform("color", element.style.getBackgroundColor());
 		shaderProgram.setUniform("screenRes", new Vector2f(getWindow().width(), getWindow().height()));
-		Rectangle rectangle = testCanvas.getRectangle();
+		Rectangle rectangle = element.getRectangle();
 		shaderProgram.setUniform("cornerStuff", new Matrix3f(
 				rectangle.vertices[0].getX(), rectangle.vertices[0].getY(), rectangle.vertices[1].getX(),
 				rectangle.vertices[1].getY(), rectangle.vertices[2].getX(), rectangle.vertices[2].getY(),
-				rectangle.vertices[3].getX(), rectangle.vertices[3].getY(), testCanvas.style.getBorderRadius()
+				rectangle.vertices[3].getX(), rectangle.vertices[3].getY(), element.style.getBorderRadius()
 		));
-		shaderProgram.setUniform("borderColor", testCanvas.style.getBorderColor());
-		shaderProgram.setUniform("borderThickness", testCanvas.style.getBorderThickness());
+		shaderProgram.setUniform("borderColor", element.style.getBorderColor());
+		shaderProgram.setUniform("borderThickness", element.style.getBorderThickness());
 
-		testCanvas.render();
-
+		element.render();
 	}
 }
