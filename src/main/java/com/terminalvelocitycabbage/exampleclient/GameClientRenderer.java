@@ -45,9 +45,7 @@ public class GameClientRenderer extends Renderer {
 	private UICanvas testCanvas = new UICanvas(getWindow());
 
 	private UUID roarAnimationUUID;
-	private AnimationInfo roarAnimation;
 	private UUID waveAnimationUUID;
-	private AnimationInfo waveAnimation;
 
 	public GameClientRenderer(int width, int height, String title) {
 		super(width, height, title, new GameInputHandler());
@@ -79,29 +77,22 @@ public class GameClientRenderer extends Renderer {
 
 		//Load trex model to a Model object from dcm file
 		AnimatedModel trexModel = AnimatedModelLoader.load(MODEL, new Identifier(GameClient.ID, "trex.dcm"));
+		trexModel.addAnimation("roar", ANIMATION, new Identifier(GameClient.ID, "roar.dca"));
 		trexModel.setMaterial(Material.builder().texture(new Texture(TEXTURE, new Identifier(GameClient.ID, "trex.png"))).build());
 		//Create a game object from the model loaded and add the game object to the list of active objects
 		gameObjectHandler.add("trex", ModeledGameObject.builder().setModel(trexModel).build());
 		gameObjectHandler.getObject("trex").move(-50F, 0F, -30F);
-		try {
-			this.roarAnimation = AnimationLoader.loadAnimation(ANIMATION.getResource(new Identifier(GameClient.ID, "roar.dca")).orElseThrow().openStream());
-			this.roarAnimationUUID = trexModel.handler.startAnimation(roarAnimation);
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
+		roarAnimationUUID = trexModel.handler.startAnimation(trexModel.getAnimation("roar"));
 
 		//Load gerald model to a Model object from dcm file
 		AnimatedModel robotModel = AnimatedModelLoader.load(MODEL, new Identifier(GameClient.ID, "Gerald.dcm"));
+		robotModel.addAnimation("wave", ANIMATION, new Identifier(GameClient.ID, "wave.dca"));
 		robotModel.setMaterial(Material.builder().texture(new Texture(TEXTURE, new Identifier(GameClient.ID, "gerald_base.png"))).build());
 		//Create a game object from the model loaded and add the game object to the list of active objects
 		ModeledGameObject robot = gameObjectHandler.add("robot", ModeledGameObject.builder().setModel(robotModel).build());
 		gameObjectHandler.getObject("robot").move(0F, 0F, -30F);
-		try {
-			this.waveAnimation = AnimationLoader.loadAnimation(ANIMATION.getResource(new Identifier(GameClient.ID, "wave.dca")).orElseThrow().openStream());
-			this.waveAnimationUUID = robotModel.handler.startAnimation(waveAnimation);
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
+		waveAnimationUUID = robotModel.handler.startAnimation(robotModel.getAnimation("wave"));
+
 		robotModel.handler.setSrc(robot);
 		AnimationEventRegister.registerEvent("foo", (data, src) -> System.out.println(data + ", " + src));
 
@@ -177,7 +168,7 @@ public class GameClientRenderer extends Renderer {
 		ModelAnimationHandler trexHandler = ((AnimatedModel) trex.getModel()).handler;
 		trexHandler.animate(this.getAnimationDeltaTime());
 		if(!trexHandler.isPlaying(this.roarAnimationUUID)) {
-			this.roarAnimationUUID = trexHandler.startAnimation(this.roarAnimation);
+			this.roarAnimationUUID = trexHandler.startAnimation(((AnimatedModel) trex.getModel()).getAnimation("roar"));
 		}
 		//Tell the engine that the game object needs to be re-rendered
 		trex.queueUpdate();
@@ -185,7 +176,7 @@ public class GameClientRenderer extends Renderer {
 		ModelAnimationHandler robotHandler = ((AnimatedModel) robot.getModel()).handler;
 		robotHandler.animate(this.getAnimationDeltaTime());
 		if(!robotHandler.isPlaying(this.waveAnimationUUID)) {
-			this.waveAnimationUUID = robotHandler.startAnimation(this.waveAnimation);
+			this.waveAnimationUUID = robotHandler.startAnimation(((AnimatedModel) robot.getModel()).getAnimation("wave"));
 		}
 		//Tell the engine that the game object needs to be re-rendered
 		robot.queueUpdate();
