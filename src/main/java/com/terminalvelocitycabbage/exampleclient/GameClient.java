@@ -6,7 +6,6 @@ public class GameClient extends ClientBase {
 
 	public static final String ID = "testclient";
 
-	private static GameClient instance;
 	private static GameClientRenderer clientRenderer;
 
 	public static final String ADDRESS = "localhost";
@@ -25,7 +24,7 @@ public class GameClient extends ClientBase {
 	}
 
 	public static GameClient getInstance() {
-		return instance;
+		return (GameClient)instance;
 	}
 
 	public static GameClientRenderer getClientRenderer() {
