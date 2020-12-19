@@ -5,6 +5,7 @@ import com.terminalvelocitycabbage.engine.client.renderer.components.Camera;
 import com.terminalvelocitycabbage.engine.client.renderer.gameobjects.entity.ModeledGameObject;
 import com.terminalvelocitycabbage.engine.client.renderer.gameobjects.lights.PointLight;
 import com.terminalvelocitycabbage.engine.client.renderer.gameobjects.lights.SpotLight;
+import com.terminalvelocitycabbage.engine.client.renderer.scenes.SceneHandler;
 import com.terminalvelocitycabbage.engine.client.renderer.shader.ShaderHandler;
 import com.terminalvelocitycabbage.engine.client.renderer.shader.ShaderProgram;
 import com.terminalvelocitycabbage.engine.client.renderer.shapes.Rectangle;
@@ -29,8 +30,7 @@ public class GameClientRenderer extends Renderer {
 	private final ShaderHandler shaderHandler = new ShaderHandler();
 	private GameInputHandler inputHandler = new GameInputHandler();
 
-	//TODO create a scene handler
-	private ExampleScene exampleScene = new ExampleScene();
+	private SceneHandler sceneHandler = new SceneHandler();
 
 	private UICanvas testCanvas = new UICanvas(getWindow());
 
@@ -84,8 +84,11 @@ public class GameClientRenderer extends Renderer {
 		//Store InputHandler
 		inputHandler = (GameInputHandler) getWindow().getInputHandler();
 
+		//Create Scenes
+		sceneHandler.addScene("example", new ExampleScene());
+
 		//Init the scene
-		exampleScene.init();
+		sceneHandler.loadScene("example");
 
 		//For wireframe mode
 		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -119,7 +122,7 @@ public class GameClientRenderer extends Renderer {
 		getWindow().setTitle("FPS: " + String.valueOf(getFramerate()).split("\\.")[0] + " (" + getFrameTimeAverageMillis() + "ms)");
 
 		//Update the scene
-		exampleScene.update(getDeltaTime());
+		sceneHandler.update(getDeltaTime());
 
 		//Send the frame
 		push();
@@ -131,7 +134,7 @@ public class GameClientRenderer extends Renderer {
 		shaderHandler.cleanup();
 		testCanvas.getContainers().forEach(UIRenderableElement::destroy);
 		testCanvas.destroy();
-		exampleScene.destroy();
+		sceneHandler.cleanup();
 	}
 
 	private void renderNormalsDebug(Camera camera, Matrix4f viewMatrix, ShaderProgram shaderProgram) {
@@ -144,7 +147,7 @@ public class GameClientRenderer extends Renderer {
 		shaderProgram.createUniform("normalTransformationMatrix");
 
 		//Draw whatever changes were pushed
-		for (ModeledGameObject gameObject : exampleScene.getObjectsOfType(ModeledGameObject.class)) {
+		for (ModeledGameObject gameObject : sceneHandler.getActiveScene().getObjectsOfType(ModeledGameObject.class)) {
 			gameObject.update();
 			shaderProgram.setUniform("projectionMatrix", camera.getProjectionMatrix());
 			shaderProgram.setUniform("modelViewMatrix", gameObject.getModelViewMatrix(viewMatrix));
@@ -158,9 +161,9 @@ public class GameClientRenderer extends Renderer {
 		shaderProgram.enable();
 
 		//Update positions of concerned lights in view space (point and spot lights)
-		List<PointLight> pointLights = exampleScene.getObjectsOfType(PointLight.class);
+		List<PointLight> pointLights = sceneHandler.getActiveScene().getObjectsOfType(PointLight.class);
 		pointLights.forEach(light -> light.update(viewMatrix));
-		List<SpotLight> spotLights = exampleScene.getObjectsOfType(SpotLight.class);
+		List<SpotLight> spotLights = sceneHandler.getActiveScene().getObjectsOfType(SpotLight.class);
 		spotLights.forEach(light -> light.update(viewMatrix));
 
 		//Render the current object
@@ -177,7 +180,7 @@ public class GameClientRenderer extends Renderer {
 		shaderProgram.createMaterialUniform("material");
 
 		//Draw whatever changes were pushed
-		for (ModeledGameObject gameObject : exampleScene.getObjectsOfType(ModeledGameObject.class)) {
+		for (ModeledGameObject gameObject : sceneHandler.getActiveScene().getObjectsOfType(ModeledGameObject.class)) {
 
 			gameObject.update();
 
@@ -189,7 +192,7 @@ public class GameClientRenderer extends Renderer {
 			shaderProgram.setUniform("specularPower", 10.0f); //Reflected light intensity
 			pointLights.forEach(light -> shaderProgram.setUniform("pointLights", light, pointLights.indexOf(light)));
 			spotLights.forEach(light -> shaderProgram.setUniform("spotLights", light, spotLights.indexOf(light)));
-			shaderProgram.setUniform("directionalLight", exampleScene.objectHandler.getObject("sun"));
+			shaderProgram.setUniform("directionalLight", sceneHandler.getActiveScene().objectHandler.getObject("sun"));
 			//Material stuff
 			shaderProgram.setUniform("material", gameObject.getModel().getMaterial());
 
