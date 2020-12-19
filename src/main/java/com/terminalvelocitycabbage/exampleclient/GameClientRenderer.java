@@ -44,9 +44,6 @@ public class GameClientRenderer extends Renderer {
 
 	private UICanvas testCanvas = new UICanvas(getWindow());
 
-	private UUID roarAnimationUUID;
-	private UUID waveAnimationUUID;
-
 	public GameClientRenderer(int width, int height, String title) {
 		super(width, height, title, new GameInputHandler());
 		getWindow().setvSync(true);
@@ -82,7 +79,7 @@ public class GameClientRenderer extends Renderer {
 		//Create a game object from the model loaded and add the game object to the list of active objects
 		gameObjectHandler.add("trex", ModeledGameObject.builder().setModel(trexModel).build());
 		gameObjectHandler.getObject("trex").move(-50F, 0F, -30F);
-		roarAnimationUUID = trexModel.handler.startAnimation(trexModel.getAnimation("roar"), true);
+		trexModel.startAnimation("roar", true);
 
 		//Load gerald model to a Model object from dcm file
 		AnimatedModel robotModel = AnimatedModelLoader.load(MODEL, new Identifier(GameClient.ID, "Gerald.dcm"));
@@ -91,7 +88,7 @@ public class GameClientRenderer extends Renderer {
 		//Create a game object from the model loaded and add the game object to the list of active objects
 		ModeledGameObject robot = gameObjectHandler.add("robot", ModeledGameObject.builder().setModel(robotModel).build());
 		gameObjectHandler.getObject("robot").move(0F, 0F, -30F);
-		waveAnimationUUID = robotModel.handler.startAnimation(robotModel.getAnimation("wave"));
+		robotModel.startAnimation("wave");
 
 		robotModel.handler.setSrc(robot);
 		AnimationEventRegister.registerEvent("foo", (data, src) -> System.out.println(data + ", " + src));
