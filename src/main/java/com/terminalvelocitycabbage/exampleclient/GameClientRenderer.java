@@ -15,8 +15,7 @@ import com.terminalvelocitycabbage.engine.client.renderer.shapes.Rectangle;
 import com.terminalvelocitycabbage.engine.client.renderer.ui.*;
 import com.terminalvelocitycabbage.engine.client.renderer.util.GameObjectHandler;
 import com.terminalvelocitycabbage.engine.client.resources.Identifier;
-import com.terminalvelocitycabbage.engine.debug.Log;
-import com.terminalvelocitycabbage.exampleclient.models.DCModel;
+import com.terminalvelocitycabbage.engine.client.renderer.model.AnimatedModel;
 import net.dumbcode.studio.animation.events.AnimationEventRegister;
 import net.dumbcode.studio.animation.info.AnimationInfo;
 import net.dumbcode.studio.animation.info.AnimationLoader;
@@ -78,7 +77,7 @@ public class GameClientRenderer extends Renderer {
 		testCanvas.queueUpdate();
 
 		//Load trex model to a Model object from dcm file
-		DCModel trexModel = DCModel.load(MODEL, new Identifier(GameClient.ID, "trex.dcm"));
+		AnimatedModel trexModel = AnimatedModel.load(MODEL, new Identifier(GameClient.ID, "trex.dcm"));
 		trexModel.setMaterial(Material.builder().texture(new Texture(TEXTURE, new Identifier(GameClient.ID, "trex.png"))).build());
 		//Create a game object from the model loaded and add the game object to the list of active objects
 		gameObjectHandler.add("trex", ModeledGameObject.builder().setModel(trexModel).build());
@@ -91,10 +90,10 @@ public class GameClientRenderer extends Renderer {
 		}
 
 		//Load gerald model to a Model object from dcm file
-		DCModel robotModel = DCModel.load(MODEL, new Identifier(GameClient.ID, "Gerald.dcm"));
+		AnimatedModel robotModel = AnimatedModel.load(MODEL, new Identifier(GameClient.ID, "Gerald.dcm"));
 		robotModel.setMaterial(Material.builder().texture(new Texture(TEXTURE, new Identifier(GameClient.ID, "gerald_base.png"))).build());
 		//Create a game object from the model loaded and add the game object to the list of active objects
-		gameObjectHandler.add("robot", ModeledGameObject.builder().setModel(robotModel).build());
+		ModeledGameObject robot = gameObjectHandler.add("robot", ModeledGameObject.builder().setModel(robotModel).build());
 		gameObjectHandler.getObject("robot").move(0F, 0F, -30F);
 		try {
 			this.waveAnimation = AnimationLoader.loadAnimation(ANIMATION.getResource(new Identifier(GameClient.ID, "wave.dca")).orElseThrow().openStream());
@@ -102,10 +101,11 @@ public class GameClientRenderer extends Renderer {
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
+		robotModel.handler.setSrc(robot);
 		AnimationEventRegister.registerEvent("foo", (data, src) -> System.out.println(data + ", " + src));
 
 		//Do it again so we have two objects with different models and different textures
-		DCModel wormModel = DCModel.load(MODEL, new Identifier(GameClient.ID, "Worm.dcm"));
+		AnimatedModel wormModel = AnimatedModel.load(MODEL, new Identifier(GameClient.ID, "Worm.dcm"));
 		wormModel.setMaterial(Material.builder()
 				.texture(new Texture(TEXTURE, new Identifier(GameClient.ID, "worm.png")))
 				.build());
@@ -173,7 +173,7 @@ public class GameClientRenderer extends Renderer {
 
 		//Animate the model
 		ModeledGameObject trex = gameObjectHandler.getObject("trex");
-		ModelAnimationHandler trexHandler = ((DCModel) trex.getModel()).handler;
+		ModelAnimationHandler trexHandler = ((AnimatedModel) trex.getModel()).handler;
 		trexHandler.animate(this.getAnimationDeltaTime());
 		if(!trexHandler.isPlaying(this.roarAnimationUUID)) {
 			this.roarAnimationUUID = trexHandler.startAnimation(this.roarAnimation);
@@ -181,7 +181,7 @@ public class GameClientRenderer extends Renderer {
 		//Tell the engine that the game object needs to be re-rendered
 		trex.queueUpdate();
 		ModeledGameObject robot = gameObjectHandler.getObject("robot");
-		ModelAnimationHandler robotHandler = ((DCModel) robot.getModel()).handler;
+		ModelAnimationHandler robotHandler = ((AnimatedModel) robot.getModel()).handler;
 		robotHandler.animate(this.getAnimationDeltaTime());
 		if(!robotHandler.isPlaying(this.waveAnimationUUID)) {
 			this.waveAnimationUUID = robotHandler.startAnimation(this.waveAnimation);
