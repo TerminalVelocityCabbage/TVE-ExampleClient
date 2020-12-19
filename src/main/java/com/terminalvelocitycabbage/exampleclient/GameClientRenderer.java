@@ -9,6 +9,7 @@ import com.terminalvelocitycabbage.engine.client.renderer.gameobjects.lights.Spo
 import com.terminalvelocitycabbage.engine.client.renderer.lights.Attenuation;
 import com.terminalvelocitycabbage.engine.client.renderer.model.Material;
 import com.terminalvelocitycabbage.engine.client.renderer.model.Texture;
+import com.terminalvelocitycabbage.engine.client.renderer.model.loader.AnimatedModelLoader;
 import com.terminalvelocitycabbage.engine.client.renderer.shader.ShaderHandler;
 import com.terminalvelocitycabbage.engine.client.renderer.shader.ShaderProgram;
 import com.terminalvelocitycabbage.engine.client.renderer.shapes.Rectangle;
@@ -77,7 +78,7 @@ public class GameClientRenderer extends Renderer {
 		testCanvas.queueUpdate();
 
 		//Load trex model to a Model object from dcm file
-		AnimatedModel trexModel = AnimatedModel.load(MODEL, new Identifier(GameClient.ID, "trex.dcm"));
+		AnimatedModel trexModel = AnimatedModelLoader.load(MODEL, new Identifier(GameClient.ID, "trex.dcm"));
 		trexModel.setMaterial(Material.builder().texture(new Texture(TEXTURE, new Identifier(GameClient.ID, "trex.png"))).build());
 		//Create a game object from the model loaded and add the game object to the list of active objects
 		gameObjectHandler.add("trex", ModeledGameObject.builder().setModel(trexModel).build());
@@ -90,7 +91,7 @@ public class GameClientRenderer extends Renderer {
 		}
 
 		//Load gerald model to a Model object from dcm file
-		AnimatedModel robotModel = AnimatedModel.load(MODEL, new Identifier(GameClient.ID, "Gerald.dcm"));
+		AnimatedModel robotModel = AnimatedModelLoader.load(MODEL, new Identifier(GameClient.ID, "Gerald.dcm"));
 		robotModel.setMaterial(Material.builder().texture(new Texture(TEXTURE, new Identifier(GameClient.ID, "gerald_base.png"))).build());
 		//Create a game object from the model loaded and add the game object to the list of active objects
 		ModeledGameObject robot = gameObjectHandler.add("robot", ModeledGameObject.builder().setModel(robotModel).build());
@@ -105,7 +106,7 @@ public class GameClientRenderer extends Renderer {
 		AnimationEventRegister.registerEvent("foo", (data, src) -> System.out.println(data + ", " + src));
 
 		//Do it again so we have two objects with different models and different textures
-		AnimatedModel wormModel = AnimatedModel.load(MODEL, new Identifier(GameClient.ID, "Worm.dcm"));
+		AnimatedModel wormModel = AnimatedModelLoader.load(MODEL, new Identifier(GameClient.ID, "Worm.dcm"));
 		wormModel.setMaterial(Material.builder()
 				.texture(new Texture(TEXTURE, new Identifier(GameClient.ID, "worm.png")))
 				.build());
