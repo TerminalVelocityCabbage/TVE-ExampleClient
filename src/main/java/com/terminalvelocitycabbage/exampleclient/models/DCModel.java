@@ -1,5 +1,6 @@
 package com.terminalvelocitycabbage.exampleclient.models;
 
+import com.terminalvelocitycabbage.engine.client.renderer.model.AnimatedModel;
 import com.terminalvelocitycabbage.engine.client.renderer.model.Model;
 import com.terminalvelocitycabbage.engine.client.renderer.model.ModelVertex;
 import com.terminalvelocitycabbage.engine.client.renderer.shapes.TexturedCuboid;
@@ -19,9 +20,7 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
-public class DCModel extends Model {
-
-    public final ModelAnimationHandler handler;
+public class DCModel extends AnimatedModel {
 
     private DCModel(ModelInfo model) {
         super(model.getRoots().stream().map(Part::createPart).collect(Collectors.toList()));

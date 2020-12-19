@@ -1,3 +1,2 @@
 include 'terminal_velocity_engine'
-include 'Studio-Jar'
 rootProject.name = 'TVTC'
