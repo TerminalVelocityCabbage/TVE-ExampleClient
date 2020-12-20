@@ -35,5 +35,9 @@ void main() {
          color += calcSpotLight(spotLights[i], vertVertexPosition, vertVertexNormal);
       }
    }
-   fragColor = color;
+   if (color.a == 0) {
+      discard;
+   } else {
+      fragColor = color;
+   }
 }
