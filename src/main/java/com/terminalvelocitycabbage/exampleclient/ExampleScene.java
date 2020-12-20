@@ -78,9 +78,7 @@ public class ExampleScene extends Scene {
 		tickManager.apply(deltaTime);
 
 		//Wait for an update tick
-		while (tickManager.hasTick()) {
-			System.out.println("tick");
-		}
+		while (tickManager.hasTick()) { }
 
 		//Move around the point lights
 		objectHandler.getObject("blueLight").move(0, (float)Math.sin(glfwGetTime())/10, 0);

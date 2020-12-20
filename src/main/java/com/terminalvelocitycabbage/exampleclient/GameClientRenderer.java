@@ -108,11 +108,11 @@ public class GameClientRenderer extends Renderer {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		//Update the camera position
-		camera.move(inputHandler.getCameraPositionMoveVector(), 1f);
+		camera.move(inputHandler.getCameraPositionMoveVector(), 1f * (getDeltaTime() / 16));
 		//Only allow looking around when right click is held
 		if (!inputHandler.isRightButtonPressed()) inputHandler.resetDisplayVector();
 		//Update camera rotation
-		camera.rotate(inputHandler.getDisplayVector().mul(0.4f), inputHandler.getCameraRollVector() * 0.05f);
+		camera.rotate(inputHandler.getDisplayVector().mul(0.4f * (getDeltaTime() / 16)), inputHandler.getCameraRollVector() * (0.05f * (getDeltaTime() / 16)));
 
 		//Update the view Matrix with the current camera position
 		//This has to happen before game items are updated
