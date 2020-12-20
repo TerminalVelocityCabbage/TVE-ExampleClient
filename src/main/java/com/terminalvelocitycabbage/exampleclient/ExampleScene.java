@@ -73,11 +73,15 @@ public class ExampleScene extends Scene {
 
 	@Override
 	public void update(float deltaTime) {
-		tickManager.onTimeDelta(deltaTime);
 
+		//Tell the tick manager the frame time change
+		tickManager.apply(deltaTime);
+
+		//Wait for an update tick
 		while (tickManager.hasTick()) {
 			System.out.println("tick");
 		}
+
 		//Move around the point lights
 		objectHandler.getObject("blueLight").move(0, (float)Math.sin(glfwGetTime())/10, 0);
 		objectHandler.getObject("whiteLight").move(0, (float)Math.cos(glfwGetTime())/8, 0);
