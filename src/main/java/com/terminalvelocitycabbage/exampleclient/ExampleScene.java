@@ -11,6 +11,7 @@ import com.terminalvelocitycabbage.engine.client.renderer.model.Material;
 import com.terminalvelocitycabbage.engine.client.renderer.model.Texture;
 import com.terminalvelocitycabbage.engine.client.renderer.model.loader.AnimatedModelLoader;
 import com.terminalvelocitycabbage.engine.client.resources.Identifier;
+import com.terminalvelocitycabbage.engine.utils.TickManager;
 import net.dumbcode.studio.animation.events.AnimationEventRegister;
 import net.dumbcode.studio.animation.instance.ModelAnimationHandler;
 import org.joml.Vector3f;
@@ -21,6 +22,8 @@ import static com.terminalvelocitycabbage.exampleclient.GameResourceHandler.TEXT
 import static org.lwjgl.glfw.GLFW.glfwGetTime;
 
 public class ExampleScene extends Scene {
+
+	private final TickManager tickManager = new TickManager(20F);
 
 	@Override
 	public void init() {
@@ -69,8 +72,12 @@ public class ExampleScene extends Scene {
 	}
 
 	@Override
-	public void update(long deltaTime) {
+	public void update(float deltaTime) {
+		tickManager.onTimeDelta(deltaTime);
 
+		while (tickManager.hasTick()) {
+			System.out.println("tick");
+		}
 		//Move around the point lights
 		objectHandler.getObject("blueLight").move(0, (float)Math.sin(glfwGetTime())/10, 0);
 		objectHandler.getObject("whiteLight").move(0, (float)Math.cos(glfwGetTime())/8, 0);
@@ -79,14 +86,14 @@ public class ExampleScene extends Scene {
 		ModeledGameObject trex = objectHandler.getObject("trex");
 		ModelAnimationHandler trexHandler = ((AnimatedModel) trex.getModel()).handler;
 		//TODO animation smoothness (don't hard code in 20)
-		trexHandler.animate(deltaTime / 1e9f * 20);
+		trexHandler.animate(deltaTime / 50F);
 
 		//Tell the engine that the game object needs to be re-rendered
 		trex.queueUpdate();
 		ModeledGameObject robot = objectHandler.getObject("robot");
 		ModelAnimationHandler robotHandler = ((AnimatedModel) robot.getModel()).handler;
 		//TODO animation smoothness (don't hard code in 20)
-		robotHandler.animate(deltaTime / 1e9f * 20);
+		robotHandler.animate(deltaTime / 50F);
 
 		//Tell the engine that the game object needs to be re-rendered
 		robot.queueUpdate();
