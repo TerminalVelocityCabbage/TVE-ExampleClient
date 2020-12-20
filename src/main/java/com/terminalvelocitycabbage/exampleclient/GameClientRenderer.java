@@ -31,8 +31,7 @@ public class GameClientRenderer extends Renderer {
 	private final ShaderHandler shaderHandler = new ShaderHandler();
 	private GameInputHandler inputHandler = new GameInputHandler();
 	private SceneHandler sceneHandler = new SceneHandler();
-
-	private UICanvas testCanvas = new UICanvas(getWindow());
+	private CanvasHandler canvasHandler = new CanvasHandler();
 
 	public GameClientRenderer(int width, int height, String title) {
 		super(width, height, title, new GameInputHandler());
@@ -43,12 +42,14 @@ public class GameClientRenderer extends Renderer {
 	public void init() {
 		super.init();
 
+		//Add state for when test menu shall be shown
 		GameClient.getInstance().stateHandler.addState(new State("example"));
 
 		//Create the controllable camera
 		camera = new Camera(60, 0.01f, 1000.0f);
 
 		//Configure the canvas
+		Canvas testCanvas = new Canvas(getWindow());
 		testCanvas.bind();
 		testCanvas.style
 				.marginLeft(100, PIXELS)
@@ -59,10 +60,11 @@ public class GameClientRenderer extends Renderer {
 				.setBorderRadius(15)
 				.setBorderColor(1, 1, 1, 1)
 				.setBorderThickness(4);
-		testCanvas.addContainer(new UIContainer(new UIDimension(100, PIXELS), new UIDimension(100, PIXELS), new UIAnchor(AnchorPoint.TOP_MIDDLE, AnchorDirection.RIGHT_DOWN), new UIStyle().setColor(1, 1, 0, 1)));
-		testCanvas.addContainer(new UIContainer(new UIDimension(400, PIXELS), new UIDimension(50, PIXELS), new UIAnchor(AnchorPoint.TOP_MIDDLE, AnchorDirection.LEFT_DOWN), new UIStyle().setColor(1, 0, 0, 1).marginRight(10, PERCENT)));
-		testCanvas.addContainer(new UIContainer(new UIDimension(400, PIXELS), new UIDimension(40, PERCENT), new UIAnchor(AnchorPoint.BOTTOM_MIDDLE, AnchorDirection.UP), new UIStyle().setColor(1, 0, 1, 1).marginBottom(10, PIXELS)));
+		testCanvas.addContainer(new Container(new UIDimension(100, PIXELS), new UIDimension(100, PIXELS), new Anchor(AnchorPoint.TOP_MIDDLE, AnchorDirection.RIGHT_DOWN), new Style().setColor(1, 1, 0, 1)));
+		testCanvas.addContainer(new Container(new UIDimension(400, PIXELS), new UIDimension(50, PIXELS), new Anchor(AnchorPoint.TOP_MIDDLE, AnchorDirection.LEFT_DOWN), new Style().setColor(1, 0, 0, 1).marginRight(10, PERCENT)));
+		testCanvas.addContainer(new Container(new UIDimension(400, PIXELS), new UIDimension(40, PERCENT), new Anchor(AnchorPoint.BOTTOM_MIDDLE, AnchorDirection.UP), new Style().setColor(1, 0, 1, 1).marginBottom(10, PIXELS)));
 		testCanvas.queueUpdate();
+		canvasHandler.addCanvas("example", testCanvas);
 
 		//Create Shaders
 		//Create default shader that is used for textured elements
@@ -136,8 +138,7 @@ public class GameClientRenderer extends Renderer {
 	public void destroy() {
 		super.destroy();
 		shaderHandler.cleanup();
-		testCanvas.getContainers().forEach(UIRenderableElement::destroy);
-		testCanvas.destroy();
+		canvasHandler.cleanup();
 		sceneHandler.cleanup();
 	}
 
@@ -214,8 +215,8 @@ public class GameClientRenderer extends Renderer {
 		shaderProgram.createUniform("borderColor");
 		shaderProgram.createUniform("borderThickness");
 
-		renderHudElement(testCanvas, shaderProgram);
-		testCanvas.getContainers().forEach(container -> renderHudElement(container, shaderProgram));
+		renderHudElement(canvasHandler.getCanvas("example"), shaderProgram);
+		canvasHandler.getCanvas("example").getContainers().forEach(container -> renderHudElement(container, shaderProgram));
 
 	}
 
