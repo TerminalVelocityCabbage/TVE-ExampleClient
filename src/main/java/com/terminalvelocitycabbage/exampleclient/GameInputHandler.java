@@ -21,6 +21,8 @@ public class GameInputHandler extends InputHandler {
 	public static KeyBind ROT_LEFT;
 	public static KeyBind ROT_RIGHT;
 
+	public static KeyBind TOGGLE_MENU;
+
 	Vector3f cameraMoveVector = new Vector3f(0);
 	int cameraRollVector = 0;
 
@@ -36,6 +38,7 @@ public class GameInputHandler extends InputHandler {
 		DOWN = new KeyBind(GLFW_KEY_LEFT_SHIFT);
 		ROT_LEFT = new KeyBind(GLFW_KEY_Q);
 		ROT_RIGHT = new KeyBind(GLFW_KEY_E);
+		TOGGLE_MENU = new KeyBind(GLFW_KEY_TAB);
 	}
 
 	@Override
@@ -75,6 +78,14 @@ public class GameInputHandler extends InputHandler {
 		}
 		if (keyBind.isKeyPressed(ROT_RIGHT)) {
 			cameraRollVector++;
+		}
+
+		if (keyBind.isKeyPressed(TOGGLE_MENU)) {
+			if (GameClient.getInstance().stateHandler.isActive("example")) {
+				GameClient.getInstance().stateHandler.resetState();
+			} else {
+				GameClient.getInstance().stateHandler.setState("example");
+			}
 		}
 	}
 

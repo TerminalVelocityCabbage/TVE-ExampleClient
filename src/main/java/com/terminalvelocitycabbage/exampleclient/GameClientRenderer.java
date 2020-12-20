@@ -11,6 +11,7 @@ import com.terminalvelocitycabbage.engine.client.renderer.shader.ShaderProgram;
 import com.terminalvelocitycabbage.engine.client.renderer.shapes.Rectangle;
 import com.terminalvelocitycabbage.engine.client.renderer.ui.*;
 import com.terminalvelocitycabbage.engine.client.resources.Identifier;
+import com.terminalvelocitycabbage.engine.client.state.State;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
@@ -29,7 +30,6 @@ public class GameClientRenderer extends Renderer {
 
 	private final ShaderHandler shaderHandler = new ShaderHandler();
 	private GameInputHandler inputHandler = new GameInputHandler();
-
 	private SceneHandler sceneHandler = new SceneHandler();
 
 	private UICanvas testCanvas = new UICanvas(getWindow());
@@ -42,6 +42,8 @@ public class GameClientRenderer extends Renderer {
 	@Override
 	public void init() {
 		super.init();
+
+		GameClient.getInstance().stateHandler.addState(new State("example"));
 
 		//Create the controllable camera
 		camera = new Camera(60, 0.01f, 1000.0f);
@@ -116,7 +118,9 @@ public class GameClientRenderer extends Renderer {
 
 		//renderNormalsDebug(camera, viewMatrix, shaderHandler.get("normals"));
 		renderDefault(camera, viewMatrix, shaderHandler.get("default"));
-		renderHud(shaderHandler.get("hud"));
+		if (GameClient.getInstance().stateHandler.isActive("example")) {
+			renderHud(shaderHandler.get("hud"));
+		}
 
 		//Since the text rendering is so awful I'm just going to use the window title for now
 		getWindow().setTitle("FPS: " + String.valueOf(getFramerate()).split("\\.")[0] + " (" + getFrameTimeAverageMillis() + "ms)");
