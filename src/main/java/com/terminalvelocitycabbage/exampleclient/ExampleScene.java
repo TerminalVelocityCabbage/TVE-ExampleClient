@@ -26,7 +26,7 @@ public class ExampleScene extends Scene {
 	public void init() {
 		//Load trex model to a Model object from dcm file
 		AnimatedModel trexModel = AnimatedModelLoader.load(MODEL, new Identifier(GameClient.ID, "trex.dcm"));
-		trexModel.addAnimation("roar", ANIMATION, new Identifier(GameClient.ID, "roar.dca"));
+		trexModel.addAnimation("roar", ANIMATION, new Identifier(GameClient.ID, "roar.dca")).setLoopStartTime(25F);
 		trexModel.setMaterial(Material.builder().texture(new Texture(TEXTURE, new Identifier(GameClient.ID, "trex.png"))).build());
 		//Create a game object from the model loaded and add the game object to the list of active objects
 		objectHandler.add("trex", ModeledGameObject.builder().setModel(trexModel).build());
@@ -40,7 +40,7 @@ public class ExampleScene extends Scene {
 		//Create a game object from the model loaded and add the game object to the list of active objects
 		ModeledGameObject robot = objectHandler.add("robot", ModeledGameObject.builder().setModel(robotModel).build());
 		objectHandler.getObject("robot").move(0F, 0F, -30F);
-		robotModel.startAnimation("wave");
+		robotModel.startAnimation("wave", true);
 
 		robotModel.handler.setSrc(robot);
 		AnimationEventRegister.registerEvent("foo", (data, src) -> System.out.println(data + ", " + src));
