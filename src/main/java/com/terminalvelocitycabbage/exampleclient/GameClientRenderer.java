@@ -12,6 +12,7 @@ import com.terminalvelocitycabbage.engine.client.renderer.shapes.Rectangle;
 import com.terminalvelocitycabbage.engine.client.renderer.ui.*;
 import com.terminalvelocitycabbage.engine.client.resources.Identifier;
 import com.terminalvelocitycabbage.engine.client.state.State;
+import com.terminalvelocitycabbage.engine.debug.Log;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
@@ -121,7 +122,11 @@ public class GameClientRenderer extends Renderer {
 		//renderNormalsDebug(camera, viewMatrix, shaderHandler.get("normals"));
 		renderDefault(camera, viewMatrix, shaderHandler.get("default"));
 		if (GameClient.getInstance().stateHandler.isActive("example")) {
+			getWindow().showCursor();
+			Log.info("pos: " + getWindow().getCursorX() + " " + getWindow().getCursorY() + " : " + canvasHandler.getCanvasesAt(getWindow().getCursorX(), getWindow().getCursorY()));
 			renderHud(shaderHandler.get("hud"));
+		} else {
+			getWindow().hideCursor();
 		}
 
 		//Since the text rendering is so awful I'm just going to use the window title for now
