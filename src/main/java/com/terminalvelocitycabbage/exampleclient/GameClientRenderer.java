@@ -209,7 +209,9 @@ public class GameClientRenderer extends Renderer {
 			//Lighting
 			shaderProgram.setUniform("ambientLight", new Vector3f(0.3f, 0.3f, 0.3f));
 			shaderProgram.setUniform("specularPower", 10.0f); //Reflected light intensity
+			shaderProgram.setUniform("pointLightsNum", pointLights.size());
 			pointLights.forEach(light -> shaderProgram.setUniform("pointLights", light, pointLights.indexOf(light)));
+			shaderProgram.setUniform("spotLightsNum", spotLights.size());
 			spotLights.forEach(light -> shaderProgram.setUniform("spotLights", light, spotLights.indexOf(light)));
 			shaderProgram.setUniform("directionalLight", sceneHandler.getActiveScene().objectHandler.getObject("sun"));
 			//Material stuff
@@ -229,9 +231,8 @@ public class GameClientRenderer extends Renderer {
 		shaderProgram.createUniform("borderColor");
 		shaderProgram.createUniform("borderThickness");
 
-		//TODO Add a recursive function to call this method on each UIRenderableElement so uniforms can update.
-		//or just call this method instead of render recursively idk
-		renderHudElement(canvasHandler.getCanvas("example"), shaderProgram);
+		canvasHandler.getCanvases().forEach(canvas -> renderHudElement(canvas, shaderProgram));
+		canvasHandler.getCanvases().forEach(canvas -> canvas.getAllChildren().forEach(element -> renderHudElement(element, shaderProgram)));
 	}
 
 	public void renderHudElement(UIRenderableElement element, ShaderProgram shaderProgram) {
