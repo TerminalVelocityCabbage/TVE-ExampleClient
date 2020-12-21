@@ -58,9 +58,22 @@ public class GameClientRenderer extends Renderer {
 				.setBorderRadius(15)
 				.setBorderColor(1, 1, 1, 1)
 				.setBorderThickness(4);
-		testCanvas.addContainer(new Container(new UIDimension(100, PIXELS), new UIDimension(100, PIXELS), new Anchor(AnchorPoint.TOP_MIDDLE, AnchorDirection.RIGHT_DOWN), new Style().setColor(1, 1, 0, 1)).onDoubleClick((short)10, () -> Log.info("double")));
-		testCanvas.addContainer(new Container(new UIDimension(400, PIXELS), new UIDimension(50, PIXELS), new Anchor(AnchorPoint.TOP_MIDDLE, AnchorDirection.LEFT_DOWN), new Style().setColor(1, 0, 0, 1).marginRight(10, PERCENT)).onClick(() -> GameClient.getInstance().stateHandler.resetState()).onRightClick(() -> Log.info("right")));
-		testCanvas.addContainer(new Container(new UIDimension(400, PIXELS), new UIDimension(40, PERCENT), new Anchor(AnchorPoint.BOTTOM_MIDDLE, AnchorDirection.UP), new Style().setColor(1, 0, 1, 1).marginBottom(10, PIXELS)).onHover(() -> Log.info("hover")));
+		testCanvas.addContainer(new Container(new UIDimension(100, PIXELS), new UIDimension(100, PIXELS),
+				new Anchor(AnchorPoint.TOP_MIDDLE, AnchorDirection.RIGHT_DOWN),
+				new Style().setColor(1, 1, 0, 1))
+				.onDoubleClick((short)10, () -> Log.info("double")));
+		testCanvas.addContainer(new Container(new UIDimension(400, PIXELS), new UIDimension(50, PIXELS),
+				new Anchor(AnchorPoint.TOP_MIDDLE, AnchorDirection.LEFT_DOWN),
+				new Style().setColor(1, 0, 0, 1).marginRight(10, PERCENT))
+				.onClick(() -> GameClient.getInstance().stateHandler.resetState())
+				.onRightClick(() -> Log.info("right")));
+		testCanvas.addContainer(new Container(new UIDimension(400, PIXELS), new UIDimension(40, PERCENT),
+				new Anchor(AnchorPoint.BOTTOM_MIDDLE, AnchorDirection.UP),
+				new Style().setColor(1, 0, 1, 1).marginBottom(10, PIXELS))
+				.onHover(() -> Log.info("hover"))
+				.addElement(new Element("Some element Text",
+						new UIDimension(100, PERCENT), new UIDimension(100, PIXELS),
+						new Style().setColor(0, 0, 1, 1))));
 		testCanvas.queueUpdate();
 		canvasHandler.addCanvas("example", testCanvas);
 
@@ -216,9 +229,9 @@ public class GameClientRenderer extends Renderer {
 		shaderProgram.createUniform("borderColor");
 		shaderProgram.createUniform("borderThickness");
 
+		//TODO Add a recursive function to call this method on each UIRenderableElement so uniforms can update.
+		//or just call this method instead of render recursively idk
 		renderHudElement(canvasHandler.getCanvas("example"), shaderProgram);
-		canvasHandler.getCanvas("example").getContainers().forEach(container -> renderHudElement(container, shaderProgram));
-
 	}
 
 	public void renderHudElement(UIRenderableElement element, ShaderProgram shaderProgram) {
