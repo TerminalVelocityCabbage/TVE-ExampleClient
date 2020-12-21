@@ -58,7 +58,7 @@ public class GameClientRenderer extends Renderer {
 				.setBorderRadius(15)
 				.setBorderColor(1, 1, 1, 1)
 				.setBorderThickness(4);
-		testCanvas.addContainer(new Container(new UIDimension(100, PIXELS), new UIDimension(100, PIXELS), new Anchor(AnchorPoint.TOP_MIDDLE, AnchorDirection.RIGHT_DOWN), new Style().setColor(1, 1, 0, 1)));
+		testCanvas.addContainer(new Container(new UIDimension(100, PIXELS), new UIDimension(100, PIXELS), new Anchor(AnchorPoint.TOP_MIDDLE, AnchorDirection.RIGHT_DOWN), new Style().setColor(1, 1, 0, 1)).onDoubleClick((short)10, () -> Log.info("double")));
 		testCanvas.addContainer(new Container(new UIDimension(400, PIXELS), new UIDimension(50, PIXELS), new Anchor(AnchorPoint.TOP_MIDDLE, AnchorDirection.LEFT_DOWN), new Style().setColor(1, 0, 0, 1).marginRight(10, PERCENT)).onClick(() -> GameClient.getInstance().stateHandler.resetState()).onRightClick(() -> Log.info("right")));
 		testCanvas.addContainer(new Container(new UIDimension(400, PIXELS), new UIDimension(40, PERCENT), new Anchor(AnchorPoint.BOTTOM_MIDDLE, AnchorDirection.UP), new Style().setColor(1, 0, 1, 1).marginBottom(10, PIXELS)).onHover(() -> Log.info("hover")));
 		testCanvas.queueUpdate();
