@@ -1,6 +1,5 @@
 package com.terminalvelocitycabbage.exampleclient;
 
-import com.terminalvelocitycabbage.engine.client.renderer.scenes.Scene;
 import com.terminalvelocitycabbage.engine.client.renderer.gameobjects.entity.ModeledGameObject;
 import com.terminalvelocitycabbage.engine.client.renderer.gameobjects.lights.DirectionalLight;
 import com.terminalvelocitycabbage.engine.client.renderer.gameobjects.lights.PointLight;
@@ -10,20 +9,17 @@ import com.terminalvelocitycabbage.engine.client.renderer.model.AnimatedModel;
 import com.terminalvelocitycabbage.engine.client.renderer.model.Material;
 import com.terminalvelocitycabbage.engine.client.renderer.model.Texture;
 import com.terminalvelocitycabbage.engine.client.renderer.model.loader.AnimatedModelLoader;
+import com.terminalvelocitycabbage.engine.client.renderer.scenes.Scene;
 import com.terminalvelocitycabbage.engine.client.resources.Identifier;
-import com.terminalvelocitycabbage.engine.utils.TickManager;
 import net.dumbcode.studio.animation.events.AnimationEventRegister;
 import net.dumbcode.studio.animation.instance.ModelAnimationHandler;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 
 import static com.terminalvelocitycabbage.exampleclient.GameResourceHandler.*;
-import static com.terminalvelocitycabbage.exampleclient.GameResourceHandler.TEXTURE;
 import static org.lwjgl.glfw.GLFW.glfwGetTime;
 
 public class ExampleScene extends Scene {
-
-	private final TickManager tickManager = new TickManager(20F);
 
 	@Override
 	public void init() {
@@ -73,12 +69,6 @@ public class ExampleScene extends Scene {
 
 	@Override
 	public void update(float deltaTime) {
-
-		//Tell the tick manager the frame time change
-		tickManager.apply(deltaTime);
-
-		//Wait for an update tick
-		while (tickManager.hasTick()) { }
 
 		//Move around the point lights
 		objectHandler.getObject("blueLight").move(0, (float)Math.sin(glfwGetTime())/10, 0);
