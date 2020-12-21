@@ -29,7 +29,7 @@ import static org.lwjgl.opengl.GL20.*;
 public class GameClientRenderer extends Renderer {
 
 	private final ShaderHandler shaderHandler = new ShaderHandler();
-	private GameInputHandler inputHandler = new GameInputHandler();
+	private GameInputHandler inputHandler;
 
 	public GameClientRenderer(int width, int height, String title, float tickRate) {
 		super(width, height, title, new GameInputHandler(), tickRate);
@@ -59,7 +59,7 @@ public class GameClientRenderer extends Renderer {
 				.setBorderColor(1, 1, 1, 1)
 				.setBorderThickness(4);
 		testCanvas.addContainer(new Container(new UIDimension(100, PIXELS), new UIDimension(100, PIXELS), new Anchor(AnchorPoint.TOP_MIDDLE, AnchorDirection.RIGHT_DOWN), new Style().setColor(1, 1, 0, 1)));
-		testCanvas.addContainer(new Container(new UIDimension(400, PIXELS), new UIDimension(50, PIXELS), new Anchor(AnchorPoint.TOP_MIDDLE, AnchorDirection.LEFT_DOWN), new Style().setColor(1, 0, 0, 1).marginRight(10, PERCENT)));
+		testCanvas.addContainer(new Container(new UIDimension(400, PIXELS), new UIDimension(50, PIXELS), new Anchor(AnchorPoint.TOP_MIDDLE, AnchorDirection.LEFT_DOWN), new Style().setColor(1, 0, 0, 1).marginRight(10, PERCENT)).onClick(() -> GameClient.getInstance().stateHandler.resetState()).onRightClick(() -> Log.info("right")));
 		testCanvas.addContainer(new Container(new UIDimension(400, PIXELS), new UIDimension(40, PERCENT), new Anchor(AnchorPoint.BOTTOM_MIDDLE, AnchorDirection.UP), new Style().setColor(1, 0, 1, 1).marginBottom(10, PIXELS)).onHover(() -> Log.info("hover")));
 		testCanvas.queueUpdate();
 		canvasHandler.addCanvas("example", testCanvas);
