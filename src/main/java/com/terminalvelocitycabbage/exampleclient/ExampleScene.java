@@ -32,6 +32,15 @@ public class ExampleScene extends Scene {
 		objectHandler.getObject("trex").move(-50F, 0F, -30F);
 		trexModel.startAnimation("roar", true);
 
+		//The animation v7 test model
+		AnimatedModel v7test = AnimatedModelLoader.load(MODEL, new Identifier(GameClient.ID, "v7test.dcm"));
+		v7test.addAnimation("bump", ANIMATION, new Identifier(GameClient.ID, "v7test.dca"));
+		v7test.setMaterial(Material.builder().texture(new Texture(TEXTURE, new Identifier(GameClient.ID, "v7test.png"))).build());
+		//Create a game object from the model loaded and add the game object to the list of active objects
+		objectHandler.add("v7test", ModeledGameObject.builder().setModel(v7test).build());
+		objectHandler.getObject("v7test").move(30F, 0, -20F);
+		v7test.startAnimation("bump", true);
+
 		//Load gerald model to a Model object from dcm file
 		AnimatedModel robotModel = AnimatedModelLoader.load(MODEL, new Identifier(GameClient.ID, "Gerald.dcm"));
 		robotModel.addAnimation("wave", ANIMATION, new Identifier(GameClient.ID, "wave.dca"));
@@ -79,16 +88,22 @@ public class ExampleScene extends Scene {
 		ModelAnimationHandler trexHandler = ((AnimatedModel) trex.getModel()).handler;
 		//TODO animation smoothness (don't hard code in 20)
 		trexHandler.animate(deltaTime / 50F);
-
 		//Tell the engine that the game object needs to be re-rendered
 		trex.queueUpdate();
+
 		ModeledGameObject robot = objectHandler.getObject("robot");
 		ModelAnimationHandler robotHandler = ((AnimatedModel) robot.getModel()).handler;
 		//TODO animation smoothness (don't hard code in 20)
 		robotHandler.animate(deltaTime / 50F);
-
 		//Tell the engine that the game object needs to be re-rendered
 		robot.queueUpdate();
+
+		ModeledGameObject v7Test = objectHandler.getObject("v7test");
+		ModelAnimationHandler v7TestModel = ((AnimatedModel) v7Test.getModel()).handler;
+		//TODO animation smoothness (don't hard code in 20)
+		v7TestModel.animate(deltaTime / 50F);
+		//Tell the engine that the game object needs to be re-rendered
+		v7Test.queueUpdate();
 	}
 
 	@Override
