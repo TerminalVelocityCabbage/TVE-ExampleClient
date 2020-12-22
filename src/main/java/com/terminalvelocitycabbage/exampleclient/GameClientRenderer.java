@@ -40,11 +40,11 @@ public class GameClientRenderer extends Renderer {
 	public void init() {
 		super.init();
 
-		//Add state for when test menu shall be shown
-		GameClient.getInstance().stateHandler.addState(new State("example"));
-
 		//Create the controllable camera
 		camera = new Camera(60, 0.01f, 1000.0f);
+
+		//Add state for when test menu shall be shown
+		GameClient.getInstance().stateHandler.addState(new State("example"));
 
 		//Configure the canvas
 		Canvas testCanvas = new Canvas(getWindow());
@@ -60,20 +60,28 @@ public class GameClientRenderer extends Renderer {
 				.setBorderThickness(4);
 		testCanvas.addContainer(new Container(new UIDimension(100, PIXELS), new UIDimension(100, PIXELS),
 				new Anchor(AnchorPoint.TOP_MIDDLE, AnchorDirection.RIGHT_DOWN),
-				new Style().setColor(1, 1, 0, 1))
+				new Style()
+						.setColor(1, 1, 0, 1))
 				.onDoubleClick((short)10, () -> Log.info("double")));
 		testCanvas.addContainer(new Container(new UIDimension(400, PIXELS), new UIDimension(50, PIXELS),
-				new Anchor(AnchorPoint.TOP_MIDDLE, AnchorDirection.LEFT_DOWN),
-				new Style().setColor(1, 0, 0, 1).marginRight(10, PERCENT))
+				new Anchor(AnchorPoint.LEFT_MIDDLE, AnchorDirection.RIGHT),
+				new Style()
+						.setColor(1, 0, 0, 1)
+						.marginLeft(10, PIXELS))
 				.onClick(() -> GameClient.getInstance().stateHandler.resetState())
 				.onRightClick(() -> Log.info("right")));
 		testCanvas.addContainer(new Container(new UIDimension(400, PIXELS), new UIDimension(40, PERCENT),
 				new Anchor(AnchorPoint.BOTTOM_MIDDLE, AnchorDirection.UP),
-				new Style().setColor(1, 0, 1, 1).marginBottom(10, PIXELS))
+				new Style()
+						.setColor(1, 0, 1, 1)
+						.marginBottom(10, PIXELS)
+						.setBorderThickness(3)
+						.setBorderColor(1, 0, 0, 1))
 				.onHover(() -> Log.info("hover"))
 				.addElement(new Element("Some element Text",
 						new UIDimension(100, PERCENT), new UIDimension(30, PIXELS),
-						new Style().setColor(0, 0, 1, 1))));
+						new Style()
+								.setColor(0, 0, 1, 1))));
 		testCanvas.queueUpdate();
 		canvasHandler.addCanvas("example", testCanvas);
 
