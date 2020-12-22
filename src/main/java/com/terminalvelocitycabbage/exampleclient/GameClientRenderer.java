@@ -72,7 +72,7 @@ public class GameClientRenderer extends Renderer {
 				new Style().setColor(1, 0, 1, 1).marginBottom(10, PIXELS))
 				.onHover(() -> Log.info("hover"))
 				.addElement(new Element("Some element Text",
-						new UIDimension(100, PERCENT), new UIDimension(100, PIXELS),
+						new UIDimension(100, PERCENT), new UIDimension(30, PIXELS),
 						new Style().setColor(0, 0, 1, 1))));
 		testCanvas.queueUpdate();
 		canvasHandler.addCanvas("example", testCanvas);
