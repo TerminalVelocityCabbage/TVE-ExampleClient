@@ -78,10 +78,15 @@ public class GameClientRenderer extends Renderer {
 						.setBorderThickness(3)
 						.setBorderColor(1, 0, 0, 1))
 				.onHover(() -> Log.info("hover"))
+				.verticalAlignment(Alignment.Vertical.BOTTOM)
 				.addElement(new Element("Some element Text",
 						new UIDimension(80, PERCENT), new UIDimension(30, PIXELS),
 						new Style()
-								.setColor(0, 0, 1, 1))));
+								.setColor(0, 0, 1, 1)))
+				.addElement(new Element("Some element Text also",
+						new UIDimension(80, PERCENT), new UIDimension(30, PIXELS),
+						new Style()
+								.setColor(0, 1, 1, 1))));
 		testCanvas.queueUpdate();
 		canvasHandler.addCanvas("example", testCanvas);
 
