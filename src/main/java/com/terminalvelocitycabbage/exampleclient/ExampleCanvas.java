@@ -43,8 +43,10 @@ public class ExampleCanvas extends Canvas {
 						.setBorderThickness(3)
 						.setBorderColor(1, 0, 0, 1))
 				.onHover(() -> Log.info("hover"))
+				.horizontalAlignment(Alignment.Horizontal.LEFT)
 				.verticalAlignment(Alignment.Vertical.BOTTOM)
-				.alignmentDirection(Alignment.Direction.VERTICAL)
+				.alignmentDirection(Alignment.Direction.HORIZONTAL)
+				.overflow(Overflow.HIDDEN)
 				.addElement(new Element("Some element Text",
 						new UIDimension(80, PERCENT), new UIDimension(30, PIXELS),
 						new Style()
