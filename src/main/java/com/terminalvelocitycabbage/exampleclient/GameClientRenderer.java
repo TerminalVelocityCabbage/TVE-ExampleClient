@@ -9,6 +9,7 @@ import com.terminalvelocitycabbage.engine.client.renderer.shader.ShaderHandler;
 import com.terminalvelocitycabbage.engine.client.renderer.shader.ShaderProgram;
 import com.terminalvelocitycabbage.engine.client.renderer.shapes.Rectangle;
 import com.terminalvelocitycabbage.engine.client.renderer.ui.*;
+import com.terminalvelocitycabbage.engine.client.renderer.ui.components.*;
 import com.terminalvelocitycabbage.engine.client.resources.Identifier;
 import com.terminalvelocitycabbage.engine.client.state.State;
 import com.terminalvelocitycabbage.engine.debug.Log;
@@ -21,8 +22,8 @@ import java.util.List;
 
 import static com.terminalvelocitycabbage.engine.client.renderer.shader.Shader.Type.FRAGMENT;
 import static com.terminalvelocitycabbage.engine.client.renderer.shader.Shader.Type.VERTEX;
-import static com.terminalvelocitycabbage.engine.client.renderer.ui.UIDimension.Unit.PERCENT;
-import static com.terminalvelocitycabbage.engine.client.renderer.ui.UIDimension.Unit.PIXELS;
+import static com.terminalvelocitycabbage.engine.client.renderer.ui.components.UIDimension.Unit.PERCENT;
+import static com.terminalvelocitycabbage.engine.client.renderer.ui.components.UIDimension.Unit.PIXELS;
 import static com.terminalvelocitycabbage.exampleclient.GameResourceHandler.SHADER;
 import static org.lwjgl.opengl.GL20.*;
 
@@ -79,6 +80,7 @@ public class GameClientRenderer extends Renderer {
 						.setBorderColor(1, 0, 0, 1))
 				.onHover(() -> Log.info("hover"))
 				.verticalAlignment(Alignment.Vertical.BOTTOM)
+				.alignmentDirection(Alignment.Direction.VERTICAL)
 				.addElement(new Element("Some element Text",
 						new UIDimension(80, PERCENT), new UIDimension(30, PIXELS),
 						new Style()
