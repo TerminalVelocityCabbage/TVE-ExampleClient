@@ -8,11 +8,8 @@ import com.terminalvelocitycabbage.engine.client.renderer.gameobjects.lights.Spo
 import com.terminalvelocitycabbage.engine.client.renderer.shader.ShaderHandler;
 import com.terminalvelocitycabbage.engine.client.renderer.shader.ShaderProgram;
 import com.terminalvelocitycabbage.engine.client.renderer.shapes.Rectangle;
-import com.terminalvelocitycabbage.engine.client.renderer.ui.*;
-import com.terminalvelocitycabbage.engine.client.renderer.ui.components.*;
+import com.terminalvelocitycabbage.engine.client.renderer.ui.UIRenderable;
 import com.terminalvelocitycabbage.engine.client.resources.Identifier;
-import com.terminalvelocitycabbage.engine.client.state.State;
-import com.terminalvelocitycabbage.engine.debug.Log;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
@@ -22,8 +19,6 @@ import java.util.List;
 
 import static com.terminalvelocitycabbage.engine.client.renderer.shader.Shader.Type.FRAGMENT;
 import static com.terminalvelocitycabbage.engine.client.renderer.shader.Shader.Type.VERTEX;
-import static com.terminalvelocitycabbage.engine.client.renderer.ui.components.UIDimension.Unit.PERCENT;
-import static com.terminalvelocitycabbage.engine.client.renderer.ui.components.UIDimension.Unit.PIXELS;
 import static com.terminalvelocitycabbage.exampleclient.GameResourceHandler.SHADER;
 import static org.lwjgl.opengl.GL20.*;
 
@@ -44,53 +39,8 @@ public class GameClientRenderer extends Renderer {
 		//Create the controllable camera
 		camera = new Camera(60, 0.01f, 1000.0f);
 
-		//Add state for when test menu shall be shown
-		GameClient.getInstance().stateHandler.addState(new State("example"));
-
-		//Configure the canvas
-		Canvas testCanvas = new Canvas(getWindow());
-		testCanvas.bind();
-		testCanvas.style
-				.marginLeft(100, PIXELS)
-				.marginRight(40, PERCENT)
-				.marginTop(10, PIXELS)
-				.marginBottom(10, PIXELS)
-				.setColor(0.3f, 0.4f, 1 ,0.25f)
-				.setBorderRadius(15)
-				.setBorderColor(1, 1, 1, 1)
-				.setBorderThickness(4);
-		testCanvas.addContainer(new Container(new UIDimension(100, PIXELS), new UIDimension(100, PIXELS),
-				new Anchor(AnchorPoint.TOP_MIDDLE, AnchorDirection.RIGHT_DOWN),
-				new Style()
-						.setColor(1, 1, 0, 1))
-				.onDoubleClick((short)10, () -> Log.info("double")));
-		testCanvas.addContainer(new Container(new UIDimension(400, PIXELS), new UIDimension(50, PIXELS),
-				new Anchor(AnchorPoint.LEFT_MIDDLE, AnchorDirection.RIGHT),
-				new Style()
-						.setColor(1, 0, 0, 1)
-						.marginLeft(10, PIXELS))
-				.onClick(() -> GameClient.getInstance().stateHandler.resetState())
-				.onRightClick(() -> Log.info("right")));
-		testCanvas.addContainer(new Container(new UIDimension(400, PIXELS), new UIDimension(40, PERCENT),
-				new Anchor(AnchorPoint.BOTTOM_MIDDLE, AnchorDirection.UP),
-				new Style()
-						.setColor(1, 0, 1, 1)
-						.marginBottom(10, PIXELS)
-						.setBorderThickness(3)
-						.setBorderColor(1, 0, 0, 1))
-				.onHover(() -> Log.info("hover"))
-				.verticalAlignment(Alignment.Vertical.BOTTOM)
-				.alignmentDirection(Alignment.Direction.VERTICAL)
-				.addElement(new Element("Some element Text",
-						new UIDimension(80, PERCENT), new UIDimension(30, PIXELS),
-						new Style()
-								.setColor(0, 0, 1, 1)))
-				.addElement(new Element("Some element Text also",
-						new UIDimension(80, PERCENT), new UIDimension(30, PIXELS),
-						new Style()
-								.setColor(0, 1, 1, 1))));
-		testCanvas.queueUpdate();
-		canvasHandler.addCanvas("example", testCanvas);
+		//Create a ui screen ExampleCanvas
+		canvasHandler.addCanvas("example", new ExampleCanvas(getWindow()));
 
 		//Create Shaders
 		//Create default shader that is used for textured elements
@@ -250,7 +200,7 @@ public class GameClientRenderer extends Renderer {
 		canvasHandler.getCanvases().forEach(canvas -> canvas.getAllChildren().forEach(element -> renderHudElement(element, shaderProgram)));
 	}
 
-	public void renderHudElement(UIRenderableElement element, ShaderProgram shaderProgram) {
+	public void renderHudElement(UIRenderable element, ShaderProgram shaderProgram) {
 
 		element.update();
 
