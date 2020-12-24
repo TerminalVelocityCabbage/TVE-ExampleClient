@@ -27,14 +27,14 @@ public class ExampleCanvas extends Canvas {
 				new Anchor(AnchorPoint.TOP_MIDDLE, AnchorDirection.RIGHT_DOWN),
 				new Style()
 						.setColor(1, 1, 0, 1))
-				.onDoubleClick((short)10, () -> Log.info("double")));
+				.onDoubleClick((short)10, uiRenderable -> Log.info("double")));
 		this.addContainer(new Container(new UIDimension(400, PIXELS), new UIDimension(50, PIXELS),
 				new Anchor(AnchorPoint.LEFT_MIDDLE, AnchorDirection.RIGHT),
 				new Style()
 						.setColor(1, 0, 0, 1)
 						.marginLeft(10, PIXELS))
-				.onClick(() -> GameClient.getInstance().stateHandler.resetState())
-				.onRightClick(() -> Log.info("right")));
+				.onClick(uiRenderable -> GameClient.getInstance().stateHandler.resetState())
+				.onRightClick(uiRenderable -> Log.info("right")));
 		this.addContainer(new Container(new UIDimension(400, PIXELS), new UIDimension(40, PERCENT),
 				new Anchor(AnchorPoint.BOTTOM_MIDDLE, AnchorDirection.UP),
 				new Style()
@@ -42,7 +42,10 @@ public class ExampleCanvas extends Canvas {
 						.marginBottom(10, PIXELS)
 						.setBorderThickness(3)
 						.setBorderColor(1, 0, 0, 1))
-				.onHover(() -> Log.info("hover"))
+				.onHover(uiRenderable -> uiRenderable.style.setBorderColor(0, 1, 1, 1))
+				.onHover(uiRenderable -> Log.info("hover"))
+				.onUnHover(uiRenderable -> uiRenderable.style.setBorderColor(1, 0, 0, 1))
+				.onUnHover(uiRenderable -> Log.info("unhover"))
 				.horizontalAlignment(Alignment.Horizontal.LEFT)
 				.verticalAlignment(Alignment.Vertical.BOTTOM)
 				.alignmentDirection(Alignment.Direction.HORIZONTAL)
