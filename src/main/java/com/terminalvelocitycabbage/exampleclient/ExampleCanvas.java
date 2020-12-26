@@ -35,7 +35,7 @@ public class ExampleCanvas extends Canvas {
 						.marginLeft(10, PIXELS))
 				.onClick(uiRenderable -> GameClient.getInstance().stateHandler.resetState())
 				.onRightClick(uiRenderable -> Log.info("right")));
-		this.addContainer(new Container(new UIDimension(400, PIXELS), new UIDimension(40, PERCENT),
+		this.addContainer(new Container(new UIDimension(40, PERCENT), new UIDimension(40, PERCENT),
 				new Anchor(AnchorPoint.BOTTOM_MIDDLE, AnchorDirection.UP),
 				new Style()
 						.setColor(1, 0, 1, 1)
@@ -43,20 +43,19 @@ public class ExampleCanvas extends Canvas {
 						.setBorderThickness(3)
 						.setBorderColor(1, 0, 0, 1))
 				.onHover(uiRenderable -> uiRenderable.style.setBorderColor(0, 1, 1, 1))
-				.onHover(uiRenderable -> Log.info("hover"))
 				.onUnHover(uiRenderable -> uiRenderable.style.setBorderColor(1, 0, 0, 1))
-				.onUnHover(uiRenderable -> Log.info("unhover"))
 				.horizontalAlignment(Alignment.Horizontal.LEFT)
-				.verticalAlignment(Alignment.Vertical.BOTTOM)
+				.verticalAlignment(Alignment.Vertical.TOP)
 				.alignmentDirection(Alignment.Direction.HORIZONTAL)
 				.overflow(Overflow.HIDDEN)
 				.addElement(new Element("Some element Text",
-						new UIDimension(80, PERCENT), new UIDimension(30, PIXELS),
+						new UIDimension(120, PIXELS), new UIDimension(60, PIXELS),
 						new Style()
 								.setColor(0, 0, 1, 1)))
 				.addElement(new Element("Some element Text also",
-						new UIDimension(80, PERCENT), new UIDimension(30, PIXELS),
+						new UIDimension(120, PIXELS), new UIDimension(60, PIXELS),
 						new Style()
 								.setColor(0, 1, 1, 1))));
+
 	}
 }
