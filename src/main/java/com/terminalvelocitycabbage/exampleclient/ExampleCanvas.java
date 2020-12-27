@@ -55,7 +55,19 @@ public class ExampleCanvas extends Canvas {
 				.addElement(new Element("Some element Text also",
 						new UIDimension(120, PIXELS), new UIDimension(60, PIXELS),
 						new Style()
-								.setColor(0, 1, 1, 1))));
+								.setColor(0, 1, 1, 1)))
+				.addElement(new Element("Some element Text also2",
+						new UIDimension(120, PIXELS), new UIDimension(60, PIXELS),
+						new Style()
+								.setColor(1, 0, 0.5f, 1)))
+				.addElement(new Element("Some element Text also3",
+								new UIDimension(120, PIXELS), new UIDimension(60, PIXELS),
+								new Style()
+										.setColor(0, 1, 0, 1)))
+				.addElement(new Element("Some element Text also4",
+								new UIDimension(120, PIXELS), new UIDimension(60, PIXELS),
+								new Style()
+										.setColor(1, 1, 0, 1))));
 
 	}
 }
