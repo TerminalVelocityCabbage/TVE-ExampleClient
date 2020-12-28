@@ -1,6 +1,5 @@
 package com.terminalvelocitycabbage.exampleclient;
 
-import com.terminalvelocitycabbage.engine.client.renderer.scenes.Scene;
 import com.terminalvelocitycabbage.engine.client.renderer.gameobjects.entity.ModeledGameObject;
 import com.terminalvelocitycabbage.engine.client.renderer.gameobjects.lights.DirectionalLight;
 import com.terminalvelocitycabbage.engine.client.renderer.gameobjects.lights.PointLight;
@@ -10,20 +9,16 @@ import com.terminalvelocitycabbage.engine.client.renderer.model.AnimatedModel;
 import com.terminalvelocitycabbage.engine.client.renderer.model.Material;
 import com.terminalvelocitycabbage.engine.client.renderer.model.Texture;
 import com.terminalvelocitycabbage.engine.client.renderer.model.loader.AnimatedModelLoader;
+import com.terminalvelocitycabbage.engine.client.renderer.scenes.Scene;
 import com.terminalvelocitycabbage.engine.client.resources.Identifier;
-import com.terminalvelocitycabbage.engine.utils.TickManager;
-import net.dumbcode.studio.animation.events.AnimationEventRegister;
 import net.dumbcode.studio.animation.instance.ModelAnimationHandler;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 
 import static com.terminalvelocitycabbage.exampleclient.GameResourceHandler.*;
-import static com.terminalvelocitycabbage.exampleclient.GameResourceHandler.TEXTURE;
 import static org.lwjgl.glfw.GLFW.glfwGetTime;
 
 public class ExampleScene extends Scene {
-
-	private final TickManager tickManager = new TickManager(20F);
 
 	@Override
 	public void init() {
@@ -32,7 +27,7 @@ public class ExampleScene extends Scene {
 		trexModel.addAnimation("roar", ANIMATION, new Identifier(GameClient.ID, "roar.dca")).setLoopStartTime(25F);
 		trexModel.setMaterial(Material.builder().texture(new Texture(TEXTURE, new Identifier(GameClient.ID, "trex.png"))).build());
 		//Create a game object from the model loaded and add the game object to the list of active objects
-		objectHandler.add("trex", ModeledGameObject.builder().setModel(trexModel).build());
+		objectHandler.add("trex", new ModeledGameObject(trexModel));
 		objectHandler.getObject("trex").move(-50F, 0F, -30F);
 		trexModel.startAnimation("roar", true);
 
@@ -41,7 +36,7 @@ public class ExampleScene extends Scene {
 		v7test.addAnimation("bump", ANIMATION, new Identifier(GameClient.ID, "v7test.dca"));
 		v7test.setMaterial(Material.builder().texture(new Texture(TEXTURE, new Identifier(GameClient.ID, "v7test.png"))).build());
 		//Create a game object from the model loaded and add the game object to the list of active objects
-		objectHandler.add("v7test", ModeledGameObject.builder().setModel(v7test).build());
+		objectHandler.add("v7test", new ModeledGameObject(v7test));
 		objectHandler.getObject("v7test").move(30F, 0, -20F);
 		v7test.startAnimation("bump", true);
 
@@ -50,19 +45,20 @@ public class ExampleScene extends Scene {
 		robotModel.addAnimation("wave", ANIMATION, new Identifier(GameClient.ID, "wave.dca"));
 		robotModel.setMaterial(Material.builder().texture(new Texture(TEXTURE, new Identifier(GameClient.ID, "gerald_base.png"))).build());
 		//Create a game object from the model loaded and add the game object to the list of active objects
-		ModeledGameObject robot = objectHandler.add("robot", ModeledGameObject.builder().setModel(robotModel).build());
+		ModeledGameObject robot = objectHandler.add("robot", new ModeledGameObject(robotModel));
 		objectHandler.getObject("robot").move(0F, 0F, -30F);
 		robotModel.startAnimation("wave", true);
-
+		//Add animation event listener here
 		robotModel.handler.setSrc(robot);
-		AnimationEventRegister.registerEvent("foo", (data, src) -> System.out.println(data + ", " + src));
+		//disable this for now because it's annoying me in console
+		//AnimationEventRegister.registerEvent("foo", (data, src) -> Log.info(data + ", " + src));
 
 		//Do it again so we have two objects with different models and different textures
 		AnimatedModel wormModel = AnimatedModelLoader.load(MODEL, new Identifier(GameClient.ID, "Worm.dcm"));
 		wormModel.setMaterial(Material.builder()
 				.texture(new Texture(TEXTURE, new Identifier(GameClient.ID, "worm.png")))
 				.build());
-		objectHandler.add("worm", ModeledGameObject.builder().setModel(wormModel).build());
+		objectHandler.add("worm", new ModeledGameObject(wormModel));
 		objectHandler.getObject("worm").move(0, 0, 10);
 
 		//bind all Game Objects
@@ -82,12 +78,6 @@ public class ExampleScene extends Scene {
 
 	@Override
 	public void update(float deltaTime) {
-
-		//Tell the tick manager the frame time change
-		tickManager.apply(deltaTime);
-
-		//Wait for an update tick
-		while (tickManager.hasTick()) { }
 
 		//Move around the point lights
 		objectHandler.getObject("blueLight").move(0, (float)Math.sin(glfwGetTime())/10, 0);

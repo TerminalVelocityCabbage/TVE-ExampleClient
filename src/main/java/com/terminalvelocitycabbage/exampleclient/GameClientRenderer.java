@@ -5,13 +5,11 @@ import com.terminalvelocitycabbage.engine.client.renderer.components.Camera;
 import com.terminalvelocitycabbage.engine.client.renderer.gameobjects.entity.ModeledGameObject;
 import com.terminalvelocitycabbage.engine.client.renderer.gameobjects.lights.PointLight;
 import com.terminalvelocitycabbage.engine.client.renderer.gameobjects.lights.SpotLight;
-import com.terminalvelocitycabbage.engine.client.renderer.scenes.SceneHandler;
 import com.terminalvelocitycabbage.engine.client.renderer.shader.ShaderHandler;
 import com.terminalvelocitycabbage.engine.client.renderer.shader.ShaderProgram;
 import com.terminalvelocitycabbage.engine.client.renderer.shapes.Rectangle;
-import com.terminalvelocitycabbage.engine.client.renderer.ui.*;
+import com.terminalvelocitycabbage.engine.client.renderer.ui.UIRenderable;
 import com.terminalvelocitycabbage.engine.client.resources.Identifier;
-import com.terminalvelocitycabbage.engine.client.state.State;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
@@ -21,20 +19,16 @@ import java.util.List;
 
 import static com.terminalvelocitycabbage.engine.client.renderer.shader.Shader.Type.FRAGMENT;
 import static com.terminalvelocitycabbage.engine.client.renderer.shader.Shader.Type.VERTEX;
-import static com.terminalvelocitycabbage.engine.client.renderer.ui.UIDimension.Unit.PERCENT;
-import static com.terminalvelocitycabbage.engine.client.renderer.ui.UIDimension.Unit.PIXELS;
 import static com.terminalvelocitycabbage.exampleclient.GameResourceHandler.SHADER;
 import static org.lwjgl.opengl.GL20.*;
 
 public class GameClientRenderer extends Renderer {
 
 	private final ShaderHandler shaderHandler = new ShaderHandler();
-	private GameInputHandler inputHandler = new GameInputHandler();
-	private SceneHandler sceneHandler = new SceneHandler();
-	private CanvasHandler canvasHandler = new CanvasHandler();
+	private GameInputHandler inputHandler;
 
-	public GameClientRenderer(int width, int height, String title) {
-		super(width, height, title, new GameInputHandler());
+	public GameClientRenderer(int width, int height, String title, float tickRate) {
+		super(width, height, title, new GameInputHandler(), tickRate);
 		getWindow().setvSync(true);
 	}
 
@@ -42,29 +36,11 @@ public class GameClientRenderer extends Renderer {
 	public void init() {
 		super.init();
 
-		//Add state for when test menu shall be shown
-		GameClient.getInstance().stateHandler.addState(new State("example"));
-
 		//Create the controllable camera
 		camera = new Camera(60, 0.01f, 1000.0f);
 
-		//Configure the canvas
-		Canvas testCanvas = new Canvas(getWindow());
-		testCanvas.bind();
-		testCanvas.style
-				.marginLeft(100, PIXELS)
-				.marginRight(40, PERCENT)
-				.marginTop(10, PIXELS)
-				.marginBottom(10, PIXELS)
-				.setColor(0.3f, 0.4f, 1 ,0.25f)
-				.setBorderRadius(15)
-				.setBorderColor(1, 1, 1, 1)
-				.setBorderThickness(4);
-		testCanvas.addContainer(new Container(new UIDimension(100, PIXELS), new UIDimension(100, PIXELS), new Anchor(AnchorPoint.TOP_MIDDLE, AnchorDirection.RIGHT_DOWN), new Style().setColor(1, 1, 0, 1)));
-		testCanvas.addContainer(new Container(new UIDimension(400, PIXELS), new UIDimension(50, PIXELS), new Anchor(AnchorPoint.TOP_MIDDLE, AnchorDirection.LEFT_DOWN), new Style().setColor(1, 0, 0, 1).marginRight(10, PERCENT)));
-		testCanvas.addContainer(new Container(new UIDimension(400, PIXELS), new UIDimension(40, PERCENT), new Anchor(AnchorPoint.BOTTOM_MIDDLE, AnchorDirection.UP), new Style().setColor(1, 0, 1, 1).marginBottom(10, PIXELS)));
-		testCanvas.queueUpdate();
-		canvasHandler.addCanvas("example", testCanvas);
+		//Create a ui screen ExampleCanvas
+		canvasHandler.addCanvas("example", new ExampleCanvas(getWindow()));
 
 		//Create Shaders
 		//Create default shader that is used for textured elements
@@ -121,7 +97,10 @@ public class GameClientRenderer extends Renderer {
 		//renderNormalsDebug(camera, viewMatrix, shaderHandler.get("normals"));
 		renderDefault(camera, viewMatrix, shaderHandler.get("default"));
 		if (GameClient.getInstance().stateHandler.isActive("example")) {
+			getWindow().showCursor();
 			renderHud(shaderHandler.get("hud"));
+		} else {
+			getWindow().hideCursor();
 		}
 
 		//Since the text rendering is so awful I'm just going to use the window title for now
@@ -195,7 +174,9 @@ public class GameClientRenderer extends Renderer {
 			//Lighting
 			shaderProgram.setUniform("ambientLight", new Vector3f(0.3f, 0.3f, 0.3f));
 			shaderProgram.setUniform("specularPower", 10.0f); //Reflected light intensity
+			shaderProgram.setUniform("pointLightsNum", pointLights.size());
 			pointLights.forEach(light -> shaderProgram.setUniform("pointLights", light, pointLights.indexOf(light)));
+			shaderProgram.setUniform("spotLightsNum", spotLights.size());
 			spotLights.forEach(light -> shaderProgram.setUniform("spotLights", light, spotLights.indexOf(light)));
 			shaderProgram.setUniform("directionalLight", sceneHandler.getActiveScene().objectHandler.getObject("sun"));
 			//Material stuff
@@ -215,12 +196,11 @@ public class GameClientRenderer extends Renderer {
 		shaderProgram.createUniform("borderColor");
 		shaderProgram.createUniform("borderThickness");
 
-		renderHudElement(canvasHandler.getCanvas("example"), shaderProgram);
-		canvasHandler.getCanvas("example").getContainers().forEach(container -> renderHudElement(container, shaderProgram));
-
+		canvasHandler.getCanvases().forEach(canvas -> renderHudElement(canvas, shaderProgram));
+		canvasHandler.getCanvases().forEach(canvas -> canvas.getAllChildren().forEach(element -> renderHudElement(element, shaderProgram)));
 	}
 
-	public void renderHudElement(UIRenderableElement element, ShaderProgram shaderProgram) {
+	public void renderHudElement(UIRenderable element, ShaderProgram shaderProgram) {
 
 		element.update();
 

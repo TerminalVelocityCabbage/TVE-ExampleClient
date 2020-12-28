@@ -1,6 +1,7 @@
 package com.terminalvelocitycabbage.exampleclient;
 
 import com.terminalvelocitycabbage.engine.client.ClientBase;
+import com.terminalvelocitycabbage.engine.client.state.State;
 import com.terminalvelocitycabbage.engine.client.state.StateHandler;
 
 public class GameClient extends ClientBase {
@@ -15,7 +16,7 @@ public class GameClient extends ClientBase {
 
 	public GameClient() {
 		instance = this;
-		clientRenderer = new GameClientRenderer(1900, 1000, "TerminalVelocityEngine Test Game!");
+		clientRenderer = new GameClientRenderer(1900, 1000, "TerminalVelocityEngine Test Game!", 20f);
 		this.stateHandler = new StateHandler();
 		addEventHandler(new GameEventHandler());
 		init();
@@ -37,6 +38,9 @@ public class GameClient extends ClientBase {
 	@Override
 	public void init() {
 		//super.init();
+
+		//Add an example state, we will use this to determine in the renderer whether the ExampleCanvas should be shown
+		stateHandler.addState(new State("example"));
 		clientRenderer.init();
 	}
 

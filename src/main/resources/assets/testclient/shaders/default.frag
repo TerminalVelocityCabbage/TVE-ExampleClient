@@ -15,7 +15,9 @@ out vec4 fragColor;
 const int MAX_POINT_LIGHTS = 256;
 const int MAX_SPOT_LIGHTS = 256;
 
+uniform int pointLightsNum;
 uniform PointLight pointLights[MAX_POINT_LIGHTS];
+uniform int spotLightsNum;
 uniform SpotLight spotLights[MAX_SPOT_LIGHTS];
 uniform DirectionalLight directionalLight;
 
@@ -25,12 +27,12 @@ void main() {
    //the color of the fragment multiplied by the ambient light
    vec4 color = materialAmbientColor * vec4(ambientLight, 1);
    color += calcDirectionalLight(directionalLight, vertVertexPosition, vertVertexNormal);
-   for (int i = 0; i < MAX_POINT_LIGHTS; i++) {
+   for (int i = 0; i < pointLightsNum; i++) {
       if (pointLights[i].intensity > 0) {
          color += calcPointLight(pointLights[i], vertVertexPosition, vertVertexNormal);
       }
    }
-   for (int i = 0; i < MAX_SPOT_LIGHTS; i++) {
+   for (int i = 0; i < spotLightsNum; i++) {
       if (spotLights[i].intensity > 0) {
          color += calcSpotLight(spotLights[i], vertVertexPosition, vertVertexNormal);
       }
