@@ -11,8 +11,6 @@ import com.terminalvelocitycabbage.engine.client.renderer.model.Texture;
 import com.terminalvelocitycabbage.engine.client.renderer.model.loader.AnimatedModelLoader;
 import com.terminalvelocitycabbage.engine.client.renderer.scenes.Scene;
 import com.terminalvelocitycabbage.engine.client.resources.Identifier;
-import com.terminalvelocitycabbage.engine.debug.Log;
-import net.dumbcode.studio.animation.events.AnimationEventRegister;
 import net.dumbcode.studio.animation.instance.ModelAnimationHandler;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
@@ -50,9 +48,10 @@ public class ExampleScene extends Scene {
 		ModeledGameObject robot = objectHandler.add("robot", new ModeledGameObject(robotModel));
 		objectHandler.getObject("robot").move(0F, 0F, -30F);
 		robotModel.startAnimation("wave", true);
-
+		//Add animation event listener here
 		robotModel.handler.setSrc(robot);
-		AnimationEventRegister.registerEvent("foo", (data, src) -> Log.info(data + ", " + src));
+		//disable this for now because it's annoying me in console
+		//AnimationEventRegister.registerEvent("foo", (data, src) -> Log.info(data + ", " + src));
 
 		//Do it again so we have two objects with different models and different textures
 		AnimatedModel wormModel = AnimatedModelLoader.load(MODEL, new Identifier(GameClient.ID, "Worm.dcm"));

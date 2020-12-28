@@ -44,8 +44,8 @@ public class ExampleCanvas extends Canvas {
 						.setBorderColor(1, 0, 0, 1))
 				.onHover(uiRenderable -> uiRenderable.style.setBorderColor(0, 1, 1, 1))
 				.onUnHover(uiRenderable -> uiRenderable.style.setBorderColor(1, 0, 0, 1))
-				.horizontalAlignment(Alignment.Horizontal.LEFT)
-				.verticalAlignment(Alignment.Vertical.TOP)
+				.horizontalAlignment(Alignment.Horizontal.CENTER)
+				.verticalAlignment(Alignment.Vertical.CENTER)
 				.alignmentDirection(Alignment.Direction.HORIZONTAL)
 				.overflow(Overflow.HIDDEN)
 				.addElement(new Element("Some element Text",
@@ -61,13 +61,13 @@ public class ExampleCanvas extends Canvas {
 						new Style()
 								.setColor(1, 0, 0.5f, 1)))
 				.addElement(new Element("Some element Text also3",
-								new UIDimension(120, PIXELS), new UIDimension(60, PIXELS),
-								new Style()
-										.setColor(0, 1, 0, 1)))
+						new UIDimension(120, PIXELS), new UIDimension(60, PIXELS),
+						new Style()
+								.setColor(0, 1, 0, 1)))
 				.addElement(new Element("Some element Text also4",
-								new UIDimension(120, PIXELS), new UIDimension(60, PIXELS),
-								new Style()
-										.setColor(1, 1, 0, 1))));
+						new UIDimension(120, PIXELS), new UIDimension(60, PIXELS),
+						new Style()
+								.setColor(1, 1, 0, 1))));
 
 	}
 }
