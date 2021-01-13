@@ -1,16 +1,22 @@
 package com.terminalvelocitycabbage.exampleclient;
 
 import com.terminalvelocitycabbage.engine.client.renderer.components.Window;
+import com.terminalvelocitycabbage.engine.client.renderer.model.text.font.FontMeshPartStorage;
+import com.terminalvelocitycabbage.engine.client.renderer.model.text.font.FontTexture;
 import com.terminalvelocitycabbage.engine.client.renderer.ui.Canvas;
 import com.terminalvelocitycabbage.engine.client.renderer.ui.Container;
 import com.terminalvelocitycabbage.engine.client.renderer.ui.Element;
+import com.terminalvelocitycabbage.engine.client.renderer.ui.Text;
 import com.terminalvelocitycabbage.engine.client.renderer.ui.components.*;
+import com.terminalvelocitycabbage.engine.client.resources.Identifier;
 import com.terminalvelocitycabbage.engine.debug.Log;
 
 import static com.terminalvelocitycabbage.engine.client.renderer.ui.components.UIDimension.Unit.PERCENT;
 import static com.terminalvelocitycabbage.engine.client.renderer.ui.components.UIDimension.Unit.PIXELS;
 
 public class ExampleCanvas extends Canvas {
+
+	private static final FontMeshPartStorage DEFAULT_FONT = new FontMeshPartStorage(new FontTexture(GameResourceHandler.FONT, new Identifier(GameClient.ID, "SourceSansPro-Regular.ttf")));
 
 	public ExampleCanvas(Window window) {
 		super(window);
@@ -48,24 +54,20 @@ public class ExampleCanvas extends Canvas {
 				.verticalAlignment(Alignment.Vertical.CENTER)
 				.alignmentDirection(Alignment.Direction.HORIZONTAL)
 				.overflow(Overflow.HIDDEN)
-				.addElement(new Element("Some element Text",
-						new UIDimension(120, PIXELS), new UIDimension(60, PIXELS),
+				.addElement(new Element(new UIDimension(120, PIXELS), new UIDimension(60, PIXELS),
 						new Style()
-								.setColor(0, 0, 1, 1)))
-				.addElement(new Element("Some element Text also",
-						new UIDimension(120, PIXELS), new UIDimension(60, PIXELS),
+								.setColor(0, 0, 1, 1))
+						.setInnerText(new Text("Some text", DEFAULT_FONT)))
+				.addElement(new Element(new UIDimension(120, PIXELS), new UIDimension(60, PIXELS),
 						new Style()
 								.setColor(0, 1, 1, 1)))
-				.addElement(new Element("Some element Text also2",
-						new UIDimension(120, PIXELS), new UIDimension(60, PIXELS),
+				.addElement(new Element(new UIDimension(120, PIXELS), new UIDimension(60, PIXELS),
 						new Style()
 								.setColor(1, 0, 0.5f, 1)))
-				.addElement(new Element("Some element Text also3",
-						new UIDimension(120, PIXELS), new UIDimension(60, PIXELS),
+				.addElement(new Element(new UIDimension(120, PIXELS), new UIDimension(60, PIXELS),
 						new Style()
 								.setColor(0, 1, 0, 1)))
-				.addElement(new Element("Some element Text also4",
-						new UIDimension(120, PIXELS), new UIDimension(60, PIXELS),
+				.addElement(new Element(new UIDimension(120, PIXELS), new UIDimension(60, PIXELS),
 						new Style()
 								.setColor(1, 1, 0, 1))));
 
