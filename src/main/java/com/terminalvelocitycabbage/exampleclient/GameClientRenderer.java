@@ -105,8 +105,10 @@ public class GameClientRenderer extends Renderer {
 		renderDefault(camera, viewMatrix, shaderHandler.get("default"));
 		if (GameClient.getInstance().stateHandler.isActive("example")) {
 			getWindow().showCursor();
+			glDisable(GL_DEPTH_TEST);
 			renderHud(shaderHandler.get("hud"));
 			renderText(shaderHandler.get("text"));
+			glEnable(GL_DEPTH_TEST);
 		} else {
 			getWindow().hideCursor();
 		}
