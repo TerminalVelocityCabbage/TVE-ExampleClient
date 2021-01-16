@@ -104,6 +104,7 @@ public class GameClientRenderer extends Renderer {
 		//renderNormalsDebug(camera, viewMatrix, shaderHandler.get("normals"));
 		renderDefault(camera, viewMatrix, shaderHandler.get("default"));
 		if (GameClient.getInstance().stateHandler.isActive("example")) {
+			canvasHandler.showCanvas("example");
 			getWindow().showCursor();
 			glDisable(GL_DEPTH_TEST);
 			renderHud(shaderHandler.get("hud"));
@@ -111,6 +112,7 @@ public class GameClientRenderer extends Renderer {
 			glEnable(GL_DEPTH_TEST);
 		} else {
 			getWindow().hideCursor();
+			canvasHandler.hideCanvas("example");
 		}
 
 		//Since the text rendering is so awful I'm just going to use the window title for now
@@ -217,8 +219,8 @@ public class GameClientRenderer extends Renderer {
 		shaderProgram.createUniform("borderColor");
 		shaderProgram.createUniform("borderThickness");
 
-		canvasHandler.getCanvases().forEach(canvas -> renderHudElement(canvas, shaderProgram));
-		canvasHandler.getCanvases().forEach(canvas -> canvas.getAllChildren().forEach(element -> renderHudElement(element, shaderProgram)));
+		canvasHandler.getActiveCanvases().forEach(canvas -> renderHudElement(canvas, shaderProgram));
+		canvasHandler.getActiveCanvases().forEach(canvas -> canvas.getAllChildren().forEach(element -> renderHudElement(element, shaderProgram)));
 	}
 
 	public void renderHudElement(UIRenderable element, ShaderProgram shaderProgram) {

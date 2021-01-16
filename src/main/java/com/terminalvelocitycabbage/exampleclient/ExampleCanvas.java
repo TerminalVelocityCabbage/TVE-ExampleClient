@@ -58,7 +58,7 @@ public class ExampleCanvas extends Canvas {
 						new Style()
 								.setColor(0, 0, 1, 1))
 						.setInnerText(new Text("Some Text", DEFAULT_FONT))
-				)
+						.onClick(uiRenderable -> ((Element)uiRenderable).updateTextString("Changed Text Test")))
 				.addElement(new Element(new UIDimension(120, PIXELS), new UIDimension(60, PIXELS),
 						new Style()
 								.setColor(0, 1, 1, 1)))
