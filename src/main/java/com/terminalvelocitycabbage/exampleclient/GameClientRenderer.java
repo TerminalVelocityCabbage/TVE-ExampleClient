@@ -8,6 +8,7 @@ import com.terminalvelocitycabbage.engine.client.renderer.gameobjects.lights.Spo
 import com.terminalvelocitycabbage.engine.client.renderer.shader.ShaderHandler;
 import com.terminalvelocitycabbage.engine.client.renderer.shader.ShaderProgram;
 import com.terminalvelocitycabbage.engine.client.renderer.shapes.Rectangle;
+import com.terminalvelocitycabbage.engine.client.renderer.ui.Canvas;
 import com.terminalvelocitycabbage.engine.client.renderer.ui.UIRenderable;
 import com.terminalvelocitycabbage.engine.client.resources.Identifier;
 import org.joml.Matrix3f;
@@ -61,6 +62,12 @@ public class GameClientRenderer extends Renderer {
 		shaderHandler.queueShader("hud", FRAGMENT, SHADER, new Identifier(GameClient.ID, "hud.frag"));
 		shaderHandler.build("hud");
 
+		//Create shader program for text
+		shaderHandler.newProgram("text");
+		shaderHandler.queueShader("text", VERTEX, SHADER, new Identifier(GameClient.ID, "text.vert"));
+		shaderHandler.queueShader("text", FRAGMENT, SHADER, new Identifier(GameClient.ID, "text.frag"));
+		shaderHandler.build("text");
+
 		//Store InputHandler
 		inputHandler = (GameInputHandler) getWindow().getInputHandler();
 
@@ -97,10 +104,15 @@ public class GameClientRenderer extends Renderer {
 		//renderNormalsDebug(camera, viewMatrix, shaderHandler.get("normals"));
 		renderDefault(camera, viewMatrix, shaderHandler.get("default"));
 		if (GameClient.getInstance().stateHandler.isActive("example")) {
+			canvasHandler.showCanvas("example");
 			getWindow().showCursor();
+			glDisable(GL_DEPTH_TEST);
 			renderHud(shaderHandler.get("hud"));
+			renderText(shaderHandler.get("text"));
+			glEnable(GL_DEPTH_TEST);
 		} else {
 			getWindow().hideCursor();
+			canvasHandler.hideCanvas("example");
 		}
 
 		//Since the text rendering is so awful I'm just going to use the window title for now
@@ -186,6 +198,17 @@ public class GameClientRenderer extends Renderer {
 		}
 	}
 
+	private void renderText(ShaderProgram shaderProgram) {
+		shaderProgram.enable();
+
+		for (Canvas canvas : canvasHandler.getCanvases()) {
+			canvas.renderText();
+			for (UIRenderable child : canvas.getAllChildren()) {
+				child.renderText();
+			}
+		}
+	}
+
 	private void renderHud(ShaderProgram shaderProgram) {
 
 		shaderProgram.enable();
@@ -196,21 +219,20 @@ public class GameClientRenderer extends Renderer {
 		shaderProgram.createUniform("borderColor");
 		shaderProgram.createUniform("borderThickness");
 
-		canvasHandler.getCanvases().forEach(canvas -> renderHudElement(canvas, shaderProgram));
-		canvasHandler.getCanvases().forEach(canvas -> canvas.getAllChildren().forEach(element -> renderHudElement(element, shaderProgram)));
+		canvasHandler.getActiveCanvases().forEach(canvas -> renderHudElement(canvas, shaderProgram));
+		canvasHandler.getActiveCanvases().forEach(canvas -> canvas.getAllChildren().forEach(element -> renderHudElement(element, shaderProgram)));
 	}
 
 	public void renderHudElement(UIRenderable element, ShaderProgram shaderProgram) {
-
 		element.update();
 
 		shaderProgram.setUniform("color", element.style.getColor());
 		shaderProgram.setUniform("screenRes", new Vector2f(getWindow().width(), getWindow().height()));
 		Rectangle rectangle = element.getRectangle();
 		shaderProgram.setUniform("cornerStuff", new Matrix3f(
-				rectangle.vertices[0].getX(), rectangle.vertices[0].getY(), rectangle.vertices[1].getX(),
-				rectangle.vertices[1].getY(), rectangle.vertices[2].getX(), rectangle.vertices[2].getY(),
-				rectangle.vertices[3].getX(), rectangle.vertices[3].getY(), element.style.getBorderRadius()
+			rectangle.vertices[0].getX(), rectangle.vertices[0].getY(), rectangle.vertices[1].getX(),
+			rectangle.vertices[1].getY(), rectangle.vertices[2].getX(), rectangle.vertices[2].getY(),
+			rectangle.vertices[3].getX(), rectangle.vertices[3].getY(), element.style.getBorderRadius()
 		));
 		shaderProgram.setUniform("borderColor", element.style.getBorderColor());
 		shaderProgram.setUniform("borderThickness", element.style.getBorderThickness());
