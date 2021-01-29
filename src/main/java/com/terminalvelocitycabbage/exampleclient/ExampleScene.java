@@ -27,6 +27,14 @@ public class ExampleScene extends Scene {
 		trexModel.addAnimation("roar", ANIMATION, new Identifier(GameClient.ID, "roar.dca")).setLoopStartTime(25F);
 		trexModel.setMaterial(Material.builder().texture(new Texture(TEXTURE, new Identifier(GameClient.ID, "trex.png"))).build());
 		//Create a game object from the model loaded and add the game object to the list of active objects
+		/* T-rex stress test code
+		for (int x = 0; x < 100; x++) {
+			for (int y = 0; y < 100; y++) {
+				objectHandler.add("trexx"+x+"y"+y, new ModeledGameObject(trexModel));
+				objectHandler.getObject("trexx"+x+"y"+y).move(x * 20, y * 20, 0);
+			}
+		}
+		 */
 		objectHandler.add("trex", new ModeledGameObject(trexModel));
 		objectHandler.getObject("trex").move(-50F, 0F, -30F);
 		trexModel.startAnimation("roar", true);
