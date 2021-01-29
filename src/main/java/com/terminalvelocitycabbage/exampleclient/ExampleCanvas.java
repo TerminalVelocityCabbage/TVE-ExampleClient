@@ -71,6 +71,5 @@ public class ExampleCanvas extends Canvas {
 				.addElement(new Element(new UIDimension(120, PIXELS), new UIDimension(60, PIXELS),
 						new Style()
 								.setColor(1, 1, 0, 1))));
-
 	}
 }
