@@ -98,12 +98,8 @@ public class GameClientRenderer extends Renderer {
 			camera.rotate(inputHandler.getDeltaMouseVector(0.01f));
 		}
 
-		//Update the view Matrix with the current camera position
-		//This has to happen before game items are updated
-		viewMatrix.identity().set(camera.getViewMatrix());
-
 		//renderNormalsDebug(camera, viewMatrix, shaderHandler.get("normals"));
-		renderDefault(camera, viewMatrix, shaderHandler.get("default"));
+		renderDefault(camera, camera.getViewMatrix(), shaderHandler.get("default"));
 		if (GameClient.getInstance().stateHandler.isActive("example")) {
 			canvasHandler.showCanvas("example");
 			getWindow().showCursor();
