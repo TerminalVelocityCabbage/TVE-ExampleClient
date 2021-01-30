@@ -93,9 +93,10 @@ public class GameClientRenderer extends Renderer {
 		//Update the camera position
 		camera.move(inputHandler.getCameraPositionMoveVector(), 1f * (getDeltaTime() / 16));
 		//Only allow looking around when right click is held
-		if (!inputHandler.isRightButtonPressed()) inputHandler.resetDisplayVector();
-		//Update camera rotation
-		camera.rotate(inputHandler.getDisplayVector().mul(0.4f * (getDeltaTime() / 16)), inputHandler.getCameraRollVector() * (0.05f * (getDeltaTime() / 16)));
+		if (!inputHandler.isRightButtonPressed()) {
+			//Update camera rotation
+			camera.rotate(inputHandler.getDeltaMouseVector(0.01f));
+		}
 
 		//Update the view Matrix with the current camera position
 		//This has to happen before game items are updated
