@@ -2,6 +2,7 @@ package com.terminalvelocitycabbage.exampleclient;
 
 import com.terminalvelocitycabbage.engine.client.renderer.Renderer;
 import com.terminalvelocitycabbage.engine.client.renderer.components.Camera;
+import com.terminalvelocitycabbage.engine.client.renderer.components.FirstPersonCamera;
 import com.terminalvelocitycabbage.engine.client.renderer.gameobjects.entity.ModeledGameObject;
 import com.terminalvelocitycabbage.engine.client.renderer.gameobjects.lights.PointLight;
 import com.terminalvelocitycabbage.engine.client.renderer.gameobjects.lights.SpotLight;
@@ -69,7 +70,7 @@ public class GameClientRenderer extends Renderer {
 		inputHandler = (GameInputHandler) getWindow().getInputHandler();
 
 		//Create Scenes
-		sceneHandler.addScene("example", new ExampleScene(new Camera(60, 0.01f, 1000.0f)));
+		sceneHandler.addScene("example", new ExampleScene(new FirstPersonCamera(60, 0.01f, 1000.0f)));
 
 		//Init the scene
 		sceneHandler.loadScene("example");
@@ -88,11 +89,11 @@ public class GameClientRenderer extends Renderer {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		//Update the camera position
-		sceneHandler.getActiveScene().getCamera().move(inputHandler.getCameraPositionMoveVector(), 1f); //1f * (getDeltaTime() / 16
+		((FirstPersonCamera)sceneHandler.getActiveScene().getCamera()).move(inputHandler.getCameraPositionMoveVector(), 1f); //1f * (getDeltaTime() / 16
 		//Only allow looking around when right click is held
 		if (inputHandler.isRightButtonPressed()) {
 			//Update camera rotation
-			sceneHandler.getActiveScene().getCamera().rotate(inputHandler.getDeltaMouseVector(0.01f));
+			((FirstPersonCamera)sceneHandler.getActiveScene().getCamera()).rotate(inputHandler.getDeltaMouseVector(0.01f));
 		}
 
 		//renderNormalsDebug(camera, viewMatrix, shaderHandler.get("normals"));
