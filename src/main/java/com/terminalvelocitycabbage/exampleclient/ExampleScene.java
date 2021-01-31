@@ -1,5 +1,6 @@
 package com.terminalvelocitycabbage.exampleclient;
 
+import com.terminalvelocitycabbage.engine.client.renderer.components.Camera;
 import com.terminalvelocitycabbage.engine.client.renderer.gameobjects.entity.ModeledGameObject;
 import com.terminalvelocitycabbage.engine.client.renderer.gameobjects.lights.DirectionalLight;
 import com.terminalvelocitycabbage.engine.client.renderer.gameobjects.lights.PointLight;
@@ -19,6 +20,10 @@ import static com.terminalvelocitycabbage.exampleclient.GameResourceHandler.*;
 import static org.lwjgl.glfw.GLFW.glfwGetTime;
 
 public class ExampleScene extends Scene {
+
+	public ExampleScene(Camera camera) {
+		super(camera);
+	}
 
 	@Override
 	public void init() {
