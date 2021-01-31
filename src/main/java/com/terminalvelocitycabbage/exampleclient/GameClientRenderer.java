@@ -2,7 +2,7 @@ package com.terminalvelocitycabbage.exampleclient;
 
 import com.terminalvelocitycabbage.engine.client.renderer.Renderer;
 import com.terminalvelocitycabbage.engine.client.renderer.components.Camera;
-import com.terminalvelocitycabbage.engine.client.renderer.components.FirstPersonCamera;
+import com.terminalvelocitycabbage.engine.client.renderer.components.FreeCamera;
 import com.terminalvelocitycabbage.engine.client.renderer.gameobjects.entity.ModeledGameObject;
 import com.terminalvelocitycabbage.engine.client.renderer.gameobjects.lights.PointLight;
 import com.terminalvelocitycabbage.engine.client.renderer.gameobjects.lights.SpotLight;
@@ -70,7 +70,7 @@ public class GameClientRenderer extends Renderer {
 		inputHandler = (GameInputHandler) getWindow().getInputHandler();
 
 		//Create Scenes
-		sceneHandler.addScene("example", new ExampleScene(new FirstPersonCamera(60, 0.01f, 1000.0f)));
+		sceneHandler.addScene("example", new ExampleScene(new FreeCamera(60, 0.01f, 1000.0f)));
 
 		//Init the scene
 		sceneHandler.loadScene("example");
@@ -89,12 +89,25 @@ public class GameClientRenderer extends Renderer {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		//Update the camera position
-		((FirstPersonCamera)sceneHandler.getActiveScene().getCamera()).move(inputHandler.getCameraPositionMoveVector(), 1f); //1f * (getDeltaTime() / 16
+		//((FirstPersonCamera)sceneHandler.getActiveScene().getCamera()).move(inputHandler.getCameraPositionMoveVector(), 1f); //1f * (getDeltaTime() / 16
+		var freeCam = (FreeCamera)sceneHandler.getActiveScene().getCamera();
+		freeCam.linearAcceleration.zero();
+		freeCam.angularAcceleration.zero();
+		if (inputHandler.moveForward()) freeCam.accelerateForward();
+		if (inputHandler.moveBackward()) freeCam.accelerateBackwards();
+		if (inputHandler.moveRight()) freeCam.accelerateRight();
+		if (inputHandler.moveLeft()) freeCam.accelerateLeft();
+		if (inputHandler.moveUp()) freeCam.accelerateUp();
+		if (inputHandler.moveDown()) freeCam.accelerateDown();
+		if (inputHandler.rotateRight()) freeCam.accelerateTwistRight();
+		if (inputHandler.rotateLeft()) freeCam.accelerateTwistLeft();
 		//Only allow looking around when right click is held
 		if (inputHandler.isRightButtonPressed()) {
 			//Update camera rotation
-			((FirstPersonCamera)sceneHandler.getActiveScene().getCamera()).rotate(inputHandler.getDeltaMouseVector(0.01f));
+			//((FirstPersonCamera)sceneHandler.getActiveScene().getCamera()).rotate(inputHandler.getDeltaMouseVector(0.01f));
+			freeCam.rotate(inputHandler.getMouseDeltaX(), inputHandler.getMouseDeltaY(), freeCam.rotateZ);
 		}
+		freeCam.update(getDeltaTimeInSeconds());
 
 		//renderNormalsDebug(camera, viewMatrix, shaderHandler.get("normals"));
 		renderDefault(sceneHandler.getActiveScene().getCamera(), shaderHandler.get("default"));

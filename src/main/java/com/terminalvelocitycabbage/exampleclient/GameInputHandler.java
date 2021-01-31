@@ -3,7 +3,6 @@ package com.terminalvelocitycabbage.exampleclient;
 import com.terminalvelocitycabbage.engine.client.input.InputHandler;
 import com.terminalvelocitycabbage.engine.client.input.KeyBind;
 import com.terminalvelocitycabbage.engine.client.renderer.components.Window;
-import org.joml.Vector3f;
 
 import static org.lwjgl.glfw.GLFW.*;
 
@@ -12,19 +11,24 @@ public class GameInputHandler extends InputHandler {
 	public static KeyBind CLOSE;
 
 	public static KeyBind FORWARD;
+	private boolean moveForward;
 	public static KeyBind BACKWARDS;
+	private boolean moveBackward;
 	public static KeyBind LEFT;
+	private boolean moveLeft;
 	public static KeyBind RIGHT;
+	private boolean moveRight;
 	public static KeyBind UP;
+	private boolean moveUp;
 	public static KeyBind DOWN;
+	private boolean moveDown;
 
 	public static KeyBind ROT_LEFT;
+	private boolean rotateRight;
 	public static KeyBind ROT_RIGHT;
+	private boolean rotateLeft;
 
 	public static KeyBind TOGGLE_MENU;
-
-	Vector3f cameraMoveVector = new Vector3f(0);
-	int cameraRollVector = 0;
 
 	@Override
 	public void init(Window window) {
@@ -52,33 +56,14 @@ public class GameInputHandler extends InputHandler {
 		}
 
 		//Process movement inputs
-		cameraMoveVector.set(0, 0, 0);
-		if (keyBind.isKeyPressed(FORWARD)) {
-			cameraMoveVector.z--;
-		}
-		if (keyBind.isKeyPressed(BACKWARDS)) {
-			cameraMoveVector.z++;
-		}
-		if (keyBind.isKeyPressed(LEFT)) {
-			cameraMoveVector.x--;
-		}
-		if (keyBind.isKeyPressed(RIGHT)) {
-			cameraMoveVector.x++;
-		}
-		if (keyBind.isKeyPressed(DOWN)) {
-			cameraMoveVector.y--;
-		}
-		if (keyBind.isKeyPressed(UP)) {
-			cameraMoveVector.y++;
-		}
-
-		cameraRollVector = 0;
-		if (keyBind.isKeyPressed(ROT_LEFT)) {
-			cameraRollVector--;
-		}
-		if (keyBind.isKeyPressed(ROT_RIGHT)) {
-			cameraRollVector++;
-		}
+		moveForward = keyBind.isKeyPressed(FORWARD);
+		moveBackward = keyBind.isKeyPressed(BACKWARDS);
+		moveLeft = keyBind.isKeyPressed(LEFT);
+		moveRight = keyBind.isKeyPressed(RIGHT);
+		moveDown = keyBind.isKeyPressed(DOWN);
+		moveUp = keyBind.isKeyPressed(UP);
+		rotateLeft = keyBind.isKeyPressed(ROT_LEFT);
+		rotateRight = keyBind.isKeyPressed(ROT_RIGHT);
 
 		if (keyBind.isKeyPressed(TOGGLE_MENU)) {
 			if (GameClient.getInstance().stateHandler.isActive("example")) {
@@ -89,11 +74,35 @@ public class GameInputHandler extends InputHandler {
 		}
 	}
 
-	public Vector3f getCameraPositionMoveVector() {
-		return cameraMoveVector;
+	public boolean moveForward() {
+		return moveForward;
 	}
 
-	public int getCameraRollVector() {
-		return cameraRollVector;
+	public boolean moveBackward() {
+		return moveBackward;
+	}
+
+	public boolean moveLeft() {
+		return moveLeft;
+	}
+
+	public boolean moveRight() {
+		return moveRight;
+	}
+
+	public boolean moveUp() {
+		return moveUp;
+	}
+
+	public boolean moveDown() {
+		return moveDown;
+	}
+
+	public boolean rotateRight() {
+		return rotateRight;
+	}
+
+	public boolean rotateLeft() {
+		return rotateLeft;
 	}
 }
