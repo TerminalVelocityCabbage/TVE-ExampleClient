@@ -37,9 +37,6 @@ public class GameClientRenderer extends Renderer {
 	public void init() {
 		super.init();
 
-		//Create the controllable camera
-		camera = new Camera(60, 0.01f, 1000.0f);
-
 		//Create a ui screen ExampleCanvas
 		canvasHandler.addCanvas("example", new ExampleCanvas(getWindow()));
 
@@ -72,7 +69,7 @@ public class GameClientRenderer extends Renderer {
 		inputHandler = (GameInputHandler) getWindow().getInputHandler();
 
 		//Create Scenes
-		sceneHandler.addScene("example", new ExampleScene());
+		sceneHandler.addScene("example", new ExampleScene(new Camera(60, 0.01f, 1000.0f)));
 
 		//Init the scene
 		sceneHandler.loadScene("example");
@@ -91,15 +88,15 @@ public class GameClientRenderer extends Renderer {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		//Update the camera position
-		camera.move(inputHandler.getCameraPositionMoveVector(), 1f); //1f * (getDeltaTime() / 16
+		sceneHandler.getActiveScene().getCamera().move(inputHandler.getCameraPositionMoveVector(), 1f); //1f * (getDeltaTime() / 16
 		//Only allow looking around when right click is held
 		if (inputHandler.isRightButtonPressed()) {
 			//Update camera rotation
-			camera.rotate(inputHandler.getDeltaMouseVector(0.01f));
+			sceneHandler.getActiveScene().getCamera().rotate(inputHandler.getDeltaMouseVector(0.01f));
 		}
 
 		//renderNormalsDebug(camera, viewMatrix, shaderHandler.get("normals"));
-		renderDefault(camera, camera.getViewMatrix(), shaderHandler.get("default"));
+		renderDefault(sceneHandler.getActiveScene().getCamera(), shaderHandler.get("default"));
 		if (GameClient.getInstance().stateHandler.isActive("example")) {
 			canvasHandler.showCanvas("example");
 			getWindow().showCursor();
@@ -116,7 +113,7 @@ public class GameClientRenderer extends Renderer {
 		getWindow().setTitle("FPS: " + String.valueOf(getFramerate()).split("\\.")[0] + " (" + getFrameTimeAverageMillis() + "ms)");
 
 		//Update the scene
-		sceneHandler.update(getDeltaTime());
+		sceneHandler.update(getDeltaTimeInMillis());
 
 		//Send the frame
 		push();
@@ -149,15 +146,15 @@ public class GameClientRenderer extends Renderer {
 		}
 	}
 
-	private void renderDefault(Camera camera, Matrix4f viewMatrix, ShaderProgram shaderProgram) {
+	private void renderDefault(Camera camera, ShaderProgram shaderProgram) {
 
 		shaderProgram.enable();
 
 		//Update positions of concerned lights in view space (point and spot lights)
 		List<PointLight> pointLights = sceneHandler.getActiveScene().getObjectsOfType(PointLight.class);
-		pointLights.forEach(light -> light.update(viewMatrix));
+		pointLights.forEach(light -> light.update(camera.getViewMatrix()));
 		List<SpotLight> spotLights = sceneHandler.getActiveScene().getObjectsOfType(SpotLight.class);
-		spotLights.forEach(light -> light.update(viewMatrix));
+		spotLights.forEach(light -> light.update(camera.getViewMatrix()));
 
 		//Render the current object
 		shaderProgram.createUniform("projectionMatrix");
@@ -178,7 +175,7 @@ public class GameClientRenderer extends Renderer {
 			gameObject.update();
 
 			shaderProgram.setUniform("projectionMatrix", camera.getProjectionMatrix());
-			shaderProgram.setUniform("modelViewMatrix", gameObject.getModelViewMatrix(viewMatrix));
+			shaderProgram.setUniform("modelViewMatrix", gameObject.getModelViewMatrix(camera.getViewMatrix()));
 			shaderProgram.setUniform("normalTransformationMatrix", gameObject.getTransformationMatrix());
 			//Lighting
 			shaderProgram.setUniform("ambientLight", new Vector3f(0.3f, 0.3f, 0.3f));
