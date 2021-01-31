@@ -3,6 +3,7 @@ package com.terminalvelocitycabbage.exampleclient;
 import com.terminalvelocitycabbage.engine.client.ClientBase;
 import com.terminalvelocitycabbage.engine.client.state.State;
 import com.terminalvelocitycabbage.engine.client.state.StateHandler;
+import com.terminalvelocitycabbage.engine.events.EventContext;
 
 public class GameClient extends ClientBase {
 
@@ -18,7 +19,7 @@ public class GameClient extends ClientBase {
 		instance = this;
 		clientRenderer = new GameClientRenderer(1900, 1000, "TerminalVelocityEngine Test Game!", 20f);
 		this.stateHandler = new StateHandler();
-		addEventHandler(new GameEventHandler());
+		addEventHandler(EventContext.CLIENT, new GameEventHandler());
 		init();
 		start();
 	}
