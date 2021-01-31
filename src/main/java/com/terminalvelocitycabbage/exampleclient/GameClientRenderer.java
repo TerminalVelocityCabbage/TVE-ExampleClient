@@ -123,6 +123,7 @@ public class GameClientRenderer extends Renderer {
 			}
 			firstPersonCamera.update(getDeltaTimeInSeconds());
 		}
+		inputHandler.resetDeltas();
 
 		//renderNormalsDebug(camera, viewMatrix, shaderHandler.get("normals"));
 		renderDefault(sceneHandler.getActiveScene().getCamera(), shaderHandler.get("default"));
