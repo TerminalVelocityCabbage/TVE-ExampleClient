@@ -40,7 +40,8 @@ public class GameClientRenderer extends Renderer {
 		super.init();
 
 		//Create a ui screen ExampleCanvas
-		canvasHandler.addCanvas("example", new ExampleCanvas(getWindow()));
+		//TODO re-add this
+		//canvasHandler.addCanvas("example", new ExampleCanvas(getWindow()));
 
 		//Create Shaders
 		//Create default shader that is used for textured elements
@@ -128,15 +129,17 @@ public class GameClientRenderer extends Renderer {
 		//renderNormalsDebug(camera, viewMatrix, shaderHandler.get("normals"));
 		renderDefault(sceneHandler.getActiveScene().getCamera(), shaderHandler.get("default"));
 		if (GameClient.getInstance().stateHandler.isActive("example")) {
-			canvasHandler.showCanvas("example");
-			getWindow().showCursor();
-			glDisable(GL_DEPTH_TEST);
-			renderHud(shaderHandler.get("hud"));
-			renderText(shaderHandler.get("text"));
-			glEnable(GL_DEPTH_TEST);
+			//TODO
+			//canvasHandler.showCanvas("example");
+			//getWindow().showCursor();
+			//glDisable(GL_DEPTH_TEST);
+			//renderHud(shaderHandler.get("hud"));
+			//renderText(shaderHandler.get("text"));
+			//glEnable(GL_DEPTH_TEST);
 		} else {
-			getWindow().hideCursor();
-			canvasHandler.hideCanvas("example");
+			//TODO
+			//getWindow().hideCursor();
+			//canvasHandler.hideCanvas("example");
 		}
 
 		//Since the text rendering is so awful I'm just going to use the window title for now
