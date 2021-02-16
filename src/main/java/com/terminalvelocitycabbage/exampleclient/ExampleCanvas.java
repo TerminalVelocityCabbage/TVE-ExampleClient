@@ -1,6 +1,7 @@
 package com.terminalvelocitycabbage.exampleclient;
 
 import com.terminalvelocitycabbage.engine.client.renderer.components.Window;
+import com.terminalvelocitycabbage.engine.client.renderer.model.text.font.FontInfo;
 import com.terminalvelocitycabbage.engine.client.renderer.model.text.font.FontMeshPartStorage;
 import com.terminalvelocitycabbage.engine.client.renderer.model.text.font.FontTexture;
 import com.terminalvelocitycabbage.engine.client.renderer.ui.Canvas;
@@ -16,7 +17,12 @@ import static com.terminalvelocitycabbage.engine.client.renderer.ui.components.U
 
 public class ExampleCanvas extends Canvas {
 
-	private static final FontMeshPartStorage DEFAULT_FONT = new FontMeshPartStorage(new FontTexture(GameResourceHandler.FONT, new Identifier(GameClient.ID, "SourceSansPro-Regular.ttf")));
+	private static final FontMeshPartStorage DEFAULT_FONT =
+			new FontMeshPartStorage(
+					new FontTexture(
+							FontInfo.read(
+									GameResourceHandler.FONT_INFO, new Identifier(GameClient.ID, "source_sans_pro_regular_32.tvfont")),
+									GameResourceHandler.FONT_TEXTURE, new Identifier(GameClient.ID, "source_sans_pro_regular_32.png")));
 
 	public ExampleCanvas(Window window) {
 		super(window);
