@@ -56,7 +56,7 @@ public class ExampleScene extends Scene {
 		//The animation loop test model
 		AnimatedModel loopTest = AnimatedModelLoader.load(MODEL, new Identifier(GameClient.ID, "looptest.dcm"));
 		loopTest.addAnimation("test", ANIMATION, new Identifier(GameClient.ID, "looptest.dca"));
-		loopTest.setMaterial(Material.builder().texture(new Texture(TEXTURE, new Identifier(GameClient.ID, "looptest.png"))).build());
+		loopTest.setMaterial(Material.builder().texture(new Texture(TEXTURE, new Identifier(GameClient.ID, "kyle.png"))).build());
 		//Create a game object from the model loaded and add the game object to the list of active objects
 		objectHandler.add("loopTest", new ModeledGameObject(loopTest));
 		objectHandler.getObject("loopTest").move(0, 0, -20F);
