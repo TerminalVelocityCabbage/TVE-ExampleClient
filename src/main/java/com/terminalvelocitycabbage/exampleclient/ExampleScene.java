@@ -12,6 +12,7 @@ import com.terminalvelocitycabbage.engine.client.renderer.model.Texture;
 import com.terminalvelocitycabbage.engine.client.renderer.model.loader.AnimatedModelLoader;
 import com.terminalvelocitycabbage.engine.client.renderer.scenes.Scene;
 import com.terminalvelocitycabbage.engine.client.resources.Identifier;
+import net.dumbcode.studio.animation.info.AnimationInfo;
 import net.dumbcode.studio.animation.instance.ModelAnimationHandler;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
@@ -29,7 +30,7 @@ public class ExampleScene extends Scene {
 	public void init() {
 		//Load trex model to a Model object from dcm file
 		AnimatedModel trexModel = AnimatedModelLoader.load(MODEL, new Identifier(GameClient.ID, "trex.dcm"));
-		trexModel.addAnimation("roar", ANIMATION, new Identifier(GameClient.ID, "roar.dca")).setLoopStartTime(25F);
+		trexModel.addAnimation("roar", ANIMATION, new Identifier(GameClient.ID, "roar.dca")).setLoopingStart(1.25F);
 		trexModel.setMaterial(Material.builder().texture(new Texture(TEXTURE, new Identifier(GameClient.ID, "trex.png"))).build());
 		//Create a game object from the model loaded and add the game object to the list of active objects
 		/* T-rex stress test code
@@ -42,7 +43,7 @@ public class ExampleScene extends Scene {
 		 */
 		objectHandler.add("trex", new ModeledGameObject(trexModel));
 		objectHandler.getObject("trex").move(-50F, 0F, -30F);
-		trexModel.startAnimation("roar", true);
+		trexModel.startAnimation("roar").loopForever();
 
 		//The animation v7 test model
 		AnimatedModel v7test = AnimatedModelLoader.load(MODEL, new Identifier(GameClient.ID, "v7test.dcm"));
@@ -51,7 +52,16 @@ public class ExampleScene extends Scene {
 		//Create a game object from the model loaded and add the game object to the list of active objects
 		objectHandler.add("v7test", new ModeledGameObject(v7test));
 		objectHandler.getObject("v7test").move(30F, 0, -20F);
-		v7test.startAnimation("bump", true);
+		v7test.startAnimation("bump").loopForever();
+
+		//The animation loop test model
+		AnimatedModel loopTest = AnimatedModelLoader.load(MODEL, new Identifier(GameClient.ID, "looptest.dcm"));
+		loopTest.addAnimation("test", ANIMATION, new Identifier(GameClient.ID, "looptest.dca"));
+		loopTest.setMaterial(Material.builder().texture(new Texture(TEXTURE, new Identifier(GameClient.ID, "looptest.png"))).build());
+		//Create a game object from the model loaded and add the game object to the list of active objects
+		objectHandler.add("loopTest", new ModeledGameObject(loopTest));
+		objectHandler.getObject("loopTest").move(0, 0, -20F);
+		loopTest.startAnimation("test").loopUntil(() -> GameInputHandler.FINISH_LOOPING.isKeyPressed());
 
 		//Load gerald model to a Model object from dcm file
 		AnimatedModel robotModel = AnimatedModelLoader.load(MODEL, new Identifier(GameClient.ID, "Gerald.dcm"));
@@ -60,7 +70,7 @@ public class ExampleScene extends Scene {
 		//Create a game object from the model loaded and add the game object to the list of active objects
 		ModeledGameObject robot = objectHandler.add("robot", new ModeledGameObject(robotModel));
 		objectHandler.getObject("robot").move(0F, 0F, -30F);
-		robotModel.startAnimation("wave", true);
+		robotModel.startAnimation("wave").loopForever();
 		//Add animation event listener here
 		robotModel.handler.setSrc(robot);
 		//disable this for now because it's annoying me in console
@@ -69,8 +79,8 @@ public class ExampleScene extends Scene {
 		//Do it again so we have two objects with different models and different textures
 		AnimatedModel wormModel = AnimatedModelLoader.load(MODEL, new Identifier(GameClient.ID, "Worm.dcm"));
 		wormModel.setMaterial(Material.builder()
-				.texture(new Texture(TEXTURE, new Identifier(GameClient.ID, "worm.png")))
-				.build());
+			.texture(new Texture(TEXTURE, new Identifier(GameClient.ID, "worm.png")))
+			.build());
 		objectHandler.add("worm", new ModeledGameObject(wormModel));
 		objectHandler.getObject("worm").move(0, 0, 10);
 
@@ -100,21 +110,29 @@ public class ExampleScene extends Scene {
 		ModeledGameObject trex = objectHandler.getObject("trex");
 		ModelAnimationHandler trexHandler = ((AnimatedModel) trex.getModel()).handler;
 		//TODO animation smoothness (don't hard code in 20)
-		trexHandler.animate(deltaTime / 50F);
+		trexHandler.animate(deltaTime / 1000F) ;
 		//Tell the engine that the game object needs to be re-rendered
 		trex.queueUpdate();
+
+		ModeledGameObject looptest = objectHandler.getObject("loopTest");
+		ModelAnimationHandler loopHandler = ((AnimatedModel) looptest.getModel()).handler;
+		//TODO animation smoothness (don't hard code in 20)
+//		loopHandler.animate(deltaTime / 1000F) ;
+
+		//Tell the engine that the game object needs to be re-rendered
+		looptest.queueUpdate();
 
 		ModeledGameObject robot = objectHandler.getObject("robot");
 		ModelAnimationHandler robotHandler = ((AnimatedModel) robot.getModel()).handler;
 		//TODO animation smoothness (don't hard code in 20)
-		robotHandler.animate(deltaTime / 50F);
+//		robotHandler.animate(deltaTime / 1000F);
 		//Tell the engine that the game object needs to be re-rendered
 		robot.queueUpdate();
 
 		ModeledGameObject v7Test = objectHandler.getObject("v7test");
 		ModelAnimationHandler v7TestModel = ((AnimatedModel) v7Test.getModel()).handler;
 		//TODO animation smoothness (don't hard code in 20)
-		v7TestModel.animate(deltaTime / 50F);
+//		v7TestModel.animate(deltaTime / 1000F);
 		//Tell the engine that the game object needs to be re-rendered
 		v7Test.queueUpdate();
 	}

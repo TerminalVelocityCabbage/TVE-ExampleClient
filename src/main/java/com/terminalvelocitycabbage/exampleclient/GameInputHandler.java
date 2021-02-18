@@ -30,6 +30,8 @@ public class GameInputHandler extends InputHandler {
 
 	public static KeyBind TOGGLE_MENU;
 
+	public static KeyBind FINISH_LOOPING;
+
 	@Override
 	public void init(Window window) {
 		super.init(window);
@@ -43,6 +45,7 @@ public class GameInputHandler extends InputHandler {
 		ROT_LEFT = new KeyBind(GLFW_KEY_Q);
 		ROT_RIGHT = new KeyBind(GLFW_KEY_E);
 		TOGGLE_MENU = new KeyBind(GLFW_KEY_TAB);
+		FINISH_LOOPING = new KeyBind(GLFW_KEY_L);
 	}
 
 	@Override
@@ -56,16 +59,16 @@ public class GameInputHandler extends InputHandler {
 		}
 
 		//Process movement inputs
-		moveForward = keyBind.isKeyPressed(FORWARD);
-		moveBackward = keyBind.isKeyPressed(BACKWARDS);
-		moveLeft = keyBind.isKeyPressed(LEFT);
-		moveRight = keyBind.isKeyPressed(RIGHT);
-		moveDown = keyBind.isKeyPressed(DOWN);
-		moveUp = keyBind.isKeyPressed(UP);
-		rotateLeft = keyBind.isKeyPressed(ROT_LEFT);
-		rotateRight = keyBind.isKeyPressed(ROT_RIGHT);
+		moveForward = FORWARD.isKeyPressed();
+		moveBackward = BACKWARDS.isKeyPressed();
+		moveLeft = LEFT.isKeyPressed();
+		moveRight = RIGHT.isKeyPressed();
+		moveDown = DOWN.isKeyPressed();
+		moveUp = UP.isKeyPressed();
+		rotateLeft = ROT_LEFT.isKeyPressed();
+		rotateRight = ROT_RIGHT.isKeyPressed();
 
-		if (keyBind.isKeyPressed(TOGGLE_MENU)) {
+		if (TOGGLE_MENU.isKeyPressed()) {
 			if (GameClient.getInstance().stateHandler.isActive("example")) {
 				GameClient.getInstance().stateHandler.resetState();
 			} else {
