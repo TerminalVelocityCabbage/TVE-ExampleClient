@@ -12,7 +12,6 @@ import com.terminalvelocitycabbage.engine.client.renderer.model.Texture;
 import com.terminalvelocitycabbage.engine.client.renderer.model.loader.AnimatedModelLoader;
 import com.terminalvelocitycabbage.engine.client.renderer.scenes.Scene;
 import com.terminalvelocitycabbage.engine.client.resources.Identifier;
-import net.dumbcode.studio.animation.info.AnimationInfo;
 import net.dumbcode.studio.animation.instance.ModelAnimationHandler;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
@@ -117,22 +116,21 @@ public class ExampleScene extends Scene {
 		ModeledGameObject looptest = objectHandler.getObject("loopTest");
 		ModelAnimationHandler loopHandler = ((AnimatedModel) looptest.getModel()).handler;
 		//TODO animation smoothness (don't hard code in 20)
-//		loopHandler.animate(deltaTime / 1000F) ;
-
+		loopHandler.animate(deltaTime / 1000F);
 		//Tell the engine that the game object needs to be re-rendered
 		looptest.queueUpdate();
 
 		ModeledGameObject robot = objectHandler.getObject("robot");
 		ModelAnimationHandler robotHandler = ((AnimatedModel) robot.getModel()).handler;
 		//TODO animation smoothness (don't hard code in 20)
-//		robotHandler.animate(deltaTime / 1000F);
+		robotHandler.animate(deltaTime / 1000F);
 		//Tell the engine that the game object needs to be re-rendered
 		robot.queueUpdate();
 
 		ModeledGameObject v7Test = objectHandler.getObject("v7test");
 		ModelAnimationHandler v7TestModel = ((AnimatedModel) v7Test.getModel()).handler;
 		//TODO animation smoothness (don't hard code in 20)
-//		v7TestModel.animate(deltaTime / 1000F);
+		v7TestModel.animate(deltaTime / 1000F);
 		//Tell the engine that the game object needs to be re-rendered
 		v7Test.queueUpdate();
 	}
