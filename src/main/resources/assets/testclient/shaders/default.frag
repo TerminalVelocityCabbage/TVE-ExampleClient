@@ -12,8 +12,8 @@ in vec3 vertVertexPosition;
 
 out vec4 fragColor;
 
-const int MAX_POINT_LIGHTS = 256;
-const int MAX_SPOT_LIGHTS = 256;
+const int MAX_POINT_LIGHTS = 32;
+const int MAX_SPOT_LIGHTS = 16;
 
 uniform int pointLightsNum;
 uniform PointLight pointLights[MAX_POINT_LIGHTS];

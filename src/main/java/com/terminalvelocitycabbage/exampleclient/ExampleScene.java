@@ -88,7 +88,6 @@ public class ExampleScene extends Scene {
 			gameObject.bind();
 		}
 
-
 		//Create some light
 		Attenuation plAttenuation = new Attenuation(0.0f, 0.0f, 1.0f);
 		objectHandler.add("blueLight", new PointLight(new Vector3f(0, 2, -0.5f), new Vector3f(0,0,1), 1.0f, plAttenuation));
