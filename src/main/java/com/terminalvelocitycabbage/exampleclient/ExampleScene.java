@@ -5,7 +5,7 @@ import com.terminalvelocitycabbage.engine.client.renderer.gameobjects.entity.Mod
 import com.terminalvelocitycabbage.engine.client.renderer.gameobjects.lights.DirectionalLight;
 import com.terminalvelocitycabbage.engine.client.renderer.gameobjects.lights.PointLight;
 import com.terminalvelocitycabbage.engine.client.renderer.gameobjects.lights.SpotLight;
-import com.terminalvelocitycabbage.engine.client.renderer.lights.Attenuation;
+import com.terminalvelocitycabbage.engine.client.renderer.gameobjects.lights.Attenuation;
 import com.terminalvelocitycabbage.engine.client.renderer.model.AnimatedModel;
 import com.terminalvelocitycabbage.engine.client.renderer.model.Material;
 import com.terminalvelocitycabbage.engine.client.renderer.model.Texture;

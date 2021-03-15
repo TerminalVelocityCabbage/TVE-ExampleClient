@@ -1,7 +1,6 @@
 package com.terminalvelocitycabbage.exampleclient;
 
 import com.github.simplenet.packet.Packet;
-import com.terminalvelocitycabbage.engine.client.networking.PingClient;
 import com.terminalvelocitycabbage.engine.debug.Log;
 import com.terminalvelocitycabbage.engine.events.HandleEvent;
 import com.terminalvelocitycabbage.engine.events.client.ClientConnectionEvent;
@@ -11,8 +10,8 @@ import org.fusesource.jansi.AnsiConsole;
 
 import java.util.Scanner;
 
-import static com.terminalvelocitycabbage.exampleclient.GameClient.PORT;
 import static com.terminalvelocitycabbage.exampleclient.GameClient.ADDRESS;
+import static com.terminalvelocitycabbage.exampleclient.GameClient.PORT;
 
 public class GameEventHandler {
 
@@ -24,6 +23,7 @@ public class GameEventHandler {
 
 	@HandleEvent(ClientStartEvent.START)
 	public void onStart(ClientStartEvent event) {
+		/*
 		try {
 			var pingClient = new PingClient(ADDRESS, PORT);
 			if (pingClient.ping().getResult()) {
@@ -34,6 +34,7 @@ public class GameEventHandler {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+		 */
 	}
 
 	@HandleEvent({ClientConnectionEvent.CONNECT})
