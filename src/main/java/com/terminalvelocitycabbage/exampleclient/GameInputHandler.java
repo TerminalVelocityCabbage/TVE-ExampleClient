@@ -3,6 +3,7 @@ package com.terminalvelocitycabbage.exampleclient;
 import com.terminalvelocitycabbage.engine.client.input.InputHandler;
 import com.terminalvelocitycabbage.engine.client.input.KeyBind;
 import com.terminalvelocitycabbage.engine.client.renderer.components.Window;
+import com.terminalvelocitycabbage.engine.debug.Log;
 
 import static org.lwjgl.glfw.GLFW.*;
 
@@ -32,6 +33,8 @@ public class GameInputHandler extends InputHandler {
 
 	public static KeyBind FINISH_LOOPING;
 
+	public static KeyBind CRASH_THE_GAME;
+
 	@Override
 	public void init(Window window) {
 		super.init(window);
@@ -46,10 +49,15 @@ public class GameInputHandler extends InputHandler {
 		ROT_RIGHT = new KeyBind(GLFW_KEY_E);
 		TOGGLE_MENU = new KeyBind(GLFW_KEY_TAB);
 		FINISH_LOOPING = new KeyBind(GLFW_KEY_L);
+		CRASH_THE_GAME = new KeyBind(GLFW_KEY_C);
 	}
 
 	@Override
 	public void processInput(KeyBind keyBind) {
+
+		if (CRASH_THE_GAME.isKeyPressed()) {
+			Log.crash("The game was forced to crash manually.", new RuntimeException("Force Crash"));
+		}
 
 		//Escape closes the program by telling glfw that it should close
 		if (keyBind.equalsKeyAndAction(CLOSE)) {
