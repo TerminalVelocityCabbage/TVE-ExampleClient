@@ -14,7 +14,6 @@ import com.terminalvelocitycabbage.engine.client.renderer.ui.Canvas;
 import com.terminalvelocitycabbage.engine.client.renderer.ui.UIRenderable;
 import com.terminalvelocitycabbage.engine.client.resources.Identifier;
 import org.joml.Matrix3f;
-import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 
@@ -125,8 +124,12 @@ public class GameClientRenderer extends Renderer {
 		}
 		inputHandler.resetDeltas();
 
-		//renderNormalsDebug(camera, viewMatrix, shaderHandler.get("normals"));
-		renderDefault(sceneHandler.getActiveScene().getCamera(), shaderHandler.get("default"));
+		if (GameClient.getInstance().stateHandler.isActive("normals")){
+			renderNormalsDebug(camera, shaderHandler.get("normals"));
+		} else {
+			renderDefault(camera, shaderHandler.get("default"));
+		}
+
 		if (GameClient.getInstance().stateHandler.isActive("example")) {
 			canvasHandler.showCanvas("example");
 			getWindow().showCursor();
@@ -157,7 +160,7 @@ public class GameClientRenderer extends Renderer {
 		sceneHandler.cleanup();
 	}
 
-	private void renderNormalsDebug(Camera camera, Matrix4f viewMatrix, ShaderProgram shaderProgram) {
+	private void renderNormalsDebug(Camera camera, ShaderProgram shaderProgram) {
 		//Point light
 		shaderProgram.enable();
 
@@ -170,7 +173,7 @@ public class GameClientRenderer extends Renderer {
 		for (ModeledGameObject gameObject : sceneHandler.getActiveScene().getObjectsOfType(ModeledGameObject.class)) {
 			gameObject.update();
 			shaderProgram.setUniform("projectionMatrix", camera.getProjectionMatrix());
-			shaderProgram.setUniform("modelViewMatrix", gameObject.getModelViewMatrix(viewMatrix));
+			shaderProgram.setUniform("modelViewMatrix", gameObject.getModelViewMatrix(camera.getViewMatrix()));
 			shaderProgram.setUniform("normalTransformationMatrix", gameObject.getTransformationMatrix());
 			gameObject.render();
 		}

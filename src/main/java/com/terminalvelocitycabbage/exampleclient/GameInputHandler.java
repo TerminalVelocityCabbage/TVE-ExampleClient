@@ -30,6 +30,7 @@ public class GameInputHandler extends InputHandler {
 	private boolean rotateLeft;
 
 	public static KeyBind TOGGLE_MENU;
+	public static KeyBind TOGGLE_NORMALS;
 
 	public static KeyBind FINISH_LOOPING;
 
@@ -48,6 +49,7 @@ public class GameInputHandler extends InputHandler {
 		ROT_LEFT = new KeyBind(GLFW_KEY_Q);
 		ROT_RIGHT = new KeyBind(GLFW_KEY_E);
 		TOGGLE_MENU = new KeyBind(GLFW_KEY_TAB);
+		TOGGLE_NORMALS = new KeyBind(GLFW_KEY_N);
 		FINISH_LOOPING = new KeyBind(GLFW_KEY_L);
 		CRASH_THE_GAME = new KeyBind(GLFW_KEY_C);
 	}
@@ -81,6 +83,14 @@ public class GameInputHandler extends InputHandler {
 				GameClient.getInstance().stateHandler.resetState();
 			} else {
 				GameClient.getInstance().stateHandler.setState("example");
+			}
+		}
+
+		if (TOGGLE_NORMALS.isKeyPressed()) {
+			if (GameClient.getInstance().stateHandler.isActive("normals")) {
+				GameClient.getInstance().stateHandler.resetState();
+			} else {
+				GameClient.getInstance().stateHandler.setState("normals");
 			}
 		}
 	}

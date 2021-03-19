@@ -3,9 +3,7 @@ package com.terminalvelocitycabbage.exampleclient;
 import com.terminalvelocitycabbage.engine.client.ClientBase;
 import com.terminalvelocitycabbage.engine.client.state.State;
 import com.terminalvelocitycabbage.engine.client.state.StateHandler;
-import com.terminalvelocitycabbage.engine.debug.Log;
 import com.terminalvelocitycabbage.engine.debug.Logger;
-import com.terminalvelocitycabbage.engine.debug.SystemInfo;
 import com.terminalvelocitycabbage.engine.events.EventContext;
 
 public class GameClient extends ClientBase {
@@ -46,19 +44,8 @@ public class GameClient extends ClientBase {
 
 		//Add an example state, we will use this to determine in the renderer whether the ExampleCanvas should be shown
 		stateHandler.addState(new State("example"));
+		stateHandler.addState(new State("normals"));
 		clientRenderer.init();
-
-		//Print the system information
-		Log.debug("[System Information][CPU]    " + SystemInfo.getAvailableProcessors() + " logical processors");
-		Log.debug("[System Information][MEMORY] " + Math.round(SystemInfo.getFreeMemory()/256.0/102.4) / 10d + "GB free of "
-				+ Math.round(SystemInfo.getMaxMemory()/256.0/102.4) /10d + "GB system memory. limit: "
-				+ SystemInfo.getAllocatedMemory() + "GB");
-		Log.debug("[System Information][ARCH]   " + SystemInfo.getArchitecture());
-		Log.debug("[System Information][OS]     " + SystemInfo.getOSName() + " version "
-				+ SystemInfo.getOSVersion());
-		Log.debug("[System Information][GPU]    " + SystemInfo.getGpuVendor() + " model "
-				+ SystemInfo.getGpuModel() + " version");
-		Log.debug("[System Information][GPU]    " + SystemInfo.getGpuVersion());
 	}
 
 	@Override
