@@ -65,5 +65,6 @@ public class GameClient extends ClientBase {
 	public void start() {
 		super.start();
 		clientRenderer.run();
+		getLogger().createLog(false);
 	}
 }
