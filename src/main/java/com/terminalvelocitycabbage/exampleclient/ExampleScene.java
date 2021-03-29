@@ -2,17 +2,16 @@ package com.terminalvelocitycabbage.exampleclient;
 
 import com.terminalvelocitycabbage.engine.client.renderer.components.Camera;
 import com.terminalvelocitycabbage.engine.client.renderer.gameobjects.entity.ModeledGameObject;
+import com.terminalvelocitycabbage.engine.client.renderer.gameobjects.lights.Attenuation;
 import com.terminalvelocitycabbage.engine.client.renderer.gameobjects.lights.DirectionalLight;
 import com.terminalvelocitycabbage.engine.client.renderer.gameobjects.lights.PointLight;
 import com.terminalvelocitycabbage.engine.client.renderer.gameobjects.lights.SpotLight;
-import com.terminalvelocitycabbage.engine.client.renderer.gameobjects.lights.Attenuation;
 import com.terminalvelocitycabbage.engine.client.renderer.model.AnimatedModel;
 import com.terminalvelocitycabbage.engine.client.renderer.model.Material;
 import com.terminalvelocitycabbage.engine.client.renderer.model.Texture;
 import com.terminalvelocitycabbage.engine.client.renderer.model.loader.AnimatedModelLoader;
 import com.terminalvelocitycabbage.engine.client.renderer.scenes.Scene;
 import com.terminalvelocitycabbage.engine.client.resources.Identifier;
-import net.dumbcode.studio.animation.instance.ModelAnimationHandler;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 
@@ -106,30 +105,22 @@ public class ExampleScene extends Scene {
 
 		//Animate the model
 		ModeledGameObject trex = objectHandler.getObject("trex");
-		ModelAnimationHandler trexHandler = ((AnimatedModel) trex.getModel()).handler;
-		//TODO animation smoothness (don't hard code in 20)
-		trexHandler.animate(deltaTime / 1000F) ;
+		((AnimatedModel)trex.getModel()).animate(deltaTime / 1000F);
 		//Tell the engine that the game object needs to be re-rendered
 		trex.queueUpdate();
 
 		ModeledGameObject looptest = objectHandler.getObject("loopTest");
-		ModelAnimationHandler loopHandler = ((AnimatedModel) looptest.getModel()).handler;
-		//TODO animation smoothness (don't hard code in 20)
-		loopHandler.animate(deltaTime / 1000F);
+		((AnimatedModel)looptest.getModel()).animate(deltaTime / 1000F);
 		//Tell the engine that the game object needs to be re-rendered
 		looptest.queueUpdate();
 
 		ModeledGameObject robot = objectHandler.getObject("robot");
-		ModelAnimationHandler robotHandler = ((AnimatedModel) robot.getModel()).handler;
-		//TODO animation smoothness (don't hard code in 20)
-		robotHandler.animate(deltaTime / 1000F);
+		((AnimatedModel)robot.getModel()).animate(deltaTime / 1000F);
 		//Tell the engine that the game object needs to be re-rendered
 		robot.queueUpdate();
 
 		ModeledGameObject v7Test = objectHandler.getObject("v7test");
-		ModelAnimationHandler v7TestModel = ((AnimatedModel) v7Test.getModel()).handler;
-		//TODO animation smoothness (don't hard code in 20)
-		v7TestModel.animate(deltaTime / 1000F);
+		((AnimatedModel)v7Test.getModel()).animate(deltaTime / 1000F);
 		//Tell the engine that the game object needs to be re-rendered
 		v7Test.queueUpdate();
 	}
