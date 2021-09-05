@@ -16,7 +16,7 @@ public class GameClient extends ClientBase {
 	public static final int PORT = 49056;
 
 	public GameClient() {
-		super(new Logger(ID), new GameClientRenderer(1900, 1000, "TerminalVelocityEngine Test Game!", 20f));
+		super(new Logger(ID), new GameClientRenderer(1900, 1000, "TerminalVelocityEngine Test Game!", 50f));
 		instance = this;
 		this.stateHandler = new StateHandler();
 		addEventHandler(EventContext.CLIENT, new GameEventHandler());
@@ -30,6 +30,10 @@ public class GameClient extends ClientBase {
 
 	public static GameClient getInstance() {
 		return (GameClient)instance;
+	}
+
+	public static GameClientRenderer getRenderer() {
+		return (GameClientRenderer) ClientBase.getRenderer();
 	}
 
 	@Override

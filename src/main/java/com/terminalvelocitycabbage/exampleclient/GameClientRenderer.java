@@ -2,6 +2,7 @@ package com.terminalvelocitycabbage.exampleclient;
 
 import com.terminalvelocitycabbage.engine.client.renderer.Renderer;
 import com.terminalvelocitycabbage.engine.client.renderer.components.Camera;
+import com.terminalvelocitycabbage.engine.client.renderer.components.FirstPersonCamera;
 import com.terminalvelocitycabbage.engine.client.renderer.gameobjects.entity.ModeledGameObject;
 import com.terminalvelocitycabbage.engine.client.renderer.gameobjects.lights.PointLight;
 import com.terminalvelocitycabbage.engine.client.renderer.gameobjects.lights.SpotLight;
@@ -9,9 +10,10 @@ import com.terminalvelocitycabbage.engine.client.renderer.model.RectangleModel;
 import com.terminalvelocitycabbage.engine.client.renderer.shader.ShaderHandler;
 import com.terminalvelocitycabbage.engine.client.renderer.shader.ShaderProgram;
 import com.terminalvelocitycabbage.engine.client.renderer.ui.Canvas;
+import com.terminalvelocitycabbage.engine.client.renderer.ui.Element;
 import com.terminalvelocitycabbage.engine.client.renderer.ui.UIRenderable;
-import com.terminalvelocitycabbage.engine.client.renderer.ui.UIRenderableWithText;
 import com.terminalvelocitycabbage.engine.client.resources.Identifier;
+import com.terminalvelocitycabbage.engine.debug.Log;
 import org.joml.Matrix3f;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
@@ -82,6 +84,44 @@ public class GameClientRenderer extends Renderer {
 		glEnable(GL_DEPTH_TEST);
 		glDepthFunc(GL_LEQUAL);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		//Move the camera and stuff
+		if (sceneHandler.isActive("example")) {
+			Log.info("b;ah");
+			var firstPersonCamera = (FirstPersonCamera)sceneHandler.getActiveScene().getCamera();
+			var fpInputHandler = ((GameInputHandler)sceneHandler.getActiveScene().getInputHandler());
+			firstPersonCamera.resetDeltas();
+			if (fpInputHandler.moveForward()) firstPersonCamera.queueMove(0, 0, -1);
+			if (fpInputHandler.moveBackward()) firstPersonCamera.queueMove(0, 0, 1);
+			if (fpInputHandler.moveRight()) firstPersonCamera.queueMove(1, 0, 0);
+			if (fpInputHandler.moveLeft()) firstPersonCamera.queueMove(-1, 0, 0);
+			if (fpInputHandler.moveUp()) firstPersonCamera.queueMove(0, 1, 0);
+			if (fpInputHandler.moveDown()) firstPersonCamera.queueMove(0, -1, 0);
+			if (fpInputHandler.isRightButtonPressed()) {
+				firstPersonCamera.queueRotate(fpInputHandler.getMouseDeltaX(), fpInputHandler.getMouseDeltaY());
+			}
+			firstPersonCamera.update(getDeltaTimeInSeconds());
+
+			//Update the camera position
+
+			if (GameClient.getInstance().stateHandler.isActive("normals")){
+				renderNormalsDebug(firstPersonCamera, shaderHandler.get("normals"));
+			} else {
+				renderDefault(firstPersonCamera, shaderHandler.get("default"));
+			}
+
+			if (GameClient.getInstance().stateHandler.isActive("example")) {
+				canvasHandler.showCanvas("example");
+				getWindow().showCursor();
+				glDisable(GL_DEPTH_TEST);
+				renderHud(shaderHandler.get("hud"));
+				renderText(shaderHandler.get("text"));
+				glEnable(GL_DEPTH_TEST);
+			} else {
+				getWindow().hideCursor();
+				canvasHandler.hideCanvas("example");
+			}
+		}
 
 		//Update the camera position
 		//((FirstPersonCamera)sceneHandler.getActiveScene().getCamera()).move(inputHandler.getCameraPositionMoveVector(), 1f); //1f * (getDeltaTime() / 16
@@ -190,8 +230,8 @@ public class GameClientRenderer extends Renderer {
 
 		for (Canvas canvas : canvasHandler.getCanvases()) {
 			for (UIRenderable child : canvas.getAllChildren()) {
-				if (child instanceof UIRenderableWithText) {
-					((UIRenderableWithText) child).renderText();
+				if (child instanceof Element) {
+					((Element) child).renderText();
 				}
 			}
 		}
@@ -214,16 +254,16 @@ public class GameClientRenderer extends Renderer {
 	public void renderHudElement(UIRenderable element, ShaderProgram shaderProgram) {
 		element.update();
 
-		shaderProgram.setUniform("color", element.getColor());
+		shaderProgram.setUniform("color", element.style.getColor());
 		shaderProgram.setUniform("screenRes", new Vector2f(getWindow().width(), getWindow().height()));
 		RectangleModel rectangle = (RectangleModel) element.getRectangle();
 		shaderProgram.setUniform("cornerStuff", new Matrix3f(
 			rectangle.vertices[0].getX(), rectangle.vertices[0].getY(), rectangle.vertices[1].getX(),
 			rectangle.vertices[1].getY(), rectangle.vertices[2].getX(), rectangle.vertices[2].getY(),
-			rectangle.vertices[3].getX(), rectangle.vertices[3].getY(), element.getBorderRadius()
+			rectangle.vertices[3].getX(), rectangle.vertices[3].getY(), element.style.getBorderRadius()
 		));
-		shaderProgram.setUniform("borderColor", element.getBorderColor());
-		shaderProgram.setUniform("borderThickness", element.getBorderThickness());
+		shaderProgram.setUniform("borderColor", element.style.getBorderColor());
+		shaderProgram.setUniform("borderThickness", element.style.getBorderThickness());
 
 		element.render();
 	}
