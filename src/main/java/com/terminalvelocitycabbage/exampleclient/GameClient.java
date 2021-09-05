@@ -10,16 +10,14 @@ public class GameClient extends ClientBase {
 
 	public static final String ID = "testclient";
 
-	private static GameClientRenderer clientRenderer;
 	public StateHandler stateHandler;
 
 	public static final String ADDRESS = "localhost";
 	public static final int PORT = 49056;
 
 	public GameClient() {
-		super(new Logger(ID));
+		super(new Logger(ID), new GameClientRenderer(1900, 1000, "TerminalVelocityEngine Test Game!", 20f));
 		instance = this;
-		clientRenderer = new GameClientRenderer(1900, 1000, "TerminalVelocityEngine Test Game!", 20f);
 		this.stateHandler = new StateHandler();
 		addEventHandler(EventContext.CLIENT, new GameEventHandler());
 		init();
@@ -34,10 +32,6 @@ public class GameClient extends ClientBase {
 		return (GameClient)instance;
 	}
 
-	public static GameClientRenderer getClientRenderer() {
-		return clientRenderer;
-	}
-
 	@Override
 	public void init() {
 		super.init();
@@ -45,13 +39,13 @@ public class GameClient extends ClientBase {
 		//Add an example state, we will use this to determine in the renderer whether the ExampleCanvas should be shown
 		stateHandler.addState(new State("example"));
 		stateHandler.addState(new State("normals"));
-		clientRenderer.init();
+		getRenderer().init();
 	}
 
 	@Override
 	public void start() {
 		super.start();
-		clientRenderer.run();
+		getRenderer().run();
 		getLogger().createLog(false);
 	}
 }
