@@ -2,16 +2,15 @@ package com.terminalvelocitycabbage.exampleclient;
 
 import com.terminalvelocitycabbage.engine.client.renderer.Renderer;
 import com.terminalvelocitycabbage.engine.client.renderer.components.Camera;
-import com.terminalvelocitycabbage.engine.client.renderer.components.FirstPersonCamera;
-import com.terminalvelocitycabbage.engine.client.renderer.components.FreeCamera;
 import com.terminalvelocitycabbage.engine.client.renderer.gameobjects.entity.ModeledGameObject;
 import com.terminalvelocitycabbage.engine.client.renderer.gameobjects.lights.PointLight;
 import com.terminalvelocitycabbage.engine.client.renderer.gameobjects.lights.SpotLight;
+import com.terminalvelocitycabbage.engine.client.renderer.model.RectangleModel;
 import com.terminalvelocitycabbage.engine.client.renderer.shader.ShaderHandler;
 import com.terminalvelocitycabbage.engine.client.renderer.shader.ShaderProgram;
-import com.terminalvelocitycabbage.engine.client.renderer.shapes.Rectangle;
 import com.terminalvelocitycabbage.engine.client.renderer.ui.Canvas;
 import com.terminalvelocitycabbage.engine.client.renderer.ui.UIRenderable;
+import com.terminalvelocitycabbage.engine.client.renderer.ui.UIRenderableWithText;
 import com.terminalvelocitycabbage.engine.client.resources.Identifier;
 import org.joml.Matrix3f;
 import org.joml.Vector2f;
@@ -27,10 +26,9 @@ import static org.lwjgl.opengl.GL20.*;
 public class GameClientRenderer extends Renderer {
 
 	private final ShaderHandler shaderHandler = new ShaderHandler();
-	private GameInputHandler inputHandler;
 
 	public GameClientRenderer(int width, int height, String title, float tickRate) {
-		super(width, height, title, new GameInputHandler(), tickRate);
+		super(width, height, title, tickRate);
 		getWindow().setvSync(true);
 	}
 
@@ -66,11 +64,8 @@ public class GameClientRenderer extends Renderer {
 		shaderHandler.queueShader("text", FRAGMENT, SHADER, new Identifier(GameClient.ID, "text.frag"));
 		shaderHandler.build("text");
 
-		//Store InputHandler
-		inputHandler = (GameInputHandler) getWindow().getInputHandler();
-
 		//Create Scenes
-		sceneHandler.addScene("example", new ExampleScene(new FirstPersonCamera(60, 0.01f, 1000.0f)));
+		sceneHandler.addScene("example", new ExampleScene());
 
 		//Init the scene
 		sceneHandler.loadScene("example");
@@ -91,38 +86,6 @@ public class GameClientRenderer extends Renderer {
 		//Update the camera position
 		//((FirstPersonCamera)sceneHandler.getActiveScene().getCamera()).move(inputHandler.getCameraPositionMoveVector(), 1f); //1f * (getDeltaTime() / 16
 		var camera = sceneHandler.getActiveScene().getCamera();
-		if (camera instanceof FreeCamera) {
-			var freeCamera = (FreeCamera)camera;
-			freeCamera.linearAcceleration.zero();
-			freeCamera.angularAcceleration.zero();
-			if (inputHandler.moveForward()) freeCamera.accelerateForward();
-			if (inputHandler.moveBackward()) freeCamera.accelerateBackwards();
-			if (inputHandler.moveRight()) freeCamera.accelerateRight();
-			if (inputHandler.moveLeft()) freeCamera.accelerateLeft();
-			if (inputHandler.moveUp()) freeCamera.accelerateUp();
-			if (inputHandler.moveDown()) freeCamera.accelerateDown();
-			if (inputHandler.rotateRight()) freeCamera.accelerateTwistRight();
-			if (inputHandler.rotateLeft()) freeCamera.accelerateTwistLeft();
-			if (inputHandler.isRightButtonPressed()) {
-				freeCamera.rotate(inputHandler.getMouseDeltaX(), inputHandler.getMouseDeltaY(), freeCamera.rotateZ);
-			}
-			freeCamera.update(getDeltaTimeInSeconds());
-		}
-		if (camera instanceof FirstPersonCamera) {
-			var firstPersonCamera = (FirstPersonCamera)camera;
-			firstPersonCamera.resetDeltas();
-			if (inputHandler.moveForward()) firstPersonCamera.queueMove(0, 0, -1);
-			if (inputHandler.moveBackward()) firstPersonCamera.queueMove(0, 0, 1);
-			if (inputHandler.moveRight()) firstPersonCamera.queueMove(1, 0, 0);
-			if (inputHandler.moveLeft()) firstPersonCamera.queueMove(-1, 0, 0);
-			if (inputHandler.moveUp()) firstPersonCamera.queueMove(0, 1, 0);
-			if (inputHandler.moveDown()) firstPersonCamera.queueMove(0, -1, 0);
-			if (inputHandler.isRightButtonPressed()) {
-				firstPersonCamera.queueRotate(inputHandler.getMouseDeltaX(), inputHandler.getMouseDeltaY());
-			}
-			firstPersonCamera.update(getDeltaTimeInSeconds());
-		}
-		inputHandler.resetDeltas();
 
 		if (GameClient.getInstance().stateHandler.isActive("normals")){
 			renderNormalsDebug(camera, shaderHandler.get("normals"));
@@ -144,9 +107,6 @@ public class GameClientRenderer extends Renderer {
 
 		//Since the text rendering is so awful I'm just going to use the window title for now
 		getWindow().setTitle("FPS: " + String.valueOf(getFramerate()).split("\\.")[0] + " (" + getFrameTimeAverageMillis() + "ms)");
-
-		//Update the scene
-		sceneHandler.update(getDeltaTimeInMillis());
 
 		//Send the frame
 		push();
@@ -229,9 +189,10 @@ public class GameClientRenderer extends Renderer {
 		shaderProgram.enable();
 
 		for (Canvas canvas : canvasHandler.getCanvases()) {
-			canvas.renderText();
 			for (UIRenderable child : canvas.getAllChildren()) {
-				child.renderText();
+				if (child instanceof UIRenderableWithText) {
+					((UIRenderableWithText) child).renderText();
+				}
 			}
 		}
 	}
@@ -253,16 +214,16 @@ public class GameClientRenderer extends Renderer {
 	public void renderHudElement(UIRenderable element, ShaderProgram shaderProgram) {
 		element.update();
 
-		shaderProgram.setUniform("color", element.style.getColor());
+		shaderProgram.setUniform("color", element.getColor());
 		shaderProgram.setUniform("screenRes", new Vector2f(getWindow().width(), getWindow().height()));
-		Rectangle rectangle = element.getRectangle();
+		RectangleModel rectangle = (RectangleModel) element.getRectangle();
 		shaderProgram.setUniform("cornerStuff", new Matrix3f(
 			rectangle.vertices[0].getX(), rectangle.vertices[0].getY(), rectangle.vertices[1].getX(),
 			rectangle.vertices[1].getY(), rectangle.vertices[2].getX(), rectangle.vertices[2].getY(),
-			rectangle.vertices[3].getX(), rectangle.vertices[3].getY(), element.style.getBorderRadius()
+			rectangle.vertices[3].getX(), rectangle.vertices[3].getY(), element.getBorderRadius()
 		));
-		shaderProgram.setUniform("borderColor", element.style.getBorderColor());
-		shaderProgram.setUniform("borderThickness", element.style.getBorderThickness());
+		shaderProgram.setUniform("borderColor", element.getBorderColor());
+		shaderProgram.setUniform("borderThickness", element.getBorderThickness());
 
 		element.render();
 	}

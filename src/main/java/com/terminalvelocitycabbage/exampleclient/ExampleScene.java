@@ -1,6 +1,7 @@
 package com.terminalvelocitycabbage.exampleclient;
 
-import com.terminalvelocitycabbage.engine.client.renderer.components.Camera;
+import com.terminalvelocitycabbage.engine.client.renderer.components.FirstPersonCamera;
+import com.terminalvelocitycabbage.engine.client.renderer.components.Window;
 import com.terminalvelocitycabbage.engine.client.renderer.gameobjects.entity.ModeledGameObject;
 import com.terminalvelocitycabbage.engine.client.renderer.gameobjects.lights.Attenuation;
 import com.terminalvelocitycabbage.engine.client.renderer.gameobjects.lights.DirectionalLight;
@@ -20,12 +21,13 @@ import static org.lwjgl.glfw.GLFW.glfwGetTime;
 
 public class ExampleScene extends Scene {
 
-	public ExampleScene(Camera camera) {
-		super(camera);
+	public ExampleScene() {
+		super(new FirstPersonCamera(60, 0.1f, 16000f), new GameInputHandler());
 	}
 
 	@Override
-	public void init() {
+	public void init(Window window) {
+
 		//Load trex model to a Model object from dcm file
 		AnimatedModel trexModel = AnimatedModelLoader.load(MODEL, new Identifier(GameClient.ID, "trex.dcm"));
 		trexModel.addAnimation("roar", ANIMATION, new Identifier(GameClient.ID, "roar.dca")).setLoopingStart(1.25F);
@@ -97,7 +99,7 @@ public class ExampleScene extends Scene {
 	}
 
 	@Override
-	public void update(float deltaTime) {
+	public void tick(float deltaTime) {
 
 		//Move around the point lights
 		objectHandler.getObject("blueLight").move(0, (float)Math.sin(glfwGetTime())/10, 0);
@@ -123,6 +125,22 @@ public class ExampleScene extends Scene {
 		((AnimatedModel)v7Test.getModel()).animate(deltaTime / 1000F);
 		//Tell the engine that the game object needs to be re-rendered
 		v7Test.queueUpdate();
+
+		//Update Inputs
+		var firstPersonCamera = (FirstPersonCamera)getCamera();
+		firstPersonCamera.resetDeltas();
+		GameInputHandler inputHandler = (GameInputHandler) getInputHandler();
+		if (inputHandler.moveForward()) firstPersonCamera.queueMove(0, 0, -1);
+		if (inputHandler.moveBackward()) firstPersonCamera.queueMove(0, 0, 1);
+		if (inputHandler.moveRight()) firstPersonCamera.queueMove(1, 0, 0);
+		if (inputHandler.moveLeft()) firstPersonCamera.queueMove(-1, 0, 0);
+		if (inputHandler.moveUp()) firstPersonCamera.queueMove(0, 1, 0);
+		if (inputHandler.moveDown()) firstPersonCamera.queueMove(0, -1, 0);
+		if (inputHandler.isRightButtonPressed()) {
+			firstPersonCamera.queueRotate(inputHandler.getMouseDeltaX(), inputHandler.getMouseDeltaY());
+		}
+		firstPersonCamera.update(deltaTime / 1000F);
+		inputHandler.resetDeltas();
 	}
 
 	@Override

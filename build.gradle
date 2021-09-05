@@ -38,7 +38,6 @@ switch (org.gradle.internal.os.OperatingSystem.current()) {
 
 repositories {
 	mavenCentral()
-	jcenter()
 }
 
 project.ext.lwjglVersion = "3.2.3"
@@ -66,7 +65,8 @@ dependencies {
 
 	implementation 'com.github.jhg023:SimpleNet:1.6.4'
 
-	compile project('terminal_velocity_engine')
+	implementation project('terminal_velocity_engine')
+	implementation project('studio_jar')
 
-	compile group: 'org.fusesource.jansi', name: 'jansi', version: '1.8'
+	implementation group: 'org.fusesource.jansi', name: 'jansi', version: '1.8'
 }
