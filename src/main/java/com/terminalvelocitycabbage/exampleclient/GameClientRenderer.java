@@ -13,7 +13,6 @@ import com.terminalvelocitycabbage.engine.client.renderer.ui.Canvas;
 import com.terminalvelocitycabbage.engine.client.renderer.ui.Element;
 import com.terminalvelocitycabbage.engine.client.renderer.ui.UIRenderable;
 import com.terminalvelocitycabbage.engine.client.resources.Identifier;
-import com.terminalvelocitycabbage.engine.debug.Log;
 import org.joml.Matrix3f;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
@@ -87,7 +86,6 @@ public class GameClientRenderer extends Renderer {
 
 		//Move the camera and stuff
 		if (sceneHandler.isActive("example")) {
-			Log.info("b;ah");
 			var firstPersonCamera = (FirstPersonCamera)sceneHandler.getActiveScene().getCamera();
 			var fpInputHandler = ((GameInputHandler)sceneHandler.getActiveScene().getInputHandler());
 			firstPersonCamera.resetDeltas();
@@ -121,28 +119,6 @@ public class GameClientRenderer extends Renderer {
 				getWindow().hideCursor();
 				canvasHandler.hideCanvas("example");
 			}
-		}
-
-		//Update the camera position
-		//((FirstPersonCamera)sceneHandler.getActiveScene().getCamera()).move(inputHandler.getCameraPositionMoveVector(), 1f); //1f * (getDeltaTime() / 16
-		var camera = sceneHandler.getActiveScene().getCamera();
-
-		if (GameClient.getInstance().stateHandler.isActive("normals")){
-			renderNormalsDebug(camera, shaderHandler.get("normals"));
-		} else {
-			renderDefault(camera, shaderHandler.get("default"));
-		}
-
-		if (GameClient.getInstance().stateHandler.isActive("example")) {
-			canvasHandler.showCanvas("example");
-			getWindow().showCursor();
-			glDisable(GL_DEPTH_TEST);
-			renderHud(shaderHandler.get("hud"));
-			renderText(shaderHandler.get("text"));
-			glEnable(GL_DEPTH_TEST);
-		} else {
-			getWindow().hideCursor();
-			canvasHandler.hideCanvas("example");
 		}
 
 		//Since the text rendering is so awful I'm just going to use the window title for now
